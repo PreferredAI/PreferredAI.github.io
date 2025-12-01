@@ -3,6 +3,7 @@ import "./globals.css";
 import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import TeamPhotos from "@/components/TeamPhotos";
+import { getAllCategories } from "@/lib/markdown-posts";
 
 export const metadata: Metadata = {
   title: "Preferred.AI",
@@ -17,6 +18,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const categories = getAllCategories();
+
   return (
     <html lang="en">
       <body>
@@ -24,15 +27,15 @@ export default function RootLayout({
           {/* Header */}
           <header className="bg-white shadow-md border-b border-gray-200">
             <div className="container mx-auto max-w-7xl px-4">
-              <div className="flex items-center justify-between py-6">
+              <div className="flex items-center justify-between gap-4 py-6">
                 <Link href="/" className="inline-block">
-                  <div className="flex flex-col items-center">
+                  <div className="flex items-center gap-3">
                     <img
                       src="/Brand.png"
                       alt="Preferred.AI"
-                      className="h-20 w-auto"
+                      className="h-16 w-auto"
                     />
-                    <p className="mt-1 text-s italic text-gray-600">
+                    <p className="hidden text-sm italic text-gray-600 lg:block">
                       Preferences and Recommendations from Data & AI
                     </p>
                   </div>
@@ -66,78 +69,20 @@ export default function RootLayout({
                         Categories
                       </h3>
                       <ul className="space-y-2">
-                        <li>
-                          <Link
-                            href="/category/announcement"
-                            className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                          >
-                            <span className="mr-2 text-gray-400">▸</span>
-                            Announcement
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/category/defense"
-                            className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                          >
-                            <span className="mr-2 text-gray-400">▸</span>
-                            Defense
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/category/education"
-                            className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                          >
-                            <span className="mr-2 text-gray-400">▸</span>
-                            Education
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/category/presentation"
-                            className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                          >
-                            <span className="mr-2 text-gray-400">▸</span>
-                            Presentation
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/category/publication"
-                            className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                          >
-                            <span className="mr-2 text-gray-400">▸</span>
-                            Publication
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/category/social"
-                            className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                          >
-                            <span className="mr-2 text-gray-400">▸</span>
-                            Social
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/category/travel"
-                            className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                          >
-                            <span className="mr-2 text-gray-400">▸</span>
-                            Travel
-                          </Link>
-                        </li>
-                        <li>
-                          <Link
-                            href="/category/video"
-                            className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                          >
-                            <span className="mr-2 text-gray-400">▸</span>
-                            Video
-                          </Link>
-                        </li>
+                        {categories.map((category) => (
+                          <li key={category.slug}>
+                            <Link
+                              href={`/category/${category.slug}`}
+                              className="flex items-center text-gray-700 hover:text-[#b91c1c]"
+                            >
+                              <span className="mr-2 text-gray-400">▸</span>
+                              {category.name}
+                              <span className="ml-auto text-xs text-gray-400">
+                                ({category.count})
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
                       </ul>
                     </div>
                   </div>

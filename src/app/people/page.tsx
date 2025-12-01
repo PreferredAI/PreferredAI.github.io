@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import Image from "next/image";
-import Link from "next/link";
 import { TEAM_DATA, TeamMember } from "@/data/team";
 
 export const metadata: Metadata = {
@@ -33,7 +32,7 @@ const alumni: TeamMember[] = [...TEAM_DATA.alumni].sort((a, b) =>
 function TeamMemberCard({ member }: { member: TeamMember }) {
   return (
     <div className="flex flex-col items-center text-center">
-      <Link href={member.url} className="group mb-4 block">
+      <div className="group mb-4 block">
         <div className="relative aspect-square w-48 overflow-hidden rounded-lg transition-transform group-hover:scale-105">
           <Image
             src={member.image}
@@ -43,18 +42,10 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
             sizes="192px"
           />
         </div>
-      </Link>
-      <h3 className="mb-1 text-lg font-semibold">
-        <Link href={member.url} className="hover:text-[#b91c1c]">
-          {member.name}
-        </Link>
-      </h3>
+      </div>
+      <h3 className="mb-1 text-lg font-semibold">{member.name}</h3>
       {member.title && (
-        <p className="mb-2 text-sm text-gray-600">
-          <Link href={member.url} className="hover:text-[#b91c1c]">
-            {member.title}
-          </Link>
-        </p>
+        <p className="mb-2 text-sm text-gray-600">{member.title}</p>
       )}
       {member.link && (
         <a
