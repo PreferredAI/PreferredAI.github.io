@@ -12,7 +12,7 @@ const professor = TEAM_DATA.professor;
 const staff = TEAM_DATA.staff;
 
 // Sort students: PhD Candidates first (alphabetically), then PhD co-supervisees (alphabetically)
-const students = [...TEAM_DATA.students].sort((a, b) => {
+const students: TeamMember[] = [...TEAM_DATA.students].sort((a, b) => {
   const isACand = a.title.includes("PhD Candidate");
   const isBCand = b.title.includes("PhD Candidate");
 
@@ -26,7 +26,7 @@ const students = [...TEAM_DATA.students].sort((a, b) => {
 });
 
 // Sort alumni alphabetically by name
-const alumni = [...TEAM_DATA.alumni].sort((a, b) =>
+const alumni: TeamMember[] = [...TEAM_DATA.alumni].sort((a, b) =>
   a.name.localeCompare(b.name)
 );
 
@@ -70,7 +70,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
   );
 }
 
-function TeamSection({ members }: { members: TeamMember[] }) {
+function TeamSection({ members }: { members: readonly TeamMember[] }) {
   // Check if last row has only 1 person (odd number of members)
   const hasOddMember = members.length % 2 === 1;
 
