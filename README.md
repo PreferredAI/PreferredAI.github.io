@@ -1,36 +1,55 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Preferred.AI Website
 
-## Getting Started
-
-First, run the development server:
+## Quick Start (Development)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+pnpm install
 pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Creating a Blog Post
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Via GitHub Web Interface (No Installation Required):
 
-## Learn More
+1. Copy content from `.github/BLOG_POST_TEMPLATE.md`
+2. Go to `content/posts/` on GitHub
+3. Click **"Add file"** → **"Create new file"**
+4. Name it: `your-post-title.md` (lowercase, hyphens)
+5. Paste the content from `.github/BLOG_POST_TEMPLATE.md`. Frontmatter should look like this:
+   ```yaml
+   ---
+   title: "Your Post Title"
+   date: "2025-12-02"  # YYYY-MM-DD
+   author: "Your Name"
+   excerpt: "Brief summary (1-2 sentences)"
+   featuredImage: "/uploads/2025/12/image.jpg"
+   categories: ["Education"]  # "Presentation, "Travel, "Education", "Announcement", "Video", "Defense", "Publication", "Social"
+   tags: []
+   seoTitle: "Your Post Title - Preferred.AI"
+   seoDescription: "Brief summary for SEO"
+   ---
+   ```
+6. Write your content in Markdown. Upload images to `public/uploads/YYYY/MM/` first if needed.
+7. Commit to a **new branch** and create a **Pull Request**
 
-To learn more about Next.js, take a look at the following resources:
+### Interactive Local Setup (Requires Installation):
+1. Ensure you have [Node.js](https://nodejs.org/) and [pnpm](https://pnpm.io/) installed.
+2. Clone the repository:
+    ```bash
+    git clone https://github.com/PreferredAI/PreferredAI.github.io.git
+    cd PreferredAI.github.io
+    ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+3. Install dependencies:
+    ```bash
+    pnpm install
+    ```
+4. Create a new Markdown file in `content/posts/` using the template from `.github/BLOG_POST_TEMPLATE.md`.
+5. Start the development server:
+   ```bash
+   pnpm dev
+   ```
+6. Open [http://localhost:3000](http://localhost:3000) to preview your post.
+7. Once satisfied, commit your changes to a new branch and push to GitHub. Create a Pull Request for review if needed.
