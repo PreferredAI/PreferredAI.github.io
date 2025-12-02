@@ -4,6 +4,11 @@ import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
 import gfm from 'remark-gfm';
+import { unified } from 'unified';
+import remarkParse from 'remark-parse';
+import remarkRehype from 'remark-rehype';
+import rehypeStringify from 'rehype-stringify';
+import rehypeFigure from './rehype-figure';
 
 const postsDirectory = path.join(process.cwd(), 'content', 'posts');
 
@@ -233,9 +238,12 @@ export function getAllPostSlugs(): string[] {
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {
-  const result = await remark()
+  const result = await unified()
+    .use(remarkParse)
     .use(gfm)
-    .use(html, { sanitize: false })
+    .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeFigure)
+    .use(rehypeStringify, { allowDangerousHtml: true })
     .process(markdown);
   return result.toString();
 }

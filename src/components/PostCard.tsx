@@ -24,7 +24,7 @@ export function PostCard({ post }: PostCardProps) {
     <article className="group flex flex-col bg-white">
       <Link href={`/blog/${post.slug}`} className="mb-4 block">
         {post.featuredImage && (
-          <div className="relative aspect-video overflow-hidden">
+          <div className="relative aspect-video overflow-hidden rounded">
             <Image
               src={post.featuredImage}
               alt={post.title}
