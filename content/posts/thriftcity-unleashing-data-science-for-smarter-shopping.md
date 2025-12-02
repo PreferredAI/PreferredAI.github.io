@@ -2,15 +2,13 @@
 title: "ThriftCity: Unleashing Data Science for Smarter Shopping"
 date: "2024-02-21"
 author: "Darryl Ong"
-excerpt: "With the dream of chasing the best deals, we introduce to you ThriftCity, where data and technology meet your retail therapy needs."
+excerpt: "With the dream of chasing the best deals, we introduce to you ThriftCity, where data and technology meet your retail therapy needs."
 featuredImage: "/uploads/2024/02/banner_resized.jpg"
 categories: ["Announcement"]
 tags: []
 seoTitle: "ThriftCity: Unleashing Data Science for Smarter Shopping - Preferred.AI"
-seoDescription: "With the dream of chasing the best deals, we introduce to you ThriftCity, where data and technology meet your retail therapy needs."
+seoDescription: "With the dream of chasing the best deals, we introduce to you ThriftCity, where data and technology meet your retail therapy needs."
 ---
-
-*   [Announcement](https://preferred.ai/category/announcement/)
 
 # ThriftCity: Unleashing Data Science for Smarter Shopping
 
@@ -42,20 +40,25 @@ Your experiences matter. The feedback function refines our data, making ThriftCi
 
 ## **The Data Pipeline: Fueling Intelligence**
 
-At the core of ThriftCity lies a robust data pipeline—an intricate web of automated processes that fuels our platform. 
+At the core of ThriftCity lies a robust data pipeline—an intricate web of automated processes that fuels our platform.
 
-1.  **Data Retrieval:** Leveraging the abundance of online retail data, we collect product and pricing information from multiple sources and consolidate it into our central database.
-2.  **Data Processing:** Standardizing and preprocessing data is crucial for accurate comparison and matching. By harmonizing data from diverse retailers, we optimize compatibility for subsequent steps.
-3.  **Data Matching:** Employing machine learning techniques, we automate the comparison of products from different retailers, grouping them without manual intervention to facilitate seamless price comparison.
-4.  **Data Loading:** Once matched and processed, the data is loaded into structured formats, ready for consumption by our user-facing solution.
+1. **Data Retrieval:** Leveraging the abundance of online retail data, we collect product and pricing information from multiple sources and consolidate it into our central database.
+
+1. **Data Processing:** Standardizing and preprocessing data is crucial for accurate comparison and matching. By harmonizing data from diverse retailers, we optimize compatibility for subsequent steps.
+
+1. **Data Matching:** Employing machine learning techniques, we automate the comparison of products from different retailers, grouping them without manual intervention to facilitate seamless price comparison.
+
+1. **Data Loading:** Once matched and processed, the data is loaded into structured formats, ready for consumption by our user-facing solution.
 
 ## **Microservices Architecture: The Backbone**
 
 ThriftCity’s architecture is akin to a symphony of microservices from the data pipeline to the user-facing solution, each playing a crucial role:
 
-*   **Scalability**: Microservices scale independently. For heavy requests such as data processing and data matching.
-*   **Maintenance Efficiency**: Isolated microservices mean focused development and easier maintenance.
-*   **Interoperability**: APIs connect the dots. ThriftCity evolves harmoniously, integrating seamlessly with other services.
+- **Scalability**: Microservices scale independently. For heavy requests such as data processing and data matching.
+
+- **Maintenance Efficiency**: Isolated microservices mean focused development and easier maintenance.
+
+- **Interoperability**: APIs connect the dots. ThriftCity evolves harmoniously, integrating seamlessly with other services.
 
 # **Join Us!**
 
@@ -63,24 +66,3 @@ ThriftCity isn’t just a shopping assistant, it’s a data-driven companion. Wh
 
 Ready to explore? **Join our beta at [https://thriftcity.co](https://thriftcity.co/)** and drop us a message at **[hello@thriftcity.co](mailto:hello@thriftcity.co)** for further feedback and collaborations. Let’s shop smarter together!
 
-](https://preferred.ai/aaai-2019-in-hawaii/)
-
-    #### [Aloha, AAAI-2019](https://preferred.ai/aaai-2019-in-hawaii/)
-
-    March 9, 2019
-
-*   [![](/uploads/2018/05/vscnn_basemodel_architecture-e1528105019495.png)
-
-    ](https://preferred.ai/visual-sentiment-analysis/)
-
-    #### [Visual Sentiment Analysis](https://preferred.ai/visual-sentiment-analysis/)
-
-    May 2, 2018
-
-*   [![](/uploads/2022/12/new_orleans_convention_center.jpg)
-
-    ](https://preferred.ai/neurips-2022-in-new-orleans/)
-
-    #### [NeurIPS 2022 in New Orleans](https://preferred.ai/neurips-2022-in-new-orleans/)
-
-    December 16, 2022

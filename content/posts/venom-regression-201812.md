@@ -4,7 +4,7 @@ date: "2018-12-29"
 author: "Hady Lauw"
 excerpt: "Building on the success of the premiere of Preferred.AI-designed enrichment course on Web Data Extraction & Regression Analysis Using Java, we staged another run..."
 featuredImage: "/uploads/2018/12/venom-regression-201812-cover3.jpg"
-categories: ["Video", "Education"]
+categories: ["Education", "Video"]
 tags: []
 seoTitle: "Crash Course on Data Science Pipeline - Preferred.AI"
 seoDescription: "Building on the success of the premiere of Preferred.AI-designed enrichment course on Web Data Extraction & Regression Analysis Using Java, we staged another run..."
@@ -22,24 +22,7 @@ The course was densely informative, packed with hands-on exercises based on our 
 
 For an inside look, enjoy our photo slideshow.
 
-](https://preferred.ai/uai-2018-in-monterey/)
 
-    #### [UAI-2018 in Monterey](https://preferred.ai/uai-2018-in-monterey/)
+<iframe width="720" height="405" src="https://www.youtube.com/embed/LK-9u0HWjc8?feature=oembed" frameborder="0" allowfullscreen></iframe>
 
-    September 20, 2018
 
-*   [![](/uploads/2018/12/aaai19-tutorial-cover-2.png)
-
-    ](https://preferred.ai/aaai19-tutorial/)
-
-    #### [Recent Advances in Scalable Retrieval of Personalized Recommendations](https://preferred.ai/aaai19-tutorial/)
-
-    December 28, 2018
-
-*   [![](/uploads/2018/04/2018-03-06-17.05.32_spb_rooftop-e1528105099740.jpg)
-
-    ](https://preferred.ai/visiting-russia/)
-
-    #### [Visiting Russia](https://preferred.ai/visiting-russia/)
-
-    April 26, 2018

@@ -2,15 +2,13 @@
 title: "Visiting Russia"
 date: "2018-04-26"
 author: "Hady Lauw"
-excerpt: "Braving the depths of winter, Hady and Maksim visited Russia in late February to early March, when the temperature stayed below zero throughout.  Parks..."
+excerpt: "Braving the depths of winter, Hady and Maksim visited Russia in late February to early March, when the temperature stayed below zero throughout. Parks..."
 featuredImage: "/uploads/2018/04/2018-03-06-17.05.32_spb_rooftop-e1528105099740.jpg"
-categories: ["Video", "Travel", "Presentation"]
+categories: ["Presentation", "Travel", "Video"]
 tags: []
 seoTitle: "Visiting Russia - Preferred.AI"
-seoDescription: "Braving the depths of winter, Hady and Maksim visited Russia in late February to early March, when the temperature stayed below zero throughout.  Parks..."
+seoDescription: "Braving the depths of winter, Hady and Maksim visited Russia in late February to early March, when the temperature stayed below zero throughout. Parks..."
 ---
-
-*   [Presentation](https://preferred.ai/category/presentation/) / [Travel](https://preferred.ai/category/travel/) / [Video](https://preferred.ai/category/video/)
 
 # Visiting Russia
 
@@ -24,26 +22,3 @@ Our next visit was to the serenely beautiful Saint Petersburg.  Not only does t
 
 All in all, the trip was insightful and educational, in more ways than one!  We learnt tons, and got to know great people.  Looking forward to the next opportunity.
 
-![](/uploads/2018/04/2018-03-06-17.05.32_spb_rooftop.jpg)
-
-](https://preferred.ai/the-zen-of-comparisons/)
-
-    #### [The Zen of Comparisons](https://preferred.ai/the-zen-of-comparisons/)
-
-    December 12, 2019
-
-*   [![](/uploads/2020/08/adjacent_encoder_cover.jpg)
-
-    ](https://preferred.ai/neural-topic-modeling-for-document-networks-with-adjacent-encoder/)
-
-    #### [Neural Topic Modeling for Document Networks with Adjacent-Encoder](https://preferred.ai/neural-topic-modeling-for-document-networks-with-adjacent-encoder/)
-
-    August 19, 2020
-
-*   [![](/uploads/2021/07/azhar-j-t2hgHV1R7_g-unsplash.jpg)
-
-    ](https://preferred.ai/recsys21-tutorial/)
-
-    #### [Multi-Modal Recommender Systems: Hands-On Exploration](https://preferred.ai/recsys21-tutorial/)
-
-    July 5, 2021

@@ -10,8 +10,6 @@ seoTitle: "Visual Sentiment Analysis: A Need for Context - Preferred.AI"
 seoDescription: "Previously, we gave our readers a glance at visual sentiment analysis in an earlier blog post. The goal of the task was seeking the..."
 ---
 
-*   [Publication](https://preferred.ai/category/publication/)
-
 # Visual Sentiment Analysis: A Need for Context
 
 Previously, we gave our readers a glance at visual sentiment analysis in an earlier [blog post](https://preferred.ai/visual-sentiment-analysis/). The goal of the task was seeking the sentiment expressed in images, formulated as an image classification problem. In the first attempt, we gave an answer to the question of whether the pictures reflected the sentiment of the photographers.
@@ -44,24 +42,3 @@ Similarly, we apply the same procedure with a cluster of negative images and wou
 
 ![](/uploads/2019/02/vscnn_contrast2.jpg)
 
-](https://preferred.ai/a-quest-for-fast-personalized-recommendation-part-i/)
-
-    #### [A Quest for Fast Personalized Recommendation](https://preferred.ai/a-quest-for-fast-personalized-recommendation-part-i/)
-
-    November 10, 2020
-
-*   [![](/uploads/2019/02/Crawling_to_the_finish.jpg)
-
-    ](https://preferred.ai/guide-to-understanding-crawlers/)
-
-    #### [The Best Web Scraper for You: A Guide to Understanding Crawlers](https://preferred.ai/guide-to-understanding-crawlers/)
-
-    February 25, 2019
-
-*   [![](/uploads/2022/12/new_orleans_convention_center.jpg)
-
-    ](https://preferred.ai/neurips-2022-in-new-orleans/)
-
-    #### [NeurIPS 2022 in New Orleans](https://preferred.ai/neurips-2022-in-new-orleans/)
-
-    December 16, 2022

@@ -4,7 +4,7 @@ date: "2020-08-21"
 author: "Hady Lauw"
 excerpt: "Join us for TechFest 2020 by Preferred.AI! Our theme this year is Zooming In. Inside an innovative app is a cool AI algorithm. On..."
 featuredImage: "/uploads/2020/08/summer_internship_2020.jpg"
-categories: ["Presentation", "Announcement"]
+categories: ["Announcement", "Presentation"]
 tags: []
 seoTitle: "Zooming in on TechFest 2020 - Preferred.AI"
 seoDescription: "Join us for TechFest 2020 by Preferred.AI! Our theme this year is Zooming In. Inside an innovative app is a cool AI algorithm. On..."
@@ -14,12 +14,6 @@ seoDescription: "Join us for TechFest 2020 by Preferred.AI! Our theme this year 
 
 Join us for TechFest 2020 by [**Preferred.AI**](https://preferred.ai/about)! Our theme this year is **Zooming In**. Inside an innovative app is a cool AI algorithm. On showcase are a series of projects resulting from collaborations by [our researchers](https://preferred.ai/people/) and undergraduates of [SMU School of Information Systems](https://sis.smu.edu.sg/). See our demos and apps, try them out for yourselves, and discover the wonders of AI and ML technology in making everyday lives simpler and better.
 
-[**Brochure**](/uploads/2020/08/techfest2020_brochure.pdf)
-
-[**Spotlights**](https://www.youtube.com/playlist?list=PL291RJWFNQGLnc9Vs1xTJdSMeg0XybJHA)
-
-[**Register Now**](https://smu-sg.zoom.us/webinar/register/WN_-O9OMlmURMmcdFFRc9_tmQ)
-
 **Friday 11 September 2020 via Zoom Webinar**
 
 **Overview** (3.30pm to 4.00pm)
@@ -27,44 +21,27 @@ Get to know us and our research activities, as well as how you can get involved
 
 **Session I – Sensing** (4.00pm to 5.00pm)
 
-*   **FaceInMotion** – [Understanding human emotions via facial expression in real time](https://faceinmotion.preferred.ai)
-*   **MindReader** – [Your personalized news recommendation engine](https://mindreader.preferred.ai)
-*   **VisConcepts** – [Image search with visual concepts](https://visconcepts.preferred.ai)
+- **FaceInMotion** – [Understanding human emotions via facial expression in real time](https://faceinmotion.preferred.ai)
+
+- **MindReader** – [Your personalized news recommendation engine](https://mindreader.preferred.ai)
+
+- **VisConcepts** – [Image search with visual concepts ](https://visconcepts.preferred.ai)
 
 **Session II – Recommending** (5.00pm to 6.00pm)
 
-*   **Butler** – [Personal shopping assistant at your fingertips](https://butler.preferred.ai/)
-*   **SnappyBuyer** – [Make well-informed decisions in a snap](https://snappybuyer.preferred.ai)
-*   **ThriftCity** – [Finding the best offers](https://thriftcity.preferred.ai)
+- **Butler** – [Personal shopping assistant at your fingertips](https://butler.preferred.ai/)
+
+- **SnappyBuyer** – [Make well-informed decisions in a snap](https://snappybuyer.preferred.ai)
+
+- **ThriftCity** – [Finding the best offers](https://thriftcity.preferred.ai)
 
 **Session III – Augmenting** (6.00pm to 7.00pm)
 
-*   **Slide++** – [Power your academic slides](https://slideplusplus.preferred.ai)
-*   **AutoExpander** – [Putting more words into short texts](https://autoexpander.preferred.ai)
-*   **Neural Network Lab** – [Deep learning in your browser](https://nnlab.preferred.ai)
+- **Slide++** – [Power your academic slides](https://slideplusplus.preferred.ai)
 
-[**Register Now!**](https://smu-sg.zoom.us/webinar/register/WN_-O9OMlmURMmcdFFRc9_tmQ)
+- **AutoExpander** – [Putting more words into short texts](https://autoexpander.preferred.ai)
+
+- **Neural Network Lab** – [Deep learning in your browser](https://nnlab.preferred.ai)
 
 This event is co-organized by [SMU School of Information Systems](https://sis.smu.edu.sg/) and the [Singapore Chapter of ACM SIGKDD](https://kdd.sg). As this is an online event, there will be no reception, but there will be opportunities to win a limited number of food vouchers (join the event to find out how).
 
-](https://preferred.ai/the-web-conference-2024-in-singapore/)
-
-    #### [The Web Conference 2024 in Singapore](https://preferred.ai/the-web-conference-2024-in-singapore/)
-
-    May 31, 2024
-
-*   [![](/uploads/2020/08/sunglasses.jpg)
-
-    ](https://preferred.ai/visual-sentiment-analysis-a-need-of-context/)
-
-    #### [Visual Sentiment Analysis: A Need for Context](https://preferred.ai/visual-sentiment-analysis-a-need-of-context/)
-
-    August 19, 2020
-
-*   [![](/uploads/2020/11/download-1.jpg)
-
-    ](https://preferred.ai/a-quest-for-fast-personalized-recommendation-part-i/)
-
-    #### [A Quest for Fast Personalized Recommendation](https://preferred.ai/a-quest-for-fast-personalized-recommendation-part-i/)
-
-    November 10, 2020

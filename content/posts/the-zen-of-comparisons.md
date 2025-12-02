@@ -10,11 +10,9 @@ seoTitle: "The Zen of Comparisons - Preferred.AI"
 seoDescription: "During the teaching appointment at Montana State University, Robert M. Pirsig, the author of “Zen and the Art of Motorcycle Maintenance“, conducted a following..."
 ---
 
-*   [Education](https://preferred.ai/category/education/)
-
 # The Zen of Comparisons
 
-During the teaching appointment at Montana State University, [Robert M. Pirsig](https://en.wikipedia.org/wiki/Robert_M._Pirsig), the author of “[Zen and the Art of Motorcycle Maintenance](https://en.wikipedia.org/wiki/Zen_and_the_Art_of_Motorcycle_Maintenance)“, conducted a following “experiment”. He selected a couple of students’ essays: “the first was a rambling, disconnected thing with interesting ideas” and “\[t\]he second was a magnificent piece”. Then he asked his students to express their preferences, whether the first essay was better or the second. The students were not aware of the Pirsig’s judgement, however, the outcome coincided, and the second essay won the votes. But why did it happen?
+During the teaching appointment at Montana State University, [Robert M. Pirsig](https://en.wikipedia.org/wiki/Robert_M._Pirsig), the author of “[Zen and the Art of Motorcycle Maintenance](https://en.wikipedia.org/wiki/Zen_and_the_Art_of_Motorcycle_Maintenance)“, conducted a following “experiment”. He selected a couple of students’ essays: “the first was a rambling, disconnected thing with interesting ideas” and “[t]he second was a magnificent piece”. Then he asked his students to express their preferences, whether the first essay was better or the second. The students were not aware of the Pirsig’s judgement, however, the outcome coincided, and the second essay won the votes. But why did it happen?
 
 Nominally, we would say the reason is a better quality, and the process of judgement might look seamless to us. However, in a system as complex as an essay, the quality is comprised of many small bits, like style, vocabulary, strength of argument, etc. Although they are still sometimes are hard to notice or even to formalize, we can employ this idea of multifaceted quality to explain some parts of the students’ decision.
 
@@ -22,7 +20,7 @@ The Pirsig’s experiment is remarkably operationalizable and can be laid out in
 
 In Preferred.AI, we designed [CompareLDA](http://www.hadylauw.com/publications/aaai19b.pdf), a topic model which looks for the word patterns consistent with the pairwise comparisons. [Latent Dirichlet allocation](https://en.wikipedia.org/wiki/Latent_Dirichlet_allocation) (LDA) is a statistical model that is often used to discover latent topics in a text collection. For example, the content of a newspapers is usually composed of several topics, like politics, finance, sports, technology, etc. and the topics identify the set of words used to express them. Thus, finance can be described by “money”, “bonds”, “taxes”, technology by “artificial”, “innovation”, “quantum”, and so on. CompareLDA takes a step further and seeks for the topics that are associated with document comparisons. For example, in case of essays, these could be topics associated with some peculiar arguments.
 
-Let’s look at how CompareLDA works in practice and whether we can derive some sensible hypothesis about essay quality. We use student-written (10th grade) persuasive essays. The assignment was to write a persuasive essay to a newspaper reflecting the student vies on censorship in libraries. We compared the essays based on their grades: the higher the grade is, the better the essay quality is. The topics are represented by the most probable words associated with them.
+Let’s look at how CompareLDA works in practice and whether we can derive some sensible hypothesis about essay quality. We use student-written (10^th^ grade) persuasive essays. The assignment was to write a persuasive essay to a newspaper reflecting the student vies on censorship in libraries. We compared the essays based on their grades: the higher the grade is, the better the essay quality is. The topics are represented by the most probable words associated with them.
 
 Not surprisingly, better essays tend to be are associated with the topic of censorship, library, and society, which is essentially the main line of the essays. Here is the output of CompareLDA, that captures it:
 
@@ -58,24 +56,3 @@ CompareLDA helps us to explore this grading process from the perspective of word
 
 The story of quality and comparisons does not end here, but rather is developed from computational perspective. I hope more exciting discussions are yet to come.
 
-](https://preferred.ai/guide-to-understanding-crawlers/)
-
-    #### [The Best Web Scraper for You: A Guide to Understanding Crawlers](https://preferred.ai/guide-to-understanding-crawlers/)
-
-    February 25, 2019
-
-*   [![](/uploads/2019/07/group.jpg)
-
-    ](https://preferred.ai/techfest2019/)
-
-    #### [TechFest 2019](https://preferred.ai/techfest2019/)
-
-    July 31, 2019
-
-*   [![](/uploads/2020/08/sunglasses.jpg)
-
-    ](https://preferred.ai/visual-sentiment-analysis-a-need-of-context/)
-
-    #### [Visual Sentiment Analysis: A Need for Context](https://preferred.ai/visual-sentiment-analysis-a-need-of-context/)
-
-    August 19, 2020

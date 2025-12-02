@@ -4,7 +4,7 @@ date: "2018-12-28"
 author: "Andrew Le"
 excerpt: "Andrew and Hady will be delivering a tutorial at the AAAI-19 conference to take place on Monday, January 28, 2019 from 8:30am to 12:30pm..."
 featuredImage: "/uploads/2018/12/aaai19-tutorial-cover-2.png"
-categories: ["Presentation", "Announcement"]
+categories: ["Announcement", "Presentation"]
 tags: []
 seoTitle: "Recent Advances in Scalable Retrieval of Personalized Recommendations - Preferred.AI"
 seoDescription: "Andrew and Hady will be delivering a tutorial at the AAAI-19 conference to take place on Monday, January 28, 2019 from 8:30am to 12:30pm..."
@@ -20,22 +20,19 @@ Top-K recommendation seeks to deliver a personalized recommendation list of K it
 
 In this tutorial, we present the following:
 
-*   We provide a theoretical justification as well as empirical demonstration of the potential issues arising from incompatibility of the inner product search and indexing-based retrieval of recommendations.
-*   We summarize different approaches in the literature that attempt to build fast and accurate retrieval systems for personalized recommendations, including building natively indexable models for better retrieval accuracy.
-*   Finally, we conduct a hands-on session on using various indexing data structures for efficient and accurate recommendation retrieval.
+- We provide a theoretical justification as well as empirical demonstration of the potential issues arising from incompatibility of the inner product search and indexing-based retrieval of recommendations.
+
+- We summarize different approaches in the literature that attempt to build fast and accurate retrieval systems for personalized recommendations, including building natively indexable models for better retrieval accuracy.
+
+- Finally, we conduct a hands-on session on using various indexing data structures for efficient and accurate recommendation retrieval.
 
 ### Syllabus
 
-1.  **Matrix Factorization (MF) Recommendation Retrieval as Similarity Search Problem** (Duration: 45 mins)
-    *   Two phases of a matrix factorization-based recommender system
-    *   Linear scanning is not scalable for real-time applications
-2.  **Approaches for Scalable Personalized Recommendation Retrieval** (Duration: 105 mins)
-    *   Approximate maximum inner product search
-    *   Indexable representation learning
-    *   Discrete representations
-3.  **Hands-on Session** (Duration: 60 mins)
-    *   Scalable recommendation retrieval with indexing
-    *   Building an indexable representation model
+1. **Matrix Factorization (MF) Recommendation Retrieval as Similarity Search Problem** (Duration: 45 mins) Two phases of a matrix factorization-based recommender systemLinear scanning is not scalable for real-time applications
+
+1. **Approaches for Scalable Personalized Recommendation Retrieval** (Duration: 105 mins) Approximate maximum inner product searchIndexable representation learningDiscrete representations
+
+1. **Hands-on Session** (Duration: 60 mins) Scalable recommendation retrieval with indexingBuilding an indexable representation model
 
 **The materials are available at [https://code.preferred.ai/recommendation-retrieval](https://code.preferred.ai/recommendation-retrieval)**
 
@@ -60,3 +57,4 @@ To researchers and students, the tutorial provides a foundation on the problem o
 ![](/uploads/2018/12/photo_hadylauw.png)
 
 **[Hady W. Lauw](http://www.hadylauw.com/)** is an Associate Professor at SMU School of Information Systems. He leads the Preferred. AI project, whose research spans artificial intelligence and machine learning focusing on preferences and recommendations. His research is supported by a Singapore National Research Foundation Fellowship. He received his PhD from Nanyang Technological University in 2008.
+

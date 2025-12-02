@@ -1,15 +1,13 @@
 ---
 title: "ThriftCity"
-date: "2018-06-29"
-author: "Preferred.AI Team"
-excerpt: ""
-featuredImage: "/uploads/2018/06/CJcube.png"
-categories: []
-tags: []
-seoTitle: "ThriftCity - Preferred.AI"
-seoDescription: ""
+permalink: "/thriftcity/"
 ---
 
-## ThriftCity
+# ThriftCity
 
 ![](/uploads/2018/06/CJcube.png)
+
+
+<iframe width="720" height="405" src="https://www.youtube.com/embed/nH3QgFuy--c?feature=oembed" frameborder="0" allowfullscreen></iframe>
+
+

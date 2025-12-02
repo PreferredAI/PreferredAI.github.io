@@ -4,7 +4,7 @@ date: "2018-11-18"
 author: "Hady Lauw"
 excerpt: "On 2 November 2018, Maksim defended his PhD dissertation entitled “Comparison Mining from Text” before the dissertation committee at SMU School of Information Systems...."
 featuredImage: "/uploads/2018/11/photo_20181102a.jpg"
-categories: ["Presentation", "Defense"]
+categories: ["Defense", "Presentation"]
 tags: []
 seoTitle: "In Defense of Comparisons - Preferred.AI"
 seoDescription: "On 2 November 2018, Maksim defended his PhD dissertation entitled “Comparison Mining from Text” before the dissertation committee at SMU School of Information Systems...."
@@ -12,7 +12,7 @@ seoDescription: "On 2 November 2018, Maksim defended his PhD dissertation entitl
 
 # In Defense of Comparisons
 
-On 2 November 2018, [Maksim](/team/maksim/) defended his PhD dissertation entitled “[Comparison Mining from Text](https://sis.smu.edu.sg/node/30516?newsletter)” before the dissertation committee at [SMU School of Information Systems](https://sis.smu.edu.sg/).
+On 2 November 2018, [Maksim](https://preferred.ai/team/maksim/) defended his PhD dissertation entitled “[Comparison Mining from Text](https://sis.smu.edu.sg/node/30516?newsletter)” before the dissertation committee at [SMU School of Information Systems](https://sis.smu.edu.sg/).
 
 In his own words:
 
@@ -20,34 +20,11 @@ In his own words:
 
 His dissertation aims at building a comparison mining system.  The identification of comparisons in opinionated text serves as the basis for mining comparative relations in terms of which entity is preferred over another.  In turn, these comparative relations may reveal several distinct preference groups, which may rank entities differently.  Finally, by aligning topics discovered from text corpora to the comparisons, we can explain why some entities may be preferred.
 
-![](/uploads/2018/11/photo_20181102a.jpg)
-
-](/uploads/2018/11/photo_20181102a.jpg)
-
-Maksim providing an overview of the components of his dissertation
-
 The dissertation chapters are all buttressed by publications in the top venues in natural language processing ([ACL’15](http://www.hadylauw.com/publications/acl15.pdf), [ACL’18](http://www.hadylauw.com/publications/acl18.pdf)), text mining ([CIKM’14](http://www.hadylauw.com/publications/cikm14a.pdf), [CIKM’16](http://www.hadylauw.com/publications/cikm16.pdf), [TKDE’17](http://www.hadylauw.com/publications/tkde17.pdf)), and artificial intelligence (AAAI’19).  With such prolificness, no wonder he was awarded [SMU Presidential Doctoral Fellowships](https://graduatestudies.smu.edu.sg/phd/singapore-management-university-smu-presidential-doctoral-fellowships) twice in the consecutive years of 2017 and 2018.
-
-![](/uploads/2018/11/photo_20181102b.jpg)
-
-](/uploads/2018/11/photo_20181102b.jpg)
-
-A summary list of Maksim’s publications up to defense
 
 On a nostalgic note, it has been an amazing journey since he first joined the group as a research assistant in 2013.  The journey’s twists and turns culminated in the PhD defense taking place in record time, less than 3.5 years since he was officially enrolled in the [SMU PhD program](https://sis.smu.edu.sg/programmes/PhD/overview).
 
-![](/uploads/2018/11/photo_20131212.jpg)
-
-](/uploads/2018/11/photo_20131212.jpg)
-
-Group outing in December 2013 (clockwise from left: Loc, Hady, Maksim, Thuy and Tuan Le, Trong Nguyen, Son)
-
 Conquering defense is a momentous victory that calls for a celebration.  What better way to celebrate the setting of a high bar than going to a rooftop bar?
 
-![](/uploads/2018/11/photo_20181102.jpg)
+Congratulations [Maksim](https://preferred.ai/team/maksim/) for a job well done!
 
-](/uploads/2018/11/photo_20181102.jpg)
-
-Group celebration in November 2018 (clockwise from left: Hoang, Trong Le, Maksim, Ween Jiann, Jingyao, Chong Cher, Zhang Ce, Hady, Andrew, Tuan Truong, Aghiles)
-
-Congratulations [Maksim](/team/maksim/) for a job well done!

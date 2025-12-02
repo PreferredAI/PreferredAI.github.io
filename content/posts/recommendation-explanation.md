@@ -4,7 +4,7 @@ date: "2022-11-30"
 author: "Hady Lauw"
 excerpt: "On November 29, 2022, Hoang successfully defended his dissertation entitled “Mining Product Textual Data for Recommendation Explanations”. While we were then coming out of..."
 featuredImage: "/uploads/2023/05/2022-11-29-11.14.34.jpg"
-categories: ["Presentation", "Defense"]
+categories: ["Defense", "Presentation"]
 tags: []
 seoTitle: "All Good Recommendations Come with an Explanation - Preferred.AI"
 seoDescription: "On November 29, 2022, Hoang successfully defended his dissertation entitled “Mining Product Textual Data for Recommendation Explanations”. While we were then coming out of..."
@@ -18,8 +18,6 @@ While we were then coming out of post-Covid era, the defense was still conducted
 
 ![](/uploads/2023/05/2022-11-29-11.13.17.jpg)
 
-Hoang explaining comparative recommendation explanation (pun intended)
-
 Hoang’s thesis looked into various means for deriving explanations for recommendations from textual reviews. In particular, his first work on synthesizing an explanation from multiple reviews won a Distinguished Paper Award at IJCAI-20.
 
 ![](/uploads/2023/05/Distinguished_Paper-Le.jpg)
@@ -28,36 +26,11 @@ Subsequently, his thesis also discussed alternative types of explanations, such 
 
 ![](/uploads/2023/05/photo_20180530.jpg)
 
-First group dinner that Hoang joined at TungLok XiHe, Orchard Central
-
 Hoang came from a big family. It is no wonder that ever since he joined the Preferred.AI family in January 2018, he also knew how to take care of others, including organising the running group.
 
 ![](/uploads/2023/05/2022-11-29-21.47.36.jpg)
-
-Post-defense group celebration with dinner and drinks at the Naughty Chef, Shenton Way
 
 And run indeed he did. He probably clocked the most kilometers of anyone during a PhD candidature. As Hady once remarked, “We all know what happens when Hoang sees a road. Not one for stopping, he just keeps going.”
 
 Run Hoang, run!
 
-](https://preferred.ai/the-zen-of-comparisons/)
-
-    #### [The Zen of Comparisons](https://preferred.ai/the-zen-of-comparisons/)
-
-    December 12, 2019
-
-*   [![](/uploads/2018/10/iprep_regression.jpg)
-
-    ](https://preferred.ai/venom-regression-iprep/)
-
-    #### [Enrichment Course on Web Data Extraction and Regression Analysis](https://preferred.ai/venom-regression-iprep/)
-
-    October 11, 2018
-
-*   [![](/uploads/2019/06/item_context_post2-e1560861332106.png)
-
-    ](https://preferred.ai/context-matters-why-arent-you-leveraging-items-context-to-boost-your-recommender-model/)
-
-    #### [Context Matters: Why Aren’t You Leveraging Items’ Context to Boost Your Recommender Model?](https://preferred.ai/context-matters-why-arent-you-leveraging-items-context-to-boost-your-recommender-model/)
-
-    June 18, 2019

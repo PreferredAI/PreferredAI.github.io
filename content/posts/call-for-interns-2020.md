@@ -12,14 +12,14 @@ seoDescription: "Preferred.AI is calling for internship applications from curren
 
 # Call for Interns 2020
 
-[Preferred.AI](/people/) is calling for internship applications from current students of [SMU](https://www.smu.edu.sg/) to work with us during the summer (May to July 2020) on a number of cool projects! Fruitful projects will be showcased at our upcoming **TechFest 2020** (our highly-attended [2019 event](/techfest2019/) was featured in the [SMU blog](https://blog.smu.edu.sg/doctoral/smu-techfest-2019-preferred-ai-artificial-intelligence/)). For a taste of what our 2019 interns did, go to the **video** at the end of this post.
+[Preferred.AI](https://preferred.ai/people/) is calling for internship applications from current students of [SMU](https://www.smu.edu.sg/) to work with us during the summer (May to July 2020) on a number of cool projects! Fruitful projects will be showcased at our upcoming **TechFest 2020** (our highly-attended [2019 event](https://preferred.ai/techfest2019/) was featured in the [SMU blog](https://blog.smu.edu.sg/doctoral/smu-techfest-2019-preferred-ai-artificial-intelligence/)). For a taste of what our 2019 interns did, go to the **video** at the end of this post.
 
 Sample projects on offer for the 2020 summer are listed below. Keep checking this space for new projects on offer.
 
 **A. FaceInMotion 2: Building an AI that can understand human emotion**
 Build an AI that can understand human emotion. Extend FaceInMotion, a system that focuses on analysing human emotion from facial expressions using state-of-the-art computer vision and machine learning algorithms.
 
-**B. Butler 2: Conversational recommender system with explanations**
+**B. Butler 2: Conversational recommender system with explanations** 
 Develop and investigate different explanations for an interactive conversational recommender system, which would generate natural language explanations for why a certain product is recommended.
 
 **C. MindReader 2: Unsupervised topic learning for news recommendation**
@@ -41,4 +41,9 @@ Given short text as an input (e.g., less than 100 words), develop a machine lear
 
 See what our 2019 interns did last summer in the video below:
 
+
+<iframe width="720" height="405" src="https://www.youtube.com/embed/lDbi3AHHd8o?feature=oembed" frameborder="0" allowfullscreen></iframe>
+
+
 Do you see yourself in this year’s video? Act now!
+
