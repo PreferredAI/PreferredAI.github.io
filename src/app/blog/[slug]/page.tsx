@@ -85,26 +85,6 @@ export default async function PostPage({
         className="prose prose-lg max-w-none"
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />
-
-      {post.tags.length > 0 && (
-        <div className="mt-12 border-t border-gray-200 pt-8">
-          <div className="flex flex-wrap gap-2">
-            <span className="font-semibold text-gray-700">Tags:</span>
-            {post.tags.map((tag) => {
-              const tagSlug = tag.toLowerCase().replace(/\s+/g, "-");
-              return (
-                <Link
-                  key={tagSlug}
-                  href={`/tag/${tagSlug}`}
-                  className="text-blue-600 hover:text-blue-800"
-                >
-                  #{tag}
-                </Link>
-              );
-            })}
-          </div>
-        </div>
-      )}
     </article>
   );
 }

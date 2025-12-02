@@ -1,8 +1,3 @@
----
-title: "FoodRecce"
-permalink: "/foodrecce/"
----
-
 # FoodRecce
 
 A common dilemma faced by many Singaporeans is deciding on where and what to eat for a particular meal. With a great diversity of options in Singapore, problems such as the difficulties in discovering food choices around a particular locality are commonly faced. Researching on food places are a great hassle with a great bulk of time spent to find information online due to inadequate organised information available.
@@ -14,4 +9,3 @@ FoodRecce is a Food Recommendation application aimed at bringing convenience to 
 - [](https://preferred.ai/wp-content/uploads/2018/06/foodrecce_snapshot2-575x1024.png)Restaurant Details Display
 
 ![](/uploads/2018/06/foodrecce_contributors.jpg)
-
