@@ -45,3 +45,5 @@ Basic knowledge of Python, machine learning and recommender systems.
 
 **Speakers**
 
+![](/uploads/2018/04/ghiles.png)
+

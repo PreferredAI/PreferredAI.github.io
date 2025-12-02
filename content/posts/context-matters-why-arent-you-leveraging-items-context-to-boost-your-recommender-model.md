@@ -40,7 +40,7 @@ There are several ways you can incorporate item context into personalized recomm
 
 To empirically assess the impact of item context on personalized recommendation, we benchmark C2PF with Bayesian Poisson Factorization (PF)—corresponding to C2PF without items’ context. We consider the Amazon Clothing dataset, which comes with the *Also-Viewed* lists treated as items’ context in our case. We measure the recommendation accuracy using Normalized Discount Cumulative Gain (NDCG), Mean Reciprocal Rank (MRR), Precision, and Recall.
 
-![](/uploads/2019/06/res_c2pf_clothing.png)
+![Average recommendation accuracy.](/uploads/2019/06/res_c2pf_clothing.png)
 
 As it is clear from the above table the performance improvement of C2PF over PF is substantial and quite impressive. Interestingly, a closer look at the above results, see [C2PF paper](https://78462f86-a-69ea2357-s-sites.googlegroups.com/a/hadylauw.com/www/publications/ijcai18b.pdf?attachauth=ANoY7cojqxf7FWpHl02yAza3EPHAErNZtPQr0SSTvoyVwsdi6A5sJzXe9MgYjV8s1PfCScwxSt7_mtwx7GmjTASn9Kmn966z0ioymxsgjdf_GIOvrw_lru9ER2ngSBtLB6MEMNii-KIah8psAaUt83DE3ee9LaMORSqvmuu2PwdLvdcYJygVIHzs0q8yMJ3ozeY6JqpcS7TSh20MCPSzXhUBXH2L5YnZGA%3D%3D&attredirects=0), reveals that C2PF offers the most improvement on users with few ratings, suggesting that item context helps in generalizing users’ preferences to other items of similar aspect.
 

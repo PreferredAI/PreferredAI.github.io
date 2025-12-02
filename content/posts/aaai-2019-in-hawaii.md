@@ -26,7 +26,7 @@ On Jan 28, [Andrew](https://preferred.ai/team/andrew/) and [Hady](https://prefer
 
 On Jan 30, [Tuan](https://preferred.ai/team/tuan/) presented the spotlight for our paper “[VistaNet: Visual Aspect Attention Network for Multimodal Sentiment Analysis](http://www.hadylauw.com/publications/aaai19a.pdf)” that showed the efficacy of review images in helping to identify the textual passages that would be useful for sentiment analysis. The [implementation](https://github.com/PreferredAI/vista-net) is now available.
 
-![](/uploads/2019/03/aaai19-vistanet.jpg)
+![Hady and Tuan at the poster session for VistaNet](/uploads/2019/03/aaai19-vistanet.jpg)
 
 On Jan 31, [Maksim](https://preferred.ai/team/maksim/) gave the spotlight on our paper “[CompareLDA: A Topic Model for Document Comparison](http://www.hadylauw.com/publications/aaai19b.pdf)“, emphasizing that when comparison was a key property, a topic model supervised by pairwise comparisons such as CompareLDA would be more effective. The [implementation](https://github.com/PreferredAI/compare-lda) is also now available.
 

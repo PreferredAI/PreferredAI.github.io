@@ -18,7 +18,7 @@ Here in Preferred.AI, much of our work involves processing and manipulating data
 
 One of our favorite ways to collect data from the web is with our very own [Venom](https://github.com/PreferredAI/venom) web crawler, and we often store the output in a CSV file, as shown below.
 
-![](/uploads/2019/04/icecream_sample_trunc.png)
+![Text within icecream.csv](/uploads/2019/04/icecream_sample_trunc.png)
 
 Now that we have collected all this data, how do we make use of it? Typically, we use large datasets for the training of a mathematical model, which calculates an output through a learnt combination of its input variables. Such models, once trained, can then used to predict results from arbitrary inputs. Before we begin to construct the model, however, we typically find it useful to conduct an initial data exploration. This step involves understanding the relations between various variables in the dataset, which then allows us to create models that better fit the dataset. CSVPL simplifies such data exploration tasks, allowing us to conduct them quickly through a simple API.
 

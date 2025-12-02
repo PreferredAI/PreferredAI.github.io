@@ -18,7 +18,7 @@ Text documents are usually linked to one another. For example, academic papers c
 
 Adjacent-Encoder is built on top of Auto-Encoder described in Figure 1(a), a three-layer neural network, where **d**** **is an input document, we assume a Bag-Of-Words (BOW) representation. Here **h** can be thought of as the topic representation, and **W** plays the role of a topic-word association matrix.
 
-![](/uploads/2020/08/image-4.png)
+![Figure 1: Comparison between Auto-Encoder and Adjacent-Encoder](/uploads/2020/08/image-4.png)
 
 Documents are often linked to one another in a network structure, such as paper citation network and Web page hyperlink network, as illustrated in Figure 1(b). Two cited papers may come from the same research topic, linked web pages could also contain similar content, etc. Motivated by this inspiration, in our research we discover that it is possible to use topics of one document (academic paper, web page, etc.) to reconstruct the observed content of its adjacent neighbours in the network. Figure 1(a) and (b) visually contrast the difference between Auto-Encoder and our model. Adjacent-Encoder is able to capture the case where two adjacent documents are different in observed content, but consistent in internal latent topics. Thus, the learned topics are more robust and can better group related words.
 
@@ -26,11 +26,11 @@ Documents are often linked to one another in a network structure, such as paper 
 
 For clarity, we only present the comparison against Auto-Encoder to illustrate the effect of incorporating networks. Since documents from the same category tend to reveal similar topics, we make an evaluation of document classification on ML paper citation network in Figure 2.
 
-![](/uploads/2020/08/image-5.png)
+![Figure 2: Document classification accuracy with different number of topics.](/uploads/2020/08/image-5.png)
 
 We then apply t-SNE to visualize the learned topics and colour the documents using their categories. Figure 3 shows that Adjacent-Encoder can better group related documents separate different categories.
 
-![](/uploads/2020/08/image-6.png)
+![Figure 3: T-SNE visualization of topics.](/uploads/2020/08/image-6.png)
 
 **Conclusion**
 

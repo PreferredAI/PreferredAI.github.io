@@ -20,7 +20,7 @@ An established and prevalent technique for personalized recommendation is collab
 
 - ***Retrieval***: given the output vectors from the learning phase, to arrive at a personalized recommendation list for customer ***u***, we need to identify the top-*K* items in ***I*** that have the highest inner product scores to ***x_u_***. Figure 1 illustrates the pipeline of top-*K* MF recommendation retrieval, in which ***Y***  denotes the item matrix where each row represents an item vector.
 
-![](/uploads/2020/09/mf-based-recommendation-retrieval-1.png)
+![Figure 1: Top-K Retrieval of Matrix Factorization Models](/uploads/2020/09/mf-based-recommendation-retrieval-1.png)
 
 The challenge of the *learning* phase is how to design effective algorithms that can learn from the data at the scale of millions of customers and items. This problem has been studied extensively in the research literature. On the other hand, the challenge of the *retrieval* phase is *speed,* due to the real-time nature of the task: *upon the arrival of a targeted customer* *u*, the system needs to quickly generate top-*K* items with highest inner product scores to ***x_u_*** be recommended for *u*.
 
@@ -36,7 +36,7 @@ As top-*K* MF recommendation retrieval can be considered as top-*K* similarity 
 
 Figure 2 depicts two steps of a top-*K* recommender system with the aid of indexing structures:
 
-![](/uploads/2020/09/indexing-for-MF-recommendation-retrieval-1.png)
+![Figure 2: Indexing Approach for Efficient Top-K Retrieval](/uploads/2020/09/indexing-for-MF-recommendation-retrieval-1.png)
 
 - **Index construction**: process and store the item vectors *Y* in a data structure (e.g., hash tables, binary search trees, etc.) so that similar item vectors are stored closely in the data structure (e.g., on the same buckets of the hash tables or the same leaf nodes of the binary search tree. etc.).
 

@@ -36,7 +36,7 @@ Each type of crawler serves a different purpose.. To understand which crawler is
 
 If your answer is centered around building a [search](https://en.wikipedia.org/wiki/Web_search_engine)[ ](https://en.wikipedia.org/wiki/Web_search_engine)[engine](https://en.wikipedia.org/wiki/Web_search_engine) or a full [archival](https://en.wikipedia.org/wiki/Web_archiving) of a website, then a general-purpose crawler would be a suitable choice. Typically, a general-purpose crawler will continuously follow every link found on a page and this repeats until there are no more unique links left to crawl. Although some crawlers allow you to restrict the domain or the file type, the process is generally unmanaged and unordered.
 
-![](/uploads/2019/01/general-purpose-crawling.png)
+![Example of general purpose crawling](/uploads/2019/01/general-purpose-crawling.png)
 
 General-purpose crawler also retains raw content (as-is) or have generic parsers that extract some modality of information, for example, a parser that extracts all text on a page. The contents are then stored to the filesystem or a database and are indexed if searchability is required. At the end of the crawl, you will gain a complete but unstructured collection of pages.
 
@@ -46,7 +46,7 @@ Some examples of open-sourced general-purpose crawlers include:
 
 - [Heritrix](https://github.com/internetarchive/heritrix3) – extensible, web-scale, archival-quality web crawler.
 
-![](/uploads/2019/01/web-data.jpeg)
+![Fiber optics internet (source: torange.com)](/uploads/2019/01/web-data.jpeg)
 
 ### Focused crawler
 
@@ -110,13 +110,13 @@ To keep the comparison fair, we set the maximum number of connections to eight (
 
 We passed 10,000 URLs to each crawler and averaged the results for two tests.
 
-![](/uploads/2019/01/benchmark-10k.png)
+![Time taken for 10,000 requests](/uploads/2019/01/benchmark-10k.png)
 
 Unfortunately, pyspider took too long to run and we decided to abandon the test at the five-minute mark. We can see that crawlers written in JAVA seem to perform well and are much faster than those in Python when ran directly from the command line. Much of this speed difference is due to [GIL](https://wiki.python.org/moin/GlobalInterpreterLock), which restricts a Python instance to a single processor. Luckily, some developers of Python crawlers provide an additional crawling server to make full use of a multiprocessor system, but this requires some set-up which might be tedious for newer users.
 
 To show that [asynchronous](https://en.wikipedia.org/wiki/Asynchronous_procedure_call) fetchers can have a speed improvement given the same amount of threads, we chose to pit Webmagic (top synchronous crawler tested) against Venom (top asynchronous crawler tested). We doubled the allowed maximum connections while keeping the number of threads constant. This test was ran twice and had their averages taken.
 
-![](/uploads/2019/01/benchmark-8t.png)
+![Time taken for 10,000 requests with 8 threads but different number of max connections](/uploads/2019/01/benchmark-8t.png)
 
 ##### Memory footprint
 

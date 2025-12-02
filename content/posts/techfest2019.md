@@ -77,3 +77,51 @@ Click each title above for the respective slides. Video recordings of the talks 
 
 #### **Organized by:**
 
+![Hady Lauw](/uploads/2018/12/photo_hadylauw.png)
+
+![Chia Chong Cher](/uploads/2018/06/headshot-square.png)
+
+![Tran Thanh Binh](/uploads/2019/03/ThanhBinh_TRAN.jpeg)
+
+![Hee Ming Shan](/uploads/2019/07/ming-shan.jpg)
+
+![Aghiles Salah](/uploads/2018/04/ghiles.png)
+
+![Zhang Ce](/uploads/2018/10/张策的帅照.png)
+
+![Abhyuday Samadder](/uploads/2019/07/techfest.jpg)
+
+![Liu Ziyuan](/uploads/2019/07/techfest-resized.png)
+
+![Maksim Tkachenko](/uploads/2019/07/max.png)
+
+![Lee Ween Jiann](/uploads/2018/04/Potrait-2.jpg)
+
+![Aw Jiayu](/uploads/2019/08/jiayu.jpg)
+
+![Lyu Cheng](/uploads/2019/07/download.jpg)
+
+![Andrew Le Duy Dung](/uploads/2018/04/Andrew.jpg)
+
+![Darryl Ong](/uploads/2019/06/dp_400-1.jpg)
+
+![Cao Wanyue](/uploads/2019/07/Wanyue_photo.jpg)
+
+![Ngoh Yi Long](/uploads/2019/07/yilong.png)
+
+![Truong Quoc Tuan](/uploads/2018/12/photo_tuantruong.jpg)
+
+![Guo Jingyao](/uploads/2018/04/Jingyao.jpg)
+
+![Cheryl Lim Wei Lin](/uploads/2019/07/cheryl.png)
+
+![Steffi TanXin Rong](/uploads/2019/07/steffi_photo.png)
+
+![Le Trung Hoang](/uploads/2019/07/hoang.png)
+
+![Huynh Phu Minh](/uploads/2019/03/portrait.jpg)
+
+![Choy Kar Sen](/uploads/2019/07/kar-sen.png)
+
+![Wei Ming](/uploads/2019/07/Wei_Ming.jpg)
+

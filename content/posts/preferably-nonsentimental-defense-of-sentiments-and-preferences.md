@@ -24,7 +24,7 @@ The first part of his dissertation deals with sentiment analysis, focusing on an
 
 In the close to six years he spent with us, as a research engineer then as a PhD candidate, Tuan has certainly been busy. In addition to publishing prolifically, he is also a core member of the open-source [Cornac](https://cornac.preferred.ai) recommender library, a cornerstone project of Preferred.AI that has been published in [JMLR Machine Learning Open Source Software](https://jmlr.org/papers/v21/19-805.html) and featured in a [RecSys-21 tutorial](https://recsys.acm.org/recsys21/tutorials/#content-tab-1-1-tab). In between things, he manages to collect awards such as Dean’s List, [Presidential Doctoral Fellowships](https://graduatestudies.smu.edu.sg/phd/singapore-management-university-smu-presidential-doctoral-fellowships), as well as data science competition championships.
 
-![](/uploads/2022/02/photo_20161205.jpg)
+![Group outing in December 2016, the first year he joined the group(from left: Tuan Truong, Trong Le, Hady (foreground), Wei Hao (background), Dung, Maksim)](/uploads/2022/02/photo_20161205.jpg)
 
 After the defense, we reflected nostalgically over lunch on how blessed the six years have been (Covid notwithstanding) and pondered prospectively on what awaits him in the future.
 

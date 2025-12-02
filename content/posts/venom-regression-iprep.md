@@ -22,7 +22,7 @@ Through the course, we inculcated the appreciation of a data science pipeline, b
 
 On Day 1, [Ween](https://preferred.ai/team/ween/) anchored the data collection module of the course, which is based on [Venom](https://venom.preferred.ai/), a focused crawler framework for the deep web developed in-house by Preferred.AI and open-sourced for public use.
 
-![](/uploads/2018/10/iprep_datacollection.jpg)
+![Ween ran with the data collection module of the course. With the zest of a seasoned instructor, he sure wasn’t a “crawler”.](/uploads/2018/10/iprep_datacollection.jpg)
 
 To get students to internalize the lessons meaningfully, they worked in small groups on a realistic project involving a specific Web site.  Working with each group was a coach from Preferred.AI.  That the groups managed to build working crawlers by the end of Day 2 spoke of their effective teamwork, the coaches’ able guidance, and [Venom](https://venom.preferred.ai/)‘s powerful features.
 

@@ -22,7 +22,7 @@ The first station was the auto belay, whereby as we went up the rope would adjus
 
 At the second station, we worked with a belayer who would pull the rope as we climbed up, and slowly let go as we came down. This time, the wall was quite a bit higher.
 
-![](/uploads/2019/02/20190116_belay2-e1549333746342.jpg)
+![The belay device could suspend and let us rest mid-way, making higher climbs easier](/uploads/2019/02/20190116_belay2-e1549333746342.jpg)
 
 The final station was bouldering. Who knew that ‘climbing’ sideways could be more challenging than climbing vertically.
 
