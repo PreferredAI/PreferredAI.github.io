@@ -53,3 +53,13 @@ Visit [http://localhost:3000](http://localhost:3000)
    ```
 6. Open [http://localhost:3000](http://localhost:3000) to preview your post.
 7. Once satisfied, commit your changes to a new branch and push to GitHub. Create a Pull Request for review if needed.
+
+## Common Maintainance Tasks
+
+### Update Team Members
+- Edit name, image (path), title, link in `src/data/team.tsx`
+- Upload corresponding images to `public/uploads/YYYY/MM/`
+
+### Update Team Photos Slideshow
+- Edit photo details (path, date, location) in `src/data/teamPhotos.ts`
+- Upload corresponding images to `public/team/`
