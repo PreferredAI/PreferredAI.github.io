@@ -100,7 +100,7 @@ export default function PeoplePage() {
 
       {/* Staff */}
       <h2 className="mb-8 text-center text-xl font-semibold uppercase tracking-wide text-gray-700">
-        Research Staffs
+        Research Staff
       </h2>
       <div className="mb-12">
         <TeamSection members={staff} />
