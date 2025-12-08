@@ -1,0 +1,60 @@
+# Workflow to crawl publications weekly and update the site
+name: Update Publications
+
+on:
+  # Run every Sunday at 00:00 UTC
+  schedule:
+    - cron: "0 0 * * 0"
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  crawl-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run publications crawler
+        run: pnpm crawl:publications
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          git diff --quiet content/publications.md || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add content/publications.md
+          git commit -m "chore: update publications from hadylauw.com [automated]"
+          git push
+
+      - name: Trigger deploy workflow
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          echo "Changes detected, deployment will be triggered by the push to main branch"
