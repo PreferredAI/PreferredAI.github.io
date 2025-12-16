@@ -6,6 +6,11 @@ on:
   schedule:
     - cron: "0 0 * * 0"
 
+  push:
+    paths:
+      - ".github/workflows/update-publications.yml"
+      - "scripts/crawl-publications.ts"
+
   # Allow manual trigger
   workflow_dispatch:
 
