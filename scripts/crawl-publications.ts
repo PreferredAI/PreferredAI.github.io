@@ -309,7 +309,7 @@ function parsePublicationFromLi(liContent: string): Publication | null {
     const isPaperHost = PAPER_HOST_DOMAINS.some(domain => url.includes(domain));
     const isTitle = isPaperHost &&
       text.length > MIN_TITLE_LINK_TEXT_LENGTH &&
-      !text.toLowerCase().includes('code');
+      (!text.toLowerCase().includes('code') || text.length > 30);
 
     links.push({ text, url, isTitle });
   }
