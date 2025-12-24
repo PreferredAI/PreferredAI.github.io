@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import TeamPhotos from "@/components/TeamPhotos";
 import { getAllCategories } from "@/lib/markdown-posts";
+import BrandLogo from "@/assets/Brand.png";
 
 export const metadata: Metadata = {
   title: "Preferred.AI",
@@ -30,10 +32,11 @@ export default function RootLayout({
               <div className="flex items-center justify-between gap-4 py-6">
                 <Link href="/" className="inline-block">
                   <div className="flex items-center gap-3">
-                    <img
-                      src="/Brand.png"
+                    <Image
+                      src={BrandLogo}
                       alt="Preferred.AI"
                       className="h-16 w-auto"
+                      priority
                     />
                     <p className="hidden text-sm italic text-gray-600 lg:block">
                       Preferences and Recommendations from Data & AI
