@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useState, useEffect } from "react";
 import { TEAM_PHOTOS } from "@/data/teamPhotos";
 
@@ -40,9 +42,12 @@ export default function TeamPhotos() {
             isVisible ? "opacity-100" : "opacity-0"
           }`}
         >
-          <img
+          <Image
             src={TEAM_PHOTOS[currentIndex].url}
             alt={`${TEAM_PHOTOS[currentIndex].date} - ${TEAM_PHOTOS[currentIndex].location}`}
+            width={0}
+            height={0}
+            sizes="100vw"
             className="h-auto w-full object-cover"
           />
         </div>
