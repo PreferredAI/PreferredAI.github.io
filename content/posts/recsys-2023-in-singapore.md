@@ -22,11 +22,10 @@ Preferred.AI had one paper at the conference by Hieu and Hady, titled “Continu
 
 ![Hieu and Son at the poster.](/uploads/2023/09/381204585_244192071495435_7811873861459035717_n.jpg)
 
-During the conference, Hieu had the unexpected pleasure of reuniting with Son, a former member of our research group who is now with A*STAR. Our chance encounter provided an additional avenue for learning as we engaged in discussions about research papers being presented and shared our insights.
+During the conference, Hieu unexpectedly reunited with Son, a former member of our research group who is now with A*STAR. Our chance encounter provided an additional avenue for learning as we engaged in discussions about research papers being presented and shared our insights.
 
 ![The conference also treated us to a delightful social dinner, complete with a captivating performance featuring traditional Chinese instruments.](/uploads/2023/09/Screenshot-2023-09-28-at-12.02.57 PM.jpg)
 
 ![Impressive capture at Marina Bay (though not taken during the conference).](/uploads/2023/09/IMG_20210319_192651-COLLAGE.jpg)
 
-RecSys’23 marked Hieu’s first conference participation and left a profound sense of inspiration and anticipation for the future. Preferred.AI eagerly look forward to many more opportunities to present our research at upcoming conferences.
-
+RecSys’23 marked Hieu’s first conference participation and left a profound sense of inspiration and anticipation for the future. Preferred.AI eagerly looks forward to many more opportunities to present our research at upcoming conferences.
