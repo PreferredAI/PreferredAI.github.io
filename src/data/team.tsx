@@ -35,7 +35,7 @@ export const TEAM_DATA = {
       name: "Le Thi Phuong",
       image: "/uploads/2024/01/photo_phuong.jpg",
       title: "PhD Candidate (SMU)",
-      link: "https://www.linkedin.com/in/phuonglt26/",
+      link: "",
     },
     {
       name: "Lim Jia Peng",
