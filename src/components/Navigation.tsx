@@ -67,14 +67,24 @@ export default function Navigation() {
         >
           Papers
         </Link>
-        {/* <div className="group relative">
-        <button className="text-gray-700 hover:text-gray-900">
-          Projects
-        </button>
-      </div>
-      <div className="group relative">
-        <button className="text-gray-700 hover:text-gray-900">Apps</button>
-      </div> */}
+        <div className="group relative">
+          <button className="flex items-center gap-1 text-gray-700 hover:text-gray-900">
+            Apps
+            <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+            </svg>
+          </button>
+          <div className="invisible group-hover:visible absolute left-0 top-full mt-1 w-40 rounded-lg bg-white shadow-lg ring-1 ring-black/5">
+            <a
+              href="https://cornac.preferred.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg"
+            >
+              Cornac
+            </a>
+          </div>
+        </div>
         <Link
           href="/join"
           className={
@@ -175,6 +185,18 @@ export default function Navigation() {
               >
                 Papers
               </Link>
+              <div>
+                <div className="px-4 py-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">Apps</div>
+                <a
+                  href="https://cornac.preferred.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={closeMobileMenu}
+                  className="block px-4 py-2 text-gray-700 hover:text-gray-900"
+                >
+                  Cornac
+                </a>
+              </div>
               <Link
                 href="/join"
                 onClick={closeMobileMenu}
