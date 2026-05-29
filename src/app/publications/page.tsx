@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { PUBLICATIONS_DATA } from "@/data/publications";
-import styles from "./publications.module.css";
+import PublicationsExplorer from "@/components/PublicationsExplorer";
 
 export const metadata: Metadata = {
   title: "Publications - Preferred.AI",
@@ -9,72 +9,13 @@ export const metadata: Metadata = {
 
 export default function PublicationsPage() {
   return (
-    <div className={styles.container}>
-      <h2 className={styles.pageTitle}>Read Our Papers</h2>
-
-      {PUBLICATIONS_DATA.map((section) => (
-        <div key={section.year} className={styles.yearSection}>
-          <h3 className={styles.yearTitle}>{section.year}</h3>
-
-          <ul className={styles.publicationsList}>
-            {section.publications.map((pub, index) => (
-              <li key={index} className={styles.publicationItem}>
-                <div className={styles.pubTitle}>
-                  {pub.pdfUrl ? (
-                    <a
-                      href={pub.pdfUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {pub.title}
-                    </a>
-                  ) : (
-                    pub.title
-                  )}
-                  {pub.extraLinks && pub.extraLinks.length > 0 && (
-                    <span className={styles.extraLinks}>
-                      {" ("}
-                      {pub.extraLinks.map((link, i) => (
-                        <span key={i}>
-                          {i > 0 && ", "}
-                          <a
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            {link.text}
-                          </a>
-                        </span>
-                      ))}
-                      {")"}
-                    </span>
-                  )}
-                </div>
-
-                <div className={styles.pubAuthors}>by {pub.authors}</div>
-
-                <div className={styles.pubVenue}>{pub.venue}.</div>
-
-                {pub.award && (
-                  <div className={styles.pubAward}>
-                    {pub.award.url ? (
-                      <a
-                        href={pub.award.url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        {pub.award.text}
-                      </a>
-                    ) : (
-                      <span>{pub.award.text}</span>
-                    )}
-                  </div>
-                )}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+    <div className="bg-card/85 border border-border/70 rounded-3xl p-6 sm:p-8 shadow-sm shadow-black/[0.01]">
+      <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground mb-8 border-b border-border/60 pb-3 select-none">
+        Read Our Papers
+      </h2>
+      
+      {/* Interactive searchable dashboard */}
+      <PublicationsExplorer data={PUBLICATIONS_DATA} />
     </div>
   );
 }

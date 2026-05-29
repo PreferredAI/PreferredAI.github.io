@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-
 import { useState, useEffect } from "react";
 import { TEAM_PHOTOS } from "@/data/teamPhotos";
 
@@ -18,7 +17,6 @@ export default function TeamPhotos() {
 
       setTimeout(() => {
         setCurrentIndex((prevIndex) => {
-          // Get a random index different from current
           let newIndex;
           do {
             newIndex = Math.floor(Math.random() * TEAM_PHOTOS.length);
@@ -34,31 +32,39 @@ export default function TeamPhotos() {
     return () => clearInterval(intervalId);
   }, []);
 
+  const currentPhoto = TEAM_PHOTOS[currentIndex];
+
   return (
-    <div>
-      <div className="overflow-hidden rounded-lg">
+    <div className="space-y-3">
+      {/* Sleek rounded frame wrapper with thin border & slight shadow drop */}
+      <div className="overflow-hidden rounded-xl border border-gray-200/50 shadow-sm aspect-video bg-gray-50 flex items-center justify-center select-none">
         <div
-          className={`transition-opacity duration-500 ${
+          className={`w-full h-full relative transition-opacity duration-500 ${
             isVisible ? "opacity-100" : "opacity-0"
           }`}
         >
           <Image
-            src={TEAM_PHOTOS[currentIndex].url}
-            alt={`${TEAM_PHOTOS[currentIndex].date} - ${TEAM_PHOTOS[currentIndex].location}`}
-            width={0}
-            height={0}
-            sizes="100vw"
-            className="h-auto w-full object-cover"
+            src={currentPhoto.url}
+            alt={`${currentPhoto.date} - ${currentPhoto.location}`}
+            fill
+            sizes="(max-width: 768px) 100vw, 320px"
+            className="object-cover transition-transform duration-300 hover:scale-105"
+            priority
           />
         </div>
       </div>
+      
+      {/* Caption Metadata */}
       <div
-        className={`mt-3 text-xs text-gray-600 transition-opacity duration-500 ${
+        className={`transition-opacity duration-500 select-none ${
           isVisible ? "opacity-100" : "opacity-0"
         }`}
       >
-        <p className="font-semibold">
-          {TEAM_PHOTOS[currentIndex].date}, {TEAM_PHOTOS[currentIndex].location}
+        <p className="text-[11px] font-bold text-gray-500 leading-tight">
+          📍 {currentPhoto.location}
+        </p>
+        <p className="text-[10px] font-semibold text-gray-400 mt-0.5">
+          {currentPhoto.date}
         </p>
       </div>
     </div>

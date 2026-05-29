@@ -21,65 +21,75 @@ function formatDate(dateString: string): string {
 
 export function PostCard({ post }: PostCardProps) {
   return (
-    <article className="group flex flex-col bg-white">
-      <Link href={`/blog/${post.slug}`} className="mb-4 block">
-        {post.featuredImage && (
-          <div className="relative aspect-video overflow-hidden rounded">
+    <article className="group flex flex-col bg-card/85 border border-border/70 rounded-3xl p-5 shadow-sm shadow-black/[0.01] hover:-translate-y-1 hover:shadow-md hover:border-border hover:bg-card transition-all duration-300">
+      
+      {/* Featured Image Link */}
+      <Link href={`/blog/${post.slug}`} className="mb-4 block overflow-hidden rounded-2xl relative select-none">
+        {post.featuredImage ? (
+          <div className="relative aspect-video w-full">
             <Image
               src={post.featuredImage}
               alt={post.title}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              sizes="(max-width: 768px) 100vw, 480px"
+              className="object-cover transition-transform duration-500 group-hover:scale-105"
             />
+          </div>
+        ) : (
+          <div className="aspect-video w-full bg-gradient-to-br from-red-950/10 to-card flex items-center justify-center border border-border/40 rounded-2xl">
+            <span className="text-[10px] font-bold text-red-700/60 dark:text-red-400/60 tracking-wider">PREFERRED.AI</span>
           </div>
         )}
       </Link>
 
-      <div className="flex flex-col space-y-3">
-        <h2 className="text-xl font-bold leading-tight">
-          <Link href={`/blog/${post.slug}`} className="hover:text-gray-600">
-            {post.title}
-          </Link>
-        </h2>
-
-        <div className="flex flex-wrap items-center gap-2 text-xs">
+      {/* Card Content info */}
+      <div className="flex flex-col flex-1 space-y-3 justify-between">
+        
+        <div className="space-y-2">
+          {/* Categories Pill Badging */}
           {post.categories.length > 0 && (
-            <>
-              {post.categories.map((category, index) => {
+            <div className="flex flex-wrap gap-1.5 select-none">
+              {post.categories.map((category) => {
                 const categorySlug = category
                   .toLowerCase()
                   .replace(/\s+/g, "-");
                 return (
-                  <span key={categorySlug}>
-                    <Link
-                      href={`/category/${categorySlug}`}
-                      className="category-link"
-                    >
-                      {category.toUpperCase()}
-                    </Link>
-                    {index < post.categories.length - 1 && (
-                      <span className="mx-1 text-gray-400">/</span>
-                    )}
-                  </span>
+                  <Link
+                    key={categorySlug}
+                    href={`/category/${categorySlug}`}
+                    className="inline-flex items-center px-3 py-1 rounded-full text-[11px] font-extrabold tracking-wider bg-primary/6 hover:bg-primary/12 text-primary border border-primary/10 transition-all uppercase"
+                  >
+                    {category}
+                  </Link>
                 );
               })}
-            </>
+            </div>
           )}
-          {post.date && post.categories.length > 0 && (
-            <span className="text-gray-400">•</span>
-          )}
-          {post.date && (
-            <time dateTime={post.date} className="post-date">
-              {formatDate(post.date).toUpperCase()}
-            </time>
-          )}
+
+          {/* Title */}
+          <h2 className="text-lg sm:text-xl font-extrabold leading-tight text-foreground group-hover:text-[#b91c1c] transition-colors duration-200">
+            <Link href={`/blog/${post.slug}`}>
+              {post.title}
+            </Link>
+          </h2>
         </div>
 
+        {/* Excerpt Summary */}
         {post.excerpt && (
-          <p className="text-sm leading-relaxed text-gray-700">
+          <p className="text-sm sm:text-[15px] leading-relaxed text-muted-foreground line-clamp-3">
             {post.excerpt}
           </p>
         )}
+
+        {/* Bottom Panel: Date Metadata */}
+        {post.date && (
+          <div className="border-t border-border/50 pt-3 select-none">
+            <time dateTime={post.date} className="text-xs font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase">
+              🗓️ {formatDate(post.date)}
+            </time>
+          </div>
+        )}
+
       </div>
     </article>
   );

@@ -7,7 +7,7 @@ export default async function BlogPage() {
 
   return (
     <div>
-      <h1 className="mb-8 text-2xl font-bold uppercase tracking-wider text-gray-800">
+      <h1 className="mb-8 text-2xl font-bold uppercase tracking-wider text-foreground">
         Blog
       </h1>
 
@@ -18,7 +18,7 @@ export default async function BlogPage() {
       </div>
 
       {posts.length === 0 && (
-        <p className="text-center text-gray-600">No posts found.</p>
+        <p className="text-center text-muted-foreground">No posts found.</p>
       )}
 
       <Pagination currentPage={1} totalPages={pages} basePath="/blog" />

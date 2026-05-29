@@ -63,12 +63,12 @@ export default function Pagination({
       {currentPage > 1 ? (
         <Link
           href={getPageUrl(currentPage - 1)}
-          className="rounded border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-[#b91c1c]"
+          className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground/80 hover:bg-muted dark:hover:bg-white/5 hover:text-primary transition-all"
         >
           Previous
         </Link>
       ) : (
-        <span className="cursor-not-allowed rounded border border-gray-200 px-4 py-2 text-gray-400">
+        <span className="cursor-not-allowed rounded-lg border border-border/40 px-4 py-2 text-sm font-medium text-muted-foreground/40">
           Previous
         </span>
       )}
@@ -78,7 +78,7 @@ export default function Pagination({
         {renderPageNumbers().map((page, index) => {
           if (page === "...") {
             return (
-              <span key={`ellipsis-${index}`} className="px-2 text-gray-500">
+              <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground/60">
                 ...
               </span>
             );
@@ -91,10 +91,10 @@ export default function Pagination({
             <Link
               key={pageNum}
               href={getPageUrl(pageNum)}
-              className={`rounded px-4 py-2 ${
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-[#b91c1c] text-white"
-                  : "border border-gray-300 text-gray-700 hover:bg-gray-100 hover:text-[#b91c1c]"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "border border-border text-foreground/80 hover:bg-muted dark:hover:bg-white/5 hover:text-primary"
               }`}
             >
               {pageNum}
@@ -107,12 +107,12 @@ export default function Pagination({
       {currentPage < totalPages ? (
         <Link
           href={getPageUrl(currentPage + 1)}
-          className="rounded border border-gray-300 px-4 py-2 text-gray-700 hover:bg-gray-100 hover:text-[#b91c1c]"
+          className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground/80 hover:bg-muted dark:hover:bg-white/5 hover:text-primary transition-all"
         >
           Next
         </Link>
       ) : (
-        <span className="cursor-not-allowed rounded border border-gray-200 px-4 py-2 text-gray-400">
+        <span className="cursor-not-allowed rounded-lg border border-border/40 px-4 py-2 text-sm font-medium text-muted-foreground/40">
           Next
         </span>
       )}

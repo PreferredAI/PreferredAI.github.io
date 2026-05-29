@@ -45,7 +45,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
       </div>
       <h3 className="mb-1 text-lg font-semibold">{member.name}</h3>
       {member.title && (
-        <p className="mb-2 text-sm text-gray-600">{member.title}</p>
+        <p className="mb-2 text-sm text-muted-foreground">{member.title}</p>
       )}
       {member.link && (
         <a
@@ -87,7 +87,7 @@ function TeamSection({ members }: { members: readonly TeamMember[] }) {
 export default function PeoplePage() {
   return (
     <div>
-      <h1 className="mb-12 text-center text-3xl font-bold uppercase tracking-wide text-gray-800">
+      <h1 className="mb-12 text-center text-3xl font-bold uppercase tracking-wide text-foreground">
         Meet the Team
       </h1>
 
@@ -99,7 +99,7 @@ export default function PeoplePage() {
       </div>
 
       {/* Staff */}
-      <h2 className="mb-8 text-center text-xl font-semibold uppercase tracking-wide text-gray-700">
+      <h2 className="mb-8 text-center text-xl font-semibold uppercase tracking-wide text-foreground">
         Research Staff
       </h2>
       <div className="mb-12">
@@ -107,16 +107,16 @@ export default function PeoplePage() {
       </div>
 
       {/* Students */}
-      <h2 className="mb-8 text-center text-xl font-semibold uppercase tracking-wide text-gray-700">
+      <h2 className="mb-8 text-center text-xl font-semibold uppercase tracking-wide text-foreground">
         Students
       </h2>
       <div className="mb-16">
         <TeamSection members={students} />
       </div>
 
-      <hr className="my-12 border-t-2 border-gray-300" />
+      <hr className="my-12 border-t-2 border-border/60" />
 
-      <h2 className="mb-12 text-center text-2xl font-bold uppercase tracking-wide text-gray-800">
+      <h2 className="mb-12 text-center text-2xl font-bold uppercase tracking-wide text-foreground">
         Alumni
       </h2>
 

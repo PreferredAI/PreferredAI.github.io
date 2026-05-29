@@ -1,110 +1,200 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f5f5f5;
-    --foreground: #333333;
-    --primary: #c92a2a;
-    --text-light: #777777;
-    --border: #e5e7eb;
+  --background: 0 0% 98.5%;
+  --foreground: 220 15% 13%;
+
+  --card: 0 0% 100%;
+  --card-foreground: 220 15% 13%;
+
+  --popover: 0 0% 100%;
+  --popover-foreground: 220 15% 13%;
+
+  --primary: 0 65% 48%; /* Preferred.AI Brand Crimson: #c92a2a */
+  --primary-foreground: 0 0% 100%;
+
+  --secondary: 220 10% 94%;
+  --secondary-foreground: 220 15% 13%;
+
+  --muted: 220 10% 94%;
+  --muted-foreground: 220 10% 45%;
+
+  --accent: 0 65% 96%;
+  --accent-foreground: 0 65% 35%;
+
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+
+  --border: 220 15% 91%;
+  --input: 220 15% 91%;
+  --ring: 0 65% 48%;
+
+  --radius: 0.75rem;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+.dark {
+  --background: 222 47% 4.5%;
+  --foreground: 220 10% 90%;
+
+  --card: 222 40% 6.5%;
+  --card-foreground: 220 10% 90%;
+
+  --popover: 222 40% 6.5%;
+  --popover-foreground: 220 10% 90%;
+
+  --primary: 0 65% 55%; /* Brighter Crimson for dark contrast: #dc2626 */
+  --primary-foreground: 222 47% 4.5%;
+
+  --secondary: 222 20% 12%;
+  --secondary-foreground: 220 10% 90%;
+
+  --muted: 222 20% 12%;
+  --muted-foreground: 220 10% 60%;
+
+  --accent: 0 65% 15%;
+  --accent-foreground: 0 65% 85%;
+
+  --border: 222 20% 14%;
+  --input: 222 20% 14%;
+  --ring: 0 65% 55%;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  font-size: 15px;
-  line-height: 1.7;
+@theme {
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+  
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+  
+  --animate-pulse-soft: pulse-soft 2s infinite ease-in-out;
+  --animate-fade-in-up: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-/* Typography */
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  font-weight: 700;
-  line-height: 1.2;
-  margin-bottom: 0.5rem;
-  color: #000000;
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.05); }
 }
 
-h1 {
-  font-size: 2rem;
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-h2 {
-  font-size: 1.5rem;
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.7;
+    -webkit-font-smoothing: antialiased;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-extrabold tracking-tight text-foreground leading-snug mb-2;
+  }
+  h1 { @apply text-4xl md:text-5xl; }
+  h2 { @apply text-3xl md:text-4xl; }
+  h3 { @apply text-2xl md:text-3xl; }
+  h4 { @apply text-xl md:text-2xl; }
+
+  a {
+    @apply transition-colors duration-200;
+    color: hsl(var(--primary));
+  }
+  a:hover {
+    color: #1e3a8a; /* Darker navy hover color */
+  }
 }
 
-h3 {
-  font-size: 1.25rem;
+/* Custom modern technical coordinate grid backing */
+.tech-grid {
+  background-image: 
+    linear-gradient(to right, rgba(201, 42, 42, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(201, 42, 42, 0.015) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+.dark .tech-grid {
+  background-image: 
+    linear-gradient(to right, rgba(220, 38, 38, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(220, 38, 38, 0.025) 1px, transparent 1px);
 }
 
-a {
-  color: var(--primary);
-  text-decoration: none;
-  transition: color 0.2s;
+/* Scrollbar customization */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-200 rounded-full hover:bg-gray-300 transition-colors;
 }
 
-a:hover {
-  color: #1d4ed8;
-}
-
-/* Utility classes */
+/* Preferred.AI classic blog selectors kept for complete compatibility */
 .container {
-  max-width: 1200px;
+  max-width: 1360px;
   margin: 0 auto;
-  padding: 0 1rem;
+  padding: 0 1.5rem;
 }
 
-/* Post excerpt styling */
 .post-excerpt {
-  color: var(--text-light);
+  color: hsl(var(--muted-foreground));
   line-height: 1.8;
   margin-bottom: 1rem;
 }
 
-/* Category/Tag styling */
 .category-link {
   font-size: 0.75rem;
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
-  color: #c92a2a;
+  color: hsl(var(--primary));
 }
 .category-link:hover {
-  color: #a02020;
+  color: #9b1c1c;
 }
 
-/* Date styling */
 .post-date {
   font-size: 0.875rem;
-  color: var(--text-light);
+  color: hsl(var(--muted-foreground));
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-/* Figure and figcaption styling */
+/* Figure and Caption styles */
 .prose figure.image-figure {
   margin: 2rem 0;
 }
-
 .prose figure.image-figure img {
   margin: 0;
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
 }
-
 .prose figure.image-figure figcaption {
   margin-top: 0.75rem;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: var(--text-light);
+  color: hsl(var(--muted-foreground));
   text-align: center;
   font-style: italic;
 }

@@ -26,11 +26,11 @@ export default async function CategoryPage({
   return (
     <div>
       <div className="mb-8">
-        <h1 className="mb-2 text-2xl font-bold uppercase tracking-wider text-gray-800">
+        <h1 className="mb-2 text-2xl font-bold uppercase tracking-wider text-foreground">
           {category.name}
         </h1>
         {category.description && (
-          <p className="text-gray-600">{category.description}</p>
+          <p className="text-muted-foreground">{category.description}</p>
         )}
       </div>
 
@@ -41,7 +41,7 @@ export default async function CategoryPage({
       </div>
 
       {posts.length === 0 && (
-        <p className="text-center text-gray-600">
+        <p className="text-center text-muted-foreground">
           No posts in this category yet.
         </p>
       )}

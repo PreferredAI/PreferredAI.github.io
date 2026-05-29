@@ -27,7 +27,7 @@ export default async function AboutPage() {
   const content = await getAboutContent();
 
   return (
-    <div className="prose prose-lg max-w-none">
+    <div className="prose dark:prose-invert prose-lg max-w-none">
       <div dangerouslySetInnerHTML={{ __html: content }} />
     </div>
   );

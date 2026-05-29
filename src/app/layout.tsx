@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
-import Image from "next/image";
 import Navigation from "@/components/Navigation";
 import TeamPhotos from "@/components/TeamPhotos";
 import { getAllCategories } from "@/lib/markdown-posts";
-import BrandLogo from "@/assets/Brand.png";
 
 export const metadata: Metadata = {
   title: "Preferred.AI",
@@ -23,86 +21,92 @@ export default function RootLayout({
   const categories = getAllCategories();
 
   return (
-    <html lang="en">
-      <body>
-        <div className="flex min-h-screen flex-col">
-          {/* Header */}
-          <header className="bg-white shadow-md border-b border-gray-200">
-            <div className="container mx-auto max-w-7xl px-4">
-              <div className="flex items-center justify-between gap-4 py-6">
-                <Link href="/" className="inline-block">
-                  <div className="flex items-center gap-3">
-                    <Image
-                      src={BrandLogo}
-                      alt="Preferred.AI"
-                      className="h-16 w-auto"
-                      priority
-                    />
-                    <p className="hidden text-sm italic text-gray-600 lg:block">
-                      Preferences and Recommendations from Data & AI
-                    </p>
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link rel="icon" href="/favicon.png?v=3" type="image/png" />
+        <link rel="shortcut icon" href="/favicon.ico?v=3" />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const theme = localStorage.getItem('theme');
+                  const systemDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                  if (theme === 'dark' || (!theme && systemDark)) {
+                    document.documentElement.classList.add('dark');
+                  } else {
+                    document.documentElement.classList.remove('dark');
+                  }
+                } catch (e) {}
+              })()
+            `,
+          }}
+        />
+      </head>
+      <body className="tech-grid min-h-screen flex flex-col bg-background selection:bg-red-150 selection:text-[#b91c1c]">
+        {/* Floating Frosted Pill Navbar */}
+        <Navigation />
+
+        {/* Global Page Skeleton Wrapper */}
+        <div className="flex flex-1 flex-col pt-28">
+          <div className="container flex-1 max-w-[1360px]">
+            <div className="flex flex-col gap-10 py-6 lg:flex-row">
+              
+              {/* Main Column */}
+              <main className="flex-1 min-w-0 page-fade-in animate-fade-in-up">
+                {children}
+              </main>
+
+              {/* Sidebar Section */}
+              <aside className="w-full lg:w-[360px] shrink-0">
+                <div className="sticky top-28 space-y-6">
+                  
+                  {/* Team Card Carousel Container */}
+                  <div className="bg-card/80 border border-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.01]">
+                    <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-400 select-none">
+                      The Team
+                    </h3>
+                    <TeamPhotos />
                   </div>
-                </Link>
-                <Navigation />
-              </div>
-            </div>
-          </header>
 
-          {/* Main Content with Sidebar */}
-          <div className="flex flex-1 bg-white">
-            <div className="container mx-auto max-w-7xl px-4">
-              <div className="flex flex-col gap-8 py-8 lg:flex-row">
-                {/* Main Content */}
-                <main className="flex-1">{children}</main>
-
-                {/* Sidebar */}
-                <aside className="w-full lg:w-80">
-                  <div className="sticky top-8 space-y-8">
-                    {/* Team Section */}
-                    <div>
-                      <h3 className="mb-4 text-lg font-bold uppercase tracking-wide text-gray-800">
-                        Team
-                      </h3>
-                      <TeamPhotos />
-                    </div>
-
-                    {/* Categories Section */}
-                    <div>
-                      <h3 className="mb-4 text-lg font-bold uppercase tracking-wide text-gray-800">
-                        Categories
-                      </h3>
-                      <ul className="space-y-2">
-                        {categories.map((category) => (
-                          <li key={category.slug}>
-                            <Link
-                              href={`/category/${category.slug}`}
-                              className="flex items-center text-gray-700 hover:text-[#b91c1c]"
-                            >
-                              <span className="mr-2 text-gray-400">▸</span>
-                              {category.name}
-                              <span className="ml-auto text-xs text-gray-400">
-                                ({category.count})
-                              </span>
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
+                  {/* Categories Card Container */}
+                  <div className="bg-card/80 border border-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.01]">
+                    <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/60 select-none">
+                      Categories
+                    </h3>
+                    <ul className="space-y-1.5">
+                      {categories.map((category) => (
+                        <li key={category.slug}>
+                          <Link
+                            href={`/category/${category.slug}`}
+                            className="flex items-center px-2.5 py-1.5 text-xs font-semibold text-muted-foreground rounded-xl hover:text-primary hover:bg-primary/8 border border-transparent hover:border-primary/10 transition-all select-none"
+                          >
+                            <span className="mr-2 text-gray-300">▸</span>
+                            {category.name}
+                            <span className="ml-auto px-2 py-0.5 text-[10px] font-bold bg-muted text-muted-foreground rounded-full border border-border/20">
+                              {category.count}
+                            </span>
+                          </Link>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                </aside>
-              </div>
+
+                </div>
+              </aside>
+
             </div>
           </div>
-
-          {/* Footer */}
-          <footer className="border-t border-gray-200 bg-white py-6">
-            <div className="container mx-auto max-w-7xl px-4">
-              <p className="text-center text-sm text-gray-600">
-                Preferred.AI © {new Date().getFullYear()}. All Rights Reserved.
-              </p>
-            </div>
-          </footer>
         </div>
+
+        {/* Global Sleek Footer */}
+        <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm py-8 mt-12 select-none">
+          <div className="container max-w-7xl text-center">
+            <p className="text-xs font-semibold text-gray-500">
+              Preferred.AI © {new Date().getFullYear()}. All Rights Reserved.
+            </p>
+          </div>
+        </footer>
       </body>
     </html>
   );

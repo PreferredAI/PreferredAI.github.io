@@ -7,7 +7,7 @@ export default async function Home() {
 
   return (
     <div>
-      <h2 className="mb-8 text-xl font-normal uppercase tracking-wide text-gray-600">
+      <h2 className="mb-8 text-xl font-normal uppercase tracking-wide text-muted-foreground">
         Recent Posts
       </h2>
 
@@ -18,7 +18,7 @@ export default async function Home() {
       </div>
 
       {posts.length === 0 && (
-        <p className="text-center text-gray-600">No posts available yet.</p>
+        <p className="text-center text-muted-foreground">No posts available yet.</p>
       )}
 
       <Pagination currentPage={1} totalPages={pages} basePath="/" />
