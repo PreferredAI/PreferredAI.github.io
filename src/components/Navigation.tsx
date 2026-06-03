@@ -56,12 +56,18 @@ export default function Navigation() {
 
   return (
     <header className="fixed top-4 inset-x-0 z-50 mx-auto w-full max-w-[1360px] px-4 select-none">
-      <nav className="flex items-center justify-between w-full px-4 sm:px-6 py-2 rounded-full bg-card/75 dark:bg-card/45 backdrop-blur-md border border-border/50 dark:border-white/5 shadow-md shadow-black/[0.02] transition-all duration-300">
+      <nav className={`flex items-center justify-between w-full px-4 sm:px-6 py-2 rounded-full transition-all duration-300 ${
+        isMobileMenuOpen
+          ? "bg-transparent border-transparent shadow-none backdrop-blur-none"
+          : "bg-card/75 dark:bg-card/45 backdrop-blur-md border border-border/50 dark:border-white/5 shadow-md shadow-black/[0.02]"
+      }`}>
         
         {/* Brand Logo Section */}
         <Link 
           href="/" 
-          className="hover:scale-105 active:scale-95 transition-all duration-200 flex items-center gap-2"
+          className={`hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 ${
+            isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+          }`}
         >
           <Image
             src={BrandLogo}
@@ -194,95 +200,96 @@ export default function Navigation() {
           />
         </button>
 
-        {/* Mobile Navigation Panel */}
-        <div 
-          className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ${
-            isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+      </nav>
+
+      {/* Mobile Navigation Panel */}
+      <div 
+        className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ${
+          isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
+        }`}
+      >
+        {/* Frosted Backdrop Overlay */}
+        <div
+          className="fixed inset-0 bg-black/15 backdrop-blur-sm transition-opacity"
+          onClick={closeMobileMenu}
+        />
+
+        {/* Drawer Menu Panel */}
+        <nav 
+          className={`fixed right-0 top-0 h-full w-72 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md shadow-2xl border-l border-border/60 flex flex-col p-6 pt-24 gap-4 transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) ${
+            isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
         >
-          {/* Frosted Backdrop Overlay */}
-          <div
-            className="fixed inset-0 bg-black/15 backdrop-blur-sm transition-opacity"
-            onClick={closeMobileMenu}
-          />
+          {navLinks.map((link) => {
+            const active = isActive(link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                onClick={closeMobileMenu}
+                className={`px-4 py-2.5 rounded-full text-sm font-semibold tracking-wide text-center transition-all ${
+                  active
+                    ? "bg-primary/8 text-primary border border-primary/15"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                }`}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
-          {/* Drawer Menu Panel */}
-          <nav 
-            className={`fixed right-0 top-0 h-full w-72 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md shadow-2xl border-l border-border/60 flex flex-col p-6 pt-24 gap-4 transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) ${
-              isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          {/* Apps section for Mobile Menu */}
+          <div className="border-t border-border/60 pt-4 mt-2">
+            <div className="px-4 pb-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider text-center">
+              Apps
+            </div>
+            <a
+              href="https://cornac.preferred.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={closeMobileMenu}
+              className="block text-center py-2.5 px-4 text-sm font-semibold text-muted-foreground hover:text-primary hover:bg-primary/10 dark:hover:bg-white/5 rounded-full transition-all"
+            >
+              Cornac
+            </a>
+          </div>
+
+          {/* Theme Toggle for Mobile */}
+          {mounted && (
+            <div className="flex items-center justify-between border-t border-border/60 pt-4 mt-2 px-4 select-none">
+              <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider">Theme</span>
+              <button
+                onClick={toggleTheme}
+                className="p-1.5 rounded-full text-muted-foreground hover:text-foreground bg-muted dark:bg-white/5 transition-all cursor-pointer"
+                aria-label="Toggle Theme"
+              >
+                {isDark ? (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                  </svg>
+                ) : (
+                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          )}
+
+          {/* Standout Join CTA button inside Mobile Menu */}
+          <Link
+            href="/join"
+            onClick={closeMobileMenu}
+            className={`mt-auto text-center py-3 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all shadow-md shadow-red-700/10 ${
+              isActive("/join")
+                ? "bg-[#9b1c1c]"
+                : "bg-red-600 hover:bg-red-700"
             }`}
           >
-            {navLinks.map((link) => {
-              const active = isActive(link.href);
-              return (
-                <Link
-                  key={link.href}
-                  href={link.href}
-                  onClick={closeMobileMenu}
-                  className={`px-4 py-2.5 rounded-full text-sm font-semibold tracking-wide text-center transition-all ${
-                    active
-                      ? "bg-primary/8 text-primary border border-primary/15"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
-                  }`}
-                >
-                  {link.label}
-                </Link>
-              );
-            })}
-
-            {/* Apps section for Mobile Menu */}
-            <div className="border-t border-border/60 pt-4 mt-2">
-              <div className="px-4 pb-2 text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider text-center">
-                Apps
-              </div>
-              <a
-                href="https://cornac.preferred.ai"
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={closeMobileMenu}
-                className="block text-center py-2.5 px-4 text-sm font-semibold text-muted-foreground hover:text-primary hover:bg-primary/10 dark:hover:bg-white/5 rounded-full transition-all"
-              >
-                Cornac
-              </a>
-            </div>
-
-            {/* Theme Toggle for Mobile */}
-            {mounted && (
-              <div className="flex items-center justify-between border-t border-border/60 pt-4 mt-2 px-4 select-none">
-                <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider">Theme</span>
-                <button
-                  onClick={toggleTheme}
-                  className="p-1.5 rounded-full text-muted-foreground hover:text-foreground bg-muted dark:bg-white/5 transition-all cursor-pointer"
-                  aria-label="Toggle Theme"
-                >
-                  {isDark ? (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
-                    </svg>
-                  ) : (
-                    <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                      <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
-                    </svg>
-                  )}
-                </button>
-              </div>
-            )}
-
-            {/* Standout Join CTA button inside Mobile Menu */}
-            <Link
-              href="/join"
-              onClick={closeMobileMenu}
-              className={`mt-auto text-center py-3 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all shadow-md shadow-red-700/10 ${
-                isActive("/join")
-                  ? "bg-[#9b1c1c]"
-                  : "bg-red-600 hover:bg-red-700"
-              }`}
-            >
-              JOIN US
-            </Link>
-          </nav>
-        </div>
-      </nav>
+            JOIN US
+          </Link>
+        </nav>
+      </div>
     </header>
   );
 }
