@@ -12,8 +12,8 @@ export default async function BlogPage() {
       </h1>
 
       <div className="space-y-12">
-        {posts.map((post) => (
-          <PostCard key={post.slug} post={post} />
+        {posts.map((post, index) => (
+          <PostCard key={post.slug} post={post} priority={index < 2} />
         ))}
       </div>
 

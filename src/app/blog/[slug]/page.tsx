@@ -42,6 +42,7 @@ export default async function PostPage({
             alt={post.title}
             fill
             className="object-cover"
+            priority
           />
         </div>
       )}

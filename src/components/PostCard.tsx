@@ -13,13 +13,14 @@ interface PostCardProps {
     categories: string[];
     tags: string[];
   };
+  priority?: boolean;
 }
 
 function formatDate(dateString: string): string {
   return format(new Date(dateString), "MMMM d, yyyy");
 }
 
-export function PostCard({ post }: PostCardProps) {
+export function PostCard({ post, priority }: PostCardProps) {
   return (
     <article className="group flex flex-col bg-card/85 border border-border/70 rounded-3xl p-5 shadow-sm shadow-black/[0.01] hover:-translate-y-1 hover:shadow-md hover:border-border hover:bg-card transition-all duration-300">
       
@@ -33,6 +34,7 @@ export function PostCard({ post }: PostCardProps) {
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
               className="object-cover transition-transform duration-500 group-hover:scale-105"
+              priority={priority}
             />
           </div>
         ) : (

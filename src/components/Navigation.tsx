@@ -74,6 +74,7 @@ export default function Navigation() {
             alt="Preferred.AI"
             className="h-9 w-auto object-contain rounded-md"
             priority
+            unoptimized
           />
         </Link>
 

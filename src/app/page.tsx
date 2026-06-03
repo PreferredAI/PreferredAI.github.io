@@ -12,8 +12,8 @@ export default async function Home() {
       </h2>
 
       <div className="grid gap-8 md:grid-cols-2">
-        {posts.map((post) => (
-          <PostCard key={post.slug} post={post} />
+        {posts.map((post, index) => (
+          <PostCard key={post.slug} post={post} priority={index < 2} />
         ))}
       </div>
 
