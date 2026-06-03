@@ -17,7 +17,7 @@ export default async function PaginatedBlogPage({ params }: PageProps) {
     notFound();
   }
 
-  const { posts, total, pages } = await getAllPosts(currentPage, 12);
+  const { posts, pages } = await getAllPosts(currentPage, 12);
 
   if (currentPage > pages) {
     notFound();

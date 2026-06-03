@@ -3,7 +3,7 @@ import { PostCard } from "@/components/PostCard";
 import Pagination from "@/components/Pagination";
 
 export default async function BlogPage() {
-  const { posts, total, pages } = await getAllPosts(1, 12);
+  const { posts, pages } = await getAllPosts(1, 12);
 
   return (
     <div>

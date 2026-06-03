@@ -4,7 +4,6 @@ import sharp from "sharp";
 
 const TARGET_WIDTHS = [256, 384, 640, 1080, 1920, 3840];
 const PUBLIC_DIR = path.join(process.cwd(), "public");
-const OPTIMIZED_DIR = path.join(PUBLIC_DIR, "optimized");
 
 // Directories to scan recursively for images
 const DIRS_TO_SCAN = ["team", "uploads"];

@@ -3,7 +3,7 @@ import { PUBLICATIONS_DATA } from "@/data/publications";
 import PublicationsExplorer from "@/components/PublicationsExplorer";
 
 export const metadata: Metadata = {
-  title: "Publications - Preferred.AI",
+  title: "Publications",
   description: "Research papers and publications from Preferred.AI",
 };
 

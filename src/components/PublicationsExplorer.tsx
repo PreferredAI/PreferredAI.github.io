@@ -4,6 +4,13 @@ import React, { useState, useMemo } from "react";
 import { Publication, YearSection } from "@/data/publications";
 import { PUBLICATION_CATEGORIES } from "@/data/publicationCategories";
 
+// Lowercase and strip diacritics so search is case- and accent-insensitive.
+const normalizeText = (text: string) =>
+  text
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+
 // ----------------------------------------------------
 // Custom Zero-Dependency Responsive SVG Icon Components
 // ----------------------------------------------------
@@ -189,17 +196,20 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
 
   // Live searching and categorization filters compilation
   const filteredData = useMemo(() => {
-    const query = search.toLowerCase().trim();
+    // Split the query into words so they can match in any order across any
+    // field (e.g. "Zhang Ce" matches author "Delvin Ce Zhang"). Accents are
+    // folded so "Nguyen" matches "Nguyễn".
+    const tokens = normalizeText(search).split(/\s+/).filter(Boolean);
 
     return data
       .map((section) => {
         const filteredPubs = section.publications.filter((pub) => {
-          const matchesQuery =
-            query === "" ||
-            pub.title.toLowerCase().includes(query) ||
-            pub.authors.toLowerCase().includes(query) ||
-            pub.venue.toLowerCase().includes(query) ||
-            section.year.includes(query);
+          const haystack = normalizeText(
+            `${pub.title} ${pub.authors} ${pub.venue} ${section.year}`,
+          );
+          const matchesQuery = tokens.every((token) =>
+            haystack.includes(token),
+          );
 
           const matchesCategory = matchesTab(pub, activeTab);
 
@@ -223,6 +233,7 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
         </div>
         <input
           type="text"
+          aria-label="Search publications by keyword, venue, author, or year"
           placeholder="Search papers by keywords, venue, authors or year..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}

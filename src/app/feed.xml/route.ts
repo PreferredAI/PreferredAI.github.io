@@ -1,11 +1,12 @@
 import { Feed } from 'feed';
 import { getAllPosts } from '@/lib/markdown-posts';
+import { siteUrl } from '@/lib/site';
 
 export const dynamic = 'force-static';
 
 export async function GET() {
   const { posts } = getAllPosts(1, 100);
-  const baseUrl = 'https://preferred.ai';
+  const baseUrl = siteUrl;
 
   const feed = new Feed({
     title: 'Preferred.AI Blog',

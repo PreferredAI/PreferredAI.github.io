@@ -1,18 +1,16 @@
-import { getAllPosts, getAllCategories, getAllTags } from '@/lib/markdown-posts';
+import { getAllPosts, getAllCategories } from '@/lib/markdown-posts';
+import { siteUrl } from '@/lib/site';
 
 export const dynamic = 'force-static';
 
 export default async function sitemap() {
-  const baseUrl = 'https://preferred.ai';
+  const baseUrl = siteUrl;
 
   // Get all posts
   const { posts } = getAllPosts(1, 1000);
 
   // Get all categories
   const categories = getAllCategories();
-
-  // Get all tags
-  const tags = getAllTags();
 
   const postUrls = posts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
@@ -26,13 +24,6 @@ export default async function sitemap() {
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
     priority: 0.6,
-  }));
-
-  const tagUrls = tags.map((tag) => ({
-    url: `${baseUrl}/tag/${tag.slug}`,
-    lastModified: new Date(),
-    changeFrequency: 'weekly' as const,
-    priority: 0.5,
   }));
 
   return [
@@ -68,6 +59,5 @@ export default async function sitemap() {
     },
     ...postUrls,
     ...categoryUrls,
-    ...tagUrls,
   ];
 }

@@ -14,10 +14,14 @@ export default function Navigation() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    /* eslint-disable react-hooks/set-state-in-effect --
+       localStorage and matchMedia are unavailable during SSR, so the theme
+       must be synced into state after mount (standard hydration guard). */
     setMounted(true);
     const theme = localStorage.getItem("theme");
     const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
     setIsDark(theme === "dark" || (!theme && systemDark));
+    /* eslint-enable react-hooks/set-state-in-effect */
   }, []);
 
   const toggleTheme = () => {

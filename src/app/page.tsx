@@ -3,13 +3,13 @@ import { PostCard } from "@/components/PostCard";
 import Pagination from "@/components/Pagination";
 
 export default async function Home() {
-  const { posts, total, pages } = await getAllPosts(1, 10);
+  const { posts, pages } = await getAllPosts(1, 10);
 
   return (
     <div>
-      <h2 className="mb-8 text-xl font-normal uppercase tracking-wide text-muted-foreground">
+      <h1 className="mb-8 text-xl font-normal uppercase tracking-wide text-muted-foreground">
         Recent Posts
-      </h2>
+      </h1>
 
       <div className="grid gap-8 md:grid-cols-2">
         {posts.map((post, index) => (

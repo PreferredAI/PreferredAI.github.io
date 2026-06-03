@@ -1,7 +1,8 @@
 import { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "Join Us - Preferred.AI",
+  title: "Join Us",
   description:
     "Join Preferred.AI - We are growing, and always on the lookout for bright, dedicated, and nice individuals to become a part of us.",
 };
@@ -83,19 +84,19 @@ export default function JoinPage() {
               develop
             </a>{" "}
             useful libraries and learning materials,{" "}
-            <a
+            <Link
               href="/category/education"
               className="text-primary hover:underline font-semibold"
             >
               teach
-            </a>{" "}
+            </Link>{" "}
             others, and{" "}
-            <a
+            <Link
               href="/category/presentation"
               className="text-primary hover:underline font-semibold"
             >
               present
-            </a>{" "}
+            </Link>{" "}
             our work. You will matter.
           </p>
         </div>
@@ -143,7 +144,8 @@ export default function JoinPage() {
             >
               CSRankings.org
             </a>{" "}
-            places SMU at #30 worldwide (Dec'25) for AI areas (incl. KDD). No
+            places SMU at #30 worldwide (Dec&apos;25) for AI areas (incl. KDD).
+            No
             mean feat for a young school. You will grow along with us.
           </p>
         </div>

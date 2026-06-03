@@ -1,12 +1,28 @@
 import { getPostsByCategory, getAllCategories } from "@/lib/markdown-posts";
 import { PostCard } from "@/components/PostCard";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 
 export async function generateStaticParams() {
   const categories = getAllCategories();
   return categories.map((category) => ({
     slug: category.slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const { category, total } = getPostsByCategory(slug, 1, 1);
+
+  return {
+    title: category.name,
+    description: `Posts in the ${category.name} category (${total}).`,
+    alternates: { canonical: `/category/${slug}` },
+  };
 }
 
 export default async function CategoryPage({

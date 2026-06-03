@@ -17,7 +17,7 @@ export default async function PaginatedHomePage({ params }: PageProps) {
     notFound();
   }
 
-  const { posts, total, pages } = await getAllPosts(currentPage, 10);
+  const { posts, pages } = await getAllPosts(currentPage, 10);
 
   if (currentPage > pages) {
     notFound();

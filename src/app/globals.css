@@ -126,6 +126,18 @@
   a:hover {
     color: #1e3a8a; /* Darker navy hover color */
   }
+
+  /* Visible keyboard focus ring for interactive elements */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  textarea:focus-visible,
+  select:focus-visible,
+  [tabindex]:focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
 }
 
 /* Custom modern technical coordinate grid backing */

@@ -3,8 +3,10 @@ import {
   markdownToHtml,
   getAllPostSlugs,
 } from "@/lib/markdown-posts";
+import { siteUrl, siteName } from "@/lib/site";
 import { format } from "date-fns";
 import { notFound } from "next/navigation";
+import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
@@ -17,6 +19,47 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({
     slug,
   }));
+}
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const post = getPostBySlug(slug);
+
+  if (!post) {
+    return { title: "Post not found" };
+  }
+
+  const url = `/blog/${slug}`;
+  const images = post.featuredImage ? [post.featuredImage] : undefined;
+  // seoTitle bakes in "- Preferred.AI"; strip it so the global title template
+  // doesn't double the brand ("Title - Preferred.AI · Preferred.AI").
+  const title = post.seoTitle.replace(/\s*[-–|]\s*Preferred\.AI\s*$/i, "").trim();
+
+  return {
+    title,
+    description: post.seoDescription,
+    alternates: { canonical: url },
+    openGraph: {
+      type: "article",
+      title,
+      description: post.seoDescription,
+      url,
+      siteName,
+      publishedTime: post.date || undefined,
+      authors: post.author ? [post.author] : undefined,
+      images,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.seoTitle,
+      description: post.seoDescription,
+      images,
+    },
+  };
 }
 
 export default async function PostPage({
@@ -33,8 +76,34 @@ export default async function PostPage({
 
   const contentHtml = await markdownToHtml(post.content);
 
+  const blogPostingJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.seoDescription,
+    datePublished: post.date || undefined,
+    author: post.author
+      ? { "@type": "Person", name: post.author }
+      : undefined,
+    image: post.featuredImage
+      ? `${siteUrl}${post.featuredImage}`
+      : undefined,
+    publisher: {
+      "@type": "Organization",
+      name: siteName,
+      url: siteUrl,
+    },
+    mainEntityOfPage: `${siteUrl}/blog/${slug}`,
+  };
+
   return (
     <article className="max-w-4xl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(blogPostingJsonLd),
+        }}
+      />
       {post.featuredImage && (
         <div className="relative mb-8 aspect-video overflow-hidden rounded">
           <Image

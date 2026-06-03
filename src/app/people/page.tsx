@@ -3,7 +3,7 @@ import Image from "next/image";
 import { TEAM_DATA, TeamMember } from "@/data/team";
 
 export const metadata: Metadata = {
-  title: "Team - Preferred.AI",
+  title: "Team",
   description: "Meet the Preferred.AI team and alumni",
 };
 

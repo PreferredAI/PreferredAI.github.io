@@ -293,8 +293,8 @@ function parsePublicationFromLi(liContent: string): Publication | null {
 
   let linkMatch;
   while ((linkMatch = linkPattern.exec(liContent)) !== null) {
-    let url = decodeHtmlEntities(linkMatch[1]);
-    let text = decodeHtmlEntities(linkMatch[2].replace(/<[^>]+>/g, '').trim());
+    const url = decodeHtmlEntities(linkMatch[1]);
+    const text = decodeHtmlEntities(linkMatch[2].replace(/<[^>]+>/g, '').trim());
 
     // Skip internal links that aren't papers
     if (url.includes(INTERNAL_DOMAIN) &&

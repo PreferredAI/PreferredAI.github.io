@@ -5,7 +5,7 @@ import { remark } from "remark";
 import html from "remark-html";
 
 export const metadata: Metadata = {
-  title: "About - Preferred.AI",
+  title: "About",
   description:
     "Preferred.AI is a research undertaking at the Singapore Management University (SMU) – School of Computing and Information Systems (SCIS) led by Hady W. Lauw.",
 };

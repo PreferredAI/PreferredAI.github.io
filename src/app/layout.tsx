@@ -4,13 +4,54 @@ import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import TeamPhotos from "@/components/TeamPhotos";
 import { getAllCategories } from "@/lib/markdown-posts";
+import {
+  siteUrl,
+  siteName,
+  siteDescription,
+  defaultOgImage,
+  siteSameAs,
+} from "@/lib/site";
 
 export const metadata: Metadata = {
-  title: "Preferred.AI",
-  description: "Preferences and Recommendations from Data & AI",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: siteName,
+    template: `%s · ${siteName}`,
+  },
+  description: siteDescription,
   icons: {
     icon: "/favi.png",
   },
+  alternates: {
+    types: {
+      "application/rss+xml": "/feed.xml",
+    },
+  },
+  openGraph: {
+    type: "website",
+    siteName,
+    title: siteName,
+    description: siteDescription,
+    url: siteUrl,
+    images: [defaultOgImage],
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteName,
+    description: siteDescription,
+    images: [defaultOgImage],
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteName,
+  url: siteUrl,
+  description: siteDescription,
+  logo: `${siteUrl}${defaultOgImage}`,
+  sameAs: siteSameAs,
 };
 
 export default function RootLayout({
@@ -42,8 +83,22 @@ export default function RootLayout({
             `,
           }}
         />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationJsonLd),
+          }}
+        />
       </head>
       <body className="tech-grid min-h-screen flex flex-col bg-background selection:bg-primary/15 selection:text-primary">
+        {/* Skip link for keyboard / screen-reader users */}
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-lg focus:bg-card focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-primary focus:shadow-lg focus:ring-2 focus:ring-primary"
+        >
+          Skip to main content
+        </a>
+
         {/* Floating Frosted Pill Navbar */}
         <Navigation />
 
@@ -53,7 +108,10 @@ export default function RootLayout({
             <div className="flex flex-col gap-10 py-6 lg:flex-row">
               
               {/* Main Column */}
-              <main className="flex-1 min-w-0 page-fade-in animate-fade-in-up">
+              <main
+                id="main"
+                className="flex-1 min-w-0 page-fade-in animate-fade-in-up"
+              >
                 {children}
               </main>
 
