@@ -43,7 +43,7 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="tech-grid min-h-screen flex flex-col bg-background selection:bg-red-150 selection:text-[#b91c1c]">
+      <body className="tech-grid min-h-screen flex flex-col bg-background selection:bg-primary/15 selection:text-primary">
         {/* Floating Frosted Pill Navbar */}
         <Navigation />
 

@@ -52,7 +52,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
           href={member.link}
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-[#b91c1c] hover:underline"
+          className="text-sm text-primary hover:underline"
         >
           {member.link}
         </a>

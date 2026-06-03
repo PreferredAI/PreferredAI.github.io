@@ -12,7 +12,7 @@
   --popover: 0 0% 100%;
   --popover-foreground: 220 15% 13%;
 
-  --primary: 0 65% 48%; /* Preferred.AI Brand Crimson: #c92a2a */
+  --primary: 0 77% 42%; /* Preferred.AI Brand Crimson: #bd1818 */
   --primary-foreground: 0 0% 100%;
 
   --secondary: 220 10% 94%;
@@ -21,15 +21,15 @@
   --muted: 220 10% 94%;
   --muted-foreground: 220 10% 45%;
 
-  --accent: 0 65% 96%;
-  --accent-foreground: 0 65% 35%;
+  --accent: 0 77% 96%;
+  --accent-foreground: 0 77% 32%;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
 
   --border: 220 15% 91%;
   --input: 220 15% 91%;
-  --ring: 0 65% 48%;
+  --ring: 0 77% 42%;
 
   --radius: 0.75rem;
 }
@@ -44,7 +44,7 @@
   --popover: 222 40% 6.5%;
   --popover-foreground: 220 10% 90%;
 
-  --primary: 0 65% 55%; /* Brighter Crimson for dark contrast: #dc2626 */
+  --primary: 0 77% 42%; /* Preferred.AI Brand Crimson: #bd1818 */
   --primary-foreground: 222 47% 4.5%;
 
   --secondary: 222 20% 12%;
@@ -53,12 +53,12 @@
   --muted: 222 20% 12%;
   --muted-foreground: 220 10% 60%;
 
-  --accent: 0 65% 15%;
-  --accent-foreground: 0 65% 85%;
+  --accent: 0 77% 15%;
+  --accent-foreground: 0 77% 85%;
 
-  --border: 222 20% 14%;
+  --border: 222 20 14%;
   --input: 222 20% 14%;
-  --ring: 0 65% 55%;
+  --ring: 0 77% 42%;
 }
 
 @theme {
@@ -131,14 +131,14 @@
 /* Custom modern technical coordinate grid backing */
 .tech-grid {
   background-image: 
-    linear-gradient(to right, rgba(201, 42, 42, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(201, 42, 42, 0.015) 1px, transparent 1px);
+    linear-gradient(to right, rgba(189, 24, 24, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(189, 24, 24, 0.015) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 .dark .tech-grid {
   background-image: 
-    linear-gradient(to right, rgba(220, 38, 38, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(220, 38, 38, 0.025) 1px, transparent 1px);
+    linear-gradient(to right, rgba(189, 24, 24, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(189, 24, 24, 0.025) 1px, transparent 1px);
 }
 
 /* Scrollbar customization */
@@ -174,7 +174,7 @@
   color: hsl(var(--primary));
 }
 .category-link:hover {
-  color: #9b1c1c;
+  color: hsl(0 77% 32%);
 }
 
 .post-date {

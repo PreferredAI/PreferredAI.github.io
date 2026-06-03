@@ -9,7 +9,7 @@ import { PUBLICATION_CATEGORIES } from "@/data/publicationCategories";
 // ----------------------------------------------------
 const SearchIcon = () => (
   <svg
-    className="h-4 w-4 text-muted-foreground group-focus-within:text-red-600 transition-colors"
+    className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors"
     fill="none"
     viewBox="0 0 24 24"
     stroke="currentColor"
@@ -25,7 +25,7 @@ const SearchIcon = () => (
 
 const PdfIcon = () => (
   <svg
-    className="h-3.5 w-3.5 text-red-500"
+    className="h-3.5 w-3.5 text-primary"
     fill="none"
     stroke="currentColor"
     strokeWidth="2.5"
@@ -78,7 +78,7 @@ const SlidesIcon = () => (
 
 const VideoIcon = () => (
   <svg
-    className="h-3.5 w-3.5 text-red-600"
+    className="h-3.5 w-3.5 text-primary"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
@@ -136,13 +136,13 @@ const LinkBadge: React.FC<{ link: StructuredLink }> = ({ link }) => {
   const getHoverStyles = () => {
     switch (link.type) {
       case "pdf":
-        return "hover:border-red-300 dark:hover:border-red-900/60 hover:bg-red-50/45 dark:hover:bg-red-950/20 hover:text-red-700 dark:hover:text-red-400";
+        return "hover:border-primary/30 dark:hover:border-primary/45 hover:bg-primary/5 dark:hover:bg-primary/10 hover:text-primary";
       case "code":
         return "hover:border-gray-400 dark:hover:border-gray-700 hover:bg-gray-100 dark:hover:bg-white/5 hover:text-gray-900 dark:hover:text-white";
       case "slides":
         return "hover:border-amber-300 dark:hover:border-amber-900/60 hover:bg-amber-50/45 dark:hover:bg-amber-950/20 hover:text-amber-700 dark:hover:text-amber-400";
       case "video":
-        return "hover:border-red-400 dark:hover:border-red-900/60 hover:bg-red-50 dark:hover:bg-red-950/20 hover:text-red-700 dark:hover:text-red-400";
+        return "hover:border-primary/40 dark:hover:border-primary/45 hover:bg-primary/5 dark:hover:bg-primary/10 hover:text-primary";
       default:
         return "hover:border-blue-300 dark:hover:border-blue-900/60 hover:bg-blue-50/45 dark:hover:bg-blue-950/20 hover:text-blue-700 dark:hover:text-blue-400";
     }
@@ -226,7 +226,7 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
           placeholder="Search papers by keywords, venue, authors or year..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="w-full pl-11 pr-12 py-3 rounded-2xl border border-border/80 bg-card/70 text-foreground placeholder:text-muted-foreground shadow-sm focus:outline-none focus:ring-4 focus:ring-red-500/10 focus:border-red-500/80 transition-all duration-300 text-sm font-medium"
+          className="w-full pl-11 pr-12 py-3 rounded-2xl border border-border/80 bg-card/70 text-foreground placeholder:text-muted-foreground shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/80 transition-all duration-300 text-sm font-medium"
         />
         {search && (
           <button
@@ -341,7 +341,7 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
                         </p>
 
                         {/* Venue */}
-                        <p className="text-xs font-semibold text-red-750 dark:text-red-400/80 leading-normal">
+                        <p className="text-xs font-semibold text-primary leading-normal">
                           {pub.venue}
                         </p>
 

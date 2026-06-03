@@ -168,10 +168,10 @@ export default function Navigation() {
 
           <Link
             href="/join"
-            className={`inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm shadow-red-700/10 ${
+            className={`inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm shadow-primary/10 ${
               isActive("/join")
-                ? "bg-[#9b1c1c] shadow-inner"
-                : "bg-red-600 hover:bg-red-700"
+                ? "bg-primary/85 shadow-inner"
+                : "bg-primary hover:bg-primary/90"
             }`}
           >
             JOIN US
@@ -281,10 +281,10 @@ export default function Navigation() {
           <Link
             href="/join"
             onClick={closeMobileMenu}
-            className={`mt-auto text-center py-3 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all shadow-md shadow-red-700/10 ${
+            className={`mt-auto text-center py-3 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all shadow-md shadow-primary/10 ${
               isActive("/join")
-                ? "bg-[#9b1c1c]"
-                : "bg-red-600 hover:bg-red-700"
+                ? "bg-primary/85"
+                : "bg-primary hover:bg-primary/90"
             }`}
           >
             JOIN US

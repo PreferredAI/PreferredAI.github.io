@@ -38,8 +38,8 @@ export function PostCard({ post, priority }: PostCardProps) {
             />
           </div>
         ) : (
-          <div className="aspect-video w-full bg-gradient-to-br from-red-950/10 to-card flex items-center justify-center border border-border/40 rounded-2xl">
-            <span className="text-[10px] font-bold text-red-700/60 dark:text-red-400/60 tracking-wider">PREFERRED.AI</span>
+          <div className="aspect-video w-full bg-gradient-to-br from-primary/10 to-card flex items-center justify-center border border-border/40 rounded-2xl">
+            <span className="text-[10px] font-bold text-primary/60 tracking-wider">PREFERRED.AI</span>
           </div>
         )}
       </Link>
@@ -69,7 +69,7 @@ export function PostCard({ post, priority }: PostCardProps) {
           )}
 
           {/* Title */}
-          <h2 className="text-lg sm:text-xl font-extrabold leading-tight text-foreground group-hover:text-[#b91c1c] transition-colors duration-200">
+          <h2 className="text-lg sm:text-xl font-extrabold leading-tight text-foreground group-hover:text-primary transition-colors duration-200">
             <Link href={`/blog/${post.slug}`}>
               {post.title}
             </Link>
