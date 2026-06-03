@@ -16,31 +16,31 @@ export default function JoinPage() {
       </h2>
 
       {/* 3x3 Grid */}
-      <div className="grid grid-cols-3 gap-0 mb-8 border border-gray-300">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-px mb-8 bg-border border border-border rounded-2xl overflow-hidden shadow-sm shadow-black/[0.01]">
         {/* Row 1 */}
-        <div className="border-r border-b border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">📰</span>
+            <span className="text-4xl">📰</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We <em>publish</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             We hold ourselves to a high standard. Our{" "}
-            <a href="/publications" className="text-red-600 hover:underline">
+            <a href="/publications" className="text-primary hover:underline font-semibold">
               publications
             </a>{" "}
             appear in top-tier venues. A couple have won awards:{" "}
             <a
               href="https://ijcai20.org/distinguished-papers/"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               IJCAI-PRICAI 2020 Distinguished Paper
             </a>{" "}
             and{" "}
             <a
               href="https://aaai.org/about-aaai/aaai-awards/aaai-conference-paper-awards-and-recognition/"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               AAAI 2014 Honorable Mention
             </a>
@@ -48,18 +48,18 @@ export default function JoinPage() {
           </p>
         </div>
 
-        <div className="border-r border-b border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">⭐</span>
+            <span className="text-4xl">⭐</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We <em>achieve</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             Our PhD candidates have been winning{" "}
             <a
               href="https://graduatestudies.smu.edu.sg/phd/research-achievements/presidential-doctoral-fellowship"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               SMU Presidential Doctoral Fellowships
             </a>{" "}
@@ -67,32 +67,32 @@ export default function JoinPage() {
           </p>
         </div>
 
-        <div className="border-b border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">⚡</span>
+            <span className="text-4xl">⚡</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We seek <em>impact</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             We{" "}
             <a
               href="https://github.com/PreferredAI/cornac"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               develop
             </a>{" "}
             useful libraries and learning materials,{" "}
             <a
               href="/category/education"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               teach
             </a>{" "}
             others, and{" "}
             <a
               href="/category/presentation"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               present
             </a>{" "}
@@ -101,45 +101,45 @@ export default function JoinPage() {
         </div>
 
         {/* Row 2 */}
-        <div className="border-r border-b border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">🖥️</span>
+            <span className="text-4xl">🖥️</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We are <em>equipped</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             We have resources: CPU servers, GPU servers, interesting datasets,
             &lt;insert what you need&gt;. You will have what you need to pursue
             high-quality research.
           </p>
         </div>
 
-        <div className="border-r border-b border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">🌍</span>
+            <span className="text-4xl">🌍</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We are <em>diverse</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             Our members come from all over the world: Singapore, Indonesia,
             Vietnam, China, Russia, France, Algeria, Greece, Philippines, Sri
             Lanka, &lt;insert your country here&gt;. You will fit in.
           </p>
         </div>
 
-        <div className="border-b border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">🚀</span>
+            <span className="text-4xl">🚀</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We are <em>up-and-coming</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             <a
               href="https://csrankings.org/#/index?ai&vision&mlmining&nlp&inforet&world"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               CSRankings.org
             </a>{" "}
@@ -149,18 +149,18 @@ export default function JoinPage() {
         </div>
 
         {/* Row 3 */}
-        <div className="border-r border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">🎓</span>
+            <span className="text-4xl">🎓</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We plan <em>ahead</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             Our{" "}
             <a
               href="https://www.hadylauw.com/group/alumni"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               graduates
             </a>{" "}
@@ -170,39 +170,39 @@ export default function JoinPage() {
           </p>
         </div>
 
-        <div className="border-r border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">💰</span>
+            <span className="text-4xl">💰</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We <em>pay</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             PhD candidates receive{" "}
             <a
               href="https://graduatestudies.smu.edu.sg/phd/awards-funding/scholarships"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               scholarships
             </a>
             . Most other positions are paid{" "}
-            <a className="text-red-600 hover:underline">competitive salaries</a>
+            <a className="text-primary hover:underline font-semibold">competitive salaries</a>
             . You will have enough.
           </p>
         </div>
 
-        <div className="border-gray-300 p-6 bg-gray-100">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
           <div className="text-center mb-4">
-            <span className="text-4xl text-red-600">🎉</span>
+            <span className="text-4xl">🎉</span>
           </div>
-          <h3 className="text-center font-bold mb-4">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We <em>play</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             We are a dynamic, close-knit{" "}
             <a
               href="https://www.hadylauw.com/group"
-              className="text-red-600 hover:underline"
+              className="text-primary hover:underline font-semibold"
             >
               group
             </a>
@@ -212,15 +212,15 @@ export default function JoinPage() {
       </div>
 
       {/* 1x1 Table */}
-      <div className="border border-gray-300 mb-8">
-        <div className="p-6 bg-gray-100 text-center">
+      <div className="border border-border rounded-2xl overflow-hidden mb-8 shadow-sm shadow-black/[0.01]">
+        <div className="p-6 bg-muted/40 dark:bg-card/20 text-center">
           <div className="mb-4">
-            <span className="text-4xl text-red-600">👍</span>
+            <span className="text-4xl">👍</span>
           </div>
-          <h3 className="font-bold mb-4">
+          <h3 className="font-bold mb-4 text-foreground">
             We do what&apos;s <em>right</em>
           </h3>
-          <p className="text-sm leading-relaxed">
+          <p className="text-sm leading-relaxed text-muted-foreground">
             We do the right things and get them right. We get the right people
             and do right by them. You will make the right choice.
           </p>
@@ -230,7 +230,7 @@ export default function JoinPage() {
       <h3 className="text-2xl font-bold mb-4 text-center">
         <a
           href="mailto:hadywlauw@smu.edu.sg"
-          className="text-red-600 hover:underline"
+          className="text-primary hover:underline"
         >
           Email
         </a>{" "}
