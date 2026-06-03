@@ -66,7 +66,7 @@ async function optimizeImage(srcRelativePath: string) {
       }
 
       await transformer.toFile(destAbsolutePath);
-      console.log(`✅ Optimized: /${srcRelativePath} ➡️ /${destRelativePath}`);
+      // console.log(`✅ Optimized: /${srcRelativePath} ➡️ /${destRelativePath}`);
     } catch (error) {
       console.error(`❌ Failed to optimize /${srcRelativePath} at width ${width}:`, error);
     }
@@ -81,7 +81,7 @@ async function main() {
   }
 
   console.log(`🔍 Found ${allImages.length} images to optimize.`);
-  
+
   const startTime = Date.now();
   for (const relativePath of allImages) {
     await optimizeImage(relativePath);

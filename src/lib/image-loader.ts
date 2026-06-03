@@ -6,18 +6,8 @@ export default function imageLoader({ src, width }: ImageLoaderProps) {
     return src;
   }
 
-  // Base path from next.config.ts (if running on GitHub Pages)
-  const isProd = process.env.NODE_ENV === "production";
-  const isGitHubPages = process.env.GITHUB_PAGES === "true";
-  const basePath = isProd && isGitHubPages ? "/preferred-ai-nextjs" : "";
-
-  // Normalize src to remove basePath if present (prevent double nesting)
-  let cleanSrc = src;
-  if (basePath && cleanSrc.startsWith(basePath)) {
-    cleanSrc = cleanSrc.slice(basePath.length);
-  }
-
   // Ensure cleanSrc starts with a slash
+  let cleanSrc = src;
   if (!cleanSrc.startsWith("/")) {
     cleanSrc = "/" + cleanSrc;
   }
@@ -29,5 +19,5 @@ export default function imageLoader({ src, width }: ImageLoaderProps) {
   }
 
   // Return the path pointing to the static optimized directory
-  return `${basePath}/optimized/${width}${cleanSrc}`;
+  return `/optimized/${width}${cleanSrc}`;
 }
