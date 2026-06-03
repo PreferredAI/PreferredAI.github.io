@@ -41,6 +41,7 @@ export default async function PostPage({
             src={post.featuredImage}
             alt={post.title}
             fill
+            sizes="(max-width: 1024px) 100vw, 896px"
             className="object-cover"
             priority
           />
