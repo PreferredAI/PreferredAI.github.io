@@ -6,6 +6,11 @@ export interface TeamPhoto {
 
 export const TEAM_PHOTOS: TeamPhoto[] = [
   {
+    url: "/team/2026-05.jpg",
+    date: "May 2026",
+    location: "Real Food at Orchard Central",
+  },
+  {
     url: "/team/2025-07.jpg",
     date: "July 2025",
     location: "Clove at Swissotel",
