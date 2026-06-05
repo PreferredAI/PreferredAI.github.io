@@ -12,7 +12,8 @@
     "start": "next start",
     "lint": "eslint",
     "export": "npx tsx scripts/optimize-all-images.ts && next build",
-    "crawl:publications": "npx tsx scripts/crawl-publications.ts"
+    "crawl:publications": "npx tsx scripts/crawl-publications.ts",
+    "crawl:team": "npx tsx scripts/crawl-team.ts"
   },
   "dependencies": {
     "@tailwindcss/typography": "^0.5.19",

@@ -1,0 +1,63 @@
+# Workflow to crawl team photos weekly and update the site
+name: Update Team Photos
+
+on:
+  # Run every Sunday at 01:00 UTC (1 hour after publications crawler to avoid conflicts)
+  schedule:
+    - cron: "0 1 * * 0"
+
+  push:
+    paths:
+      - ".github/workflows/update-team-photos.yml"
+      - "scripts/crawl-team.ts"
+
+  # Allow manual trigger
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  crawl-and-update:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run team photos crawler
+        run: pnpm crawl:team
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          git add src/data/teamPhotos.ts public/team
+          git diff --cached --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -m "chore: update team photos from hadylauw.com [automated]"
+          git push
+
+      - name: Trigger deploy workflow
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          echo "Changes detected, deployment will be triggered by the push to main branch"
