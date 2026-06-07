@@ -110,7 +110,7 @@ export default function RootLayout({
               {/* Main Column */}
               <main
                 id="main"
-                className="flex-1 min-w-0 page-fade-in animate-fade-in-up"
+                className="flex-1 min-w-0 motion-safe:animate-fade-in"
               >
                 {children}
               </main>
@@ -121,7 +121,7 @@ export default function RootLayout({
                   
                   {/* Team Card Carousel Container */}
                   <div className="bg-card/80 border border-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.01]">
-                    <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-gray-400 select-none">
+                    <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground select-none">
                       The Team
                     </h3>
                     <TeamPhotos />
@@ -129,7 +129,7 @@ export default function RootLayout({
 
                   {/* Categories Card Container */}
                   <div className="bg-card/80 border border-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.01]">
-                    <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground/60 select-none">
+                    <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground select-none">
                       Categories
                     </h3>
                     <ul className="space-y-1.5">
@@ -160,7 +160,7 @@ export default function RootLayout({
         {/* Global Sleek Footer */}
         <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm py-8 mt-12 select-none">
           <div className="container max-w-7xl text-center">
-            <p className="text-xs font-semibold text-gray-500">
+            <p className="text-xs font-semibold text-muted-foreground">
               Preferred.AI © {new Date().getFullYear()}. All Rights Reserved.
             </p>
           </div>

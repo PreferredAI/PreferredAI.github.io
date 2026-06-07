@@ -6,6 +6,12 @@ export default function imageLoader({ src, width }: ImageLoaderProps) {
     return src;
   }
 
+  // In development, serve the original unoptimized images directly with width query to satisfy Next.js check
+  if (process.env.NODE_ENV === "development") {
+    const separator = src.includes("?") ? "&" : "?";
+    return `${src}${separator}w=${width}`;
+  }
+
   // Ensure cleanSrc starts with a slash
   let cleanSrc = src;
   if (!cleanSrc.startsWith("/")) {

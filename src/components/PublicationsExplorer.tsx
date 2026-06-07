@@ -1,8 +1,16 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import { Publication, YearSection } from "@/data/publications";
 import { PUBLICATION_CATEGORIES } from "@/data/publicationCategories";
+import {
+  SearchIcon,
+  PdfIcon,
+  CodeIcon,
+  SlidesIcon,
+  VideoIcon,
+  LinkIcon,
+} from "./icons";
 
 // Lowercase and strip diacritics so search is case- and accent-insensitive.
 const normalizeText = (text: string) =>
@@ -10,110 +18,6 @@ const normalizeText = (text: string) =>
     .toLowerCase()
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "");
-
-// ----------------------------------------------------
-// Custom Zero-Dependency Responsive SVG Icon Components
-// ----------------------------------------------------
-const SearchIcon = () => (
-  <svg
-    className="h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke="currentColor"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth={2}
-      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-    />
-  </svg>
-);
-
-const PdfIcon = () => (
-  <svg
-    className="h-3.5 w-3.5 text-primary"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2.5"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"
-    />
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M9 9h1.5M9 13h6M9 17h6"
-    />
-  </svg>
-);
-
-const CodeIcon = () => (
-  <svg
-    className="h-3.5 w-3.5 text-gray-700 dark:text-gray-400"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"
-    />
-  </svg>
-);
-
-const SlidesIcon = () => (
-  <svg
-    className="h-3.5 w-3.5 text-amber-600"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M7 12l3-3 3 3 4-4M8 21h8M12 17v4M3 4h18M4 4v10a2 2 0 002 2h12a2 2 0 002-2V4"
-    />
-  </svg>
-);
-
-const VideoIcon = () => (
-  <svg
-    className="h-3.5 w-3.5 text-primary"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-    />
-  </svg>
-);
-
-const LinkIcon = () => (
-  <svg
-    className="h-3.5 w-3.5 text-blue-600"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    viewBox="0 0 24 24"
-  >
-    <path
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"
-    />
-  </svg>
-);
 
 // ----------------------------------------------------
 // Sub-Components for Badge Rendering
@@ -178,6 +82,23 @@ interface ExplorerProps {
 export default function PublicationsExplorer({ data }: ExplorerProps) {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("All");
+  const searchInputRef = useRef<HTMLInputElement>(null);
+
+  // Focus search input when "/" is pressed
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (
+        e.key === "/" &&
+        document.activeElement?.tagName !== "INPUT" &&
+        document.activeElement?.tagName !== "TEXTAREA"
+      ) {
+        e.preventDefault();
+        searchInputRef.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Helper keyword matcher
   const matchesTab = (pub: Publication, tabId: string) => {
@@ -232,9 +153,10 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
           <SearchIcon />
         </div>
         <input
+          ref={searchInputRef}
           type="text"
           aria-label="Search publications by keyword, venue, author, or year"
-          placeholder="Search papers by keywords, venue, authors or year..."
+          placeholder="Search papers by keywords, venue, authors or year... (Press '/' to search)"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="w-full pl-11 pr-12 py-3 rounded-2xl border border-border/80 bg-card/70 text-foreground placeholder:text-muted-foreground shadow-sm focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/80 transition-all duration-300 text-sm font-medium"
@@ -250,10 +172,16 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
       </div>
 
       {/* 2. Categorization Pills Bar */}
-      <div className="flex flex-wrap gap-2 border-b border-border/40 pb-4 select-none">
+      <div
+        role="tablist"
+        aria-label="Publication Categories"
+        className="flex flex-wrap gap-2 border-b border-border/40 pb-4 select-none"
+      >
         {PUBLICATION_CATEGORIES.map((tab) => (
           <button
             key={tab.id}
+            role="tab"
+            aria-selected={activeTab === tab.id}
             onClick={() => setActiveTab(tab.id)}
             className={`px-4 py-1.5 rounded-full text-xs font-bold border transition-all duration-200 cursor-pointer ${
               activeTab === tab.id
@@ -277,7 +205,7 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
               </h2>
 
               {/* timeline container list */}
-              <ul className="ml-4 border-l border-border/70 relative space-y-2">
+              <ul className="ml-4 border-l border-border/70 relative">
                 {section.publications.map((pub, pubIndex) => {
                   // Dynamically map publication links into StructuredLink layout
                   const links: StructuredLink[] = [];
@@ -319,15 +247,19 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
 
                   return (
                     <li key={pubIndex} className="relative ml-7 pb-6 group">
-                      {/* Timeline concentric indicator bullet */}
-                      <div className="absolute -left-[33px] top-1.5 z-10 flex items-center justify-center">
-                        <div className="size-2.5 rounded-full border-2 border-primary bg-background flex items-center justify-center relative shadow-sm transition-transform duration-300 group-hover:scale-125">
-                          <span className="absolute size-1.5 rounded-full bg-primary" />
-                        </div>
+                      {/* Timeline concentric indicator bullet (optically centered on the border line) */}
+                      <div className="absolute -left-[28px] -translate-x-1/2 w-6 top-[7px] z-10 flex items-center justify-center">
+                        {pubIndex === 0 ? (
+                          <div className="size-2.5 rounded-full border-2 border-primary bg-background flex items-center justify-center relative shadow-sm transition-transform duration-300 group-hover:scale-125">
+                            <span className="absolute size-1.5 rounded-full bg-primary" />
+                          </div>
+                        ) : (
+                          <div className="size-1.5 rounded-full bg-border dark:bg-zinc-800 border border-transparent group-hover:border-primary group-hover:bg-primary transition-all duration-300" />
+                        )}
                       </div>
 
                       {/* Content Card */}
-                      <div className="flex flex-col gap-1.5 pl-1.5">
+                      <div className="flex flex-col gap-1 pl-1.5">
                         {/* Title */}
                         <h3 className="font-bold text-foreground text-sm sm:text-base leading-snug group-hover:text-primary transition-colors duration-200">
                           {pub.pdfUrl ? (
@@ -365,7 +297,7 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
 
                         {/* Link badges row */}
                         {links.length > 0 && (
-                          <div className="flex flex-wrap gap-2 mt-2">
+                          <div className="flex flex-wrap gap-2 mt-3">
                             {links.map((link, idx) => (
                               <LinkBadge key={idx} link={link} />
                             ))}

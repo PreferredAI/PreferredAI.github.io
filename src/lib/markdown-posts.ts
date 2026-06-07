@@ -42,13 +42,30 @@ function getAllPostFiles(): string[] {
   return fs.readdirSync(postsDirectory).filter(file => file.endsWith('.md'));
 }
 
+interface CacheEntry {
+  post: MarkdownPost;
+  mtime: number;
+}
+
+const postCache = new Map<string, CacheEntry>();
+
 function parsePostFile(filename: string): MarkdownPost {
-  const slug = filename.replace(/\.md$/, '');
   const fullPath = path.join(postsDirectory, filename);
+  
+  // Use statSync to check modification time for auto-invalidation
+  const stats = fs.statSync(fullPath);
+  const mtime = stats.mtimeMs;
+
+  const cached = postCache.get(filename);
+  if (cached && cached.mtime === mtime) {
+    return cached.post;
+  }
+
+  const slug = filename.replace(/\.md$/, '');
   const fileContents = fs.readFileSync(fullPath, 'utf8');
   const { data, content } = matter(fileContents);
 
-  return {
+  const post: MarkdownPost = {
     slug,
     title: data.title || '',
     date: data.date || '',
@@ -61,9 +78,16 @@ function parsePostFile(filename: string): MarkdownPost {
     seoDescription: data.seoDescription || data.excerpt || '',
     content,
   };
+
+  postCache.set(filename, { post, mtime });
+  return post;
 }
 
-export function getAllPosts(page = 1, limit = 10): { posts: PostPreview[]; total: number; pages: number } {
+export function getAllPosts(
+  page = 1,
+  limit = 10,
+  options?: { firstPageLimit?: number }
+): { posts: PostPreview[]; total: number; pages: number } {
   const files = getAllPostFiles();
   const allPosts = files.map(parsePostFile);
 
@@ -71,9 +95,23 @@ export function getAllPosts(page = 1, limit = 10): { posts: PostPreview[]; total
   allPosts.sort((a, b) => (new Date(b.date).getTime() - new Date(a.date).getTime()));
 
   const total = allPosts.length;
-  const pages = Math.ceil(total / limit);
-  const start = (page - 1) * limit;
-  const end = start + limit;
+  const firstPageLimit = options?.firstPageLimit ?? limit;
+
+  let pages = 1;
+  if (total > firstPageLimit) {
+    pages = 1 + Math.ceil((total - firstPageLimit) / limit);
+  }
+
+  let start = 0;
+  let end = limit;
+
+  if (page === 1) {
+    start = 0;
+    end = firstPageLimit;
+  } else {
+    start = firstPageLimit + (page - 2) * limit;
+    end = start + limit;
+  }
 
   const posts = allPosts.slice(start, end).map(post => ({
     slug: post.slug,

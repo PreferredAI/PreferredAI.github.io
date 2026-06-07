@@ -19,9 +19,24 @@ export default function Navigation() {
        must be synced into state after mount (standard hydration guard). */
     setMounted(true);
     const theme = localStorage.getItem("theme");
-    const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const systemDark = window.matchMedia(
+      "(prefers-color-scheme: dark)",
+    ).matches;
     setIsDark(theme === "dark" || (!theme && systemDark));
     /* eslint-enable react-hooks/set-state-in-effect */
+  }, []);
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setIsMobileMenuOpen(false);
+        setIsAppsOpen(false);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -60,30 +75,39 @@ export default function Navigation() {
 
   return (
     <header className="fixed top-4 inset-x-0 z-50 mx-auto w-full max-w-[1360px] px-4 select-none">
-      <nav className={`flex items-center justify-between w-full px-4 sm:px-6 py-2 rounded-full transition-all duration-300 ${
-        isMobileMenuOpen
-          ? "bg-transparent border-transparent shadow-none backdrop-blur-none"
-          : "bg-card/75 dark:bg-card/45 backdrop-blur-md border border-border/50 dark:border-white/5 shadow-md shadow-black/[0.02]"
-      }`}>
-        
-        {/* Brand Logo Section */}
-        <Link 
-          href="/" 
-          className={`hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 ${
-            isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
-          }`}
-        >
-          <Image
-            src={BrandLogo}
-            alt="Preferred.AI"
-            className="h-9 w-auto object-contain rounded-md"
-            priority
-            unoptimized
-          />
-        </Link>
+      <nav
+        className={`flex items-center justify-between w-full px-4 sm:px-6 py-2 rounded-full transition-all duration-300 ${
+          isMobileMenuOpen
+            ? "bg-transparent border-transparent shadow-none backdrop-blur-none"
+            : "bg-card/75 dark:bg-card/45 backdrop-blur-md border border-border/50 dark:border-white/5 shadow-md shadow-black/[0.02]"
+        }`}
+      >
+        {/* Left: brand logo + persistent tagline (xl and up) */}
+        <div className="flex items-center gap-3">
+          <Link
+            href="/"
+            className={`hover:scale-105 active:scale-95 transition-all duration-300 flex items-center gap-2 ${
+              isMobileMenuOpen ? "opacity-0 pointer-events-none" : "opacity-100"
+            }`}
+          >
+            <Image
+              src={BrandLogo}
+              alt="Preferred.AI"
+              className="h-9 w-auto object-contain rounded-md"
+              priority
+              unoptimized
+            />
+          </Link>
+          <span aria-hidden="true" className="hidden xl:block h-5 w-px bg-border" />
+          <span className="hidden xl:block text-sm font-medium tracking-tight text-muted-foreground whitespace-nowrap">
+            Preferences and Recommendations from Data &amp; AI
+          </span>
+        </div>
 
-        {/* Center Section: Navigation Links (Desktop) */}
-        <div className="hidden md:flex items-center gap-x-1.5 lg:gap-x-2.5">
+        {/* Right cluster: nav links + apps + actions, grouped to the right */}
+        <div className="hidden md:flex items-center gap-x-3 lg:gap-x-4">
+          {/* Navigation Links (Desktop) */}
+          <div className="flex items-center gap-x-1.5 lg:gap-x-2.5">
           {navLinks.map((link) => {
             const active = isActive(link.href);
             return (
@@ -91,8 +115,8 @@ export default function Navigation() {
                 key={link.href}
                 href={link.href}
                 className={`px-4 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 relative ${
-                  active 
-                    ? "text-primary" 
+                  active
+                    ? "text-primary"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
                 }`}
               >
@@ -105,15 +129,24 @@ export default function Navigation() {
           })}
 
           {/* Interactive Apps Dropdown Popover */}
-          <div 
+          <div
             className="relative"
             onMouseEnter={() => setIsAppsOpen(true)}
             onMouseLeave={() => setIsAppsOpen(false)}
+            onFocus={() => setIsAppsOpen(true)}
+            onBlur={(e) => {
+              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                setIsAppsOpen(false);
+              }
+            }}
           >
-            <button 
+            <button
+              type="button"
+              aria-haspopup="true"
+              aria-expanded={isAppsOpen}
               className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 ${
-                isAppsOpen 
-                  ? "text-foreground bg-gray-100/50 dark:bg-white/5" 
+                isAppsOpen
+                  ? "text-foreground bg-gray-100/50 dark:bg-white/5"
                   : "text-muted-foreground hover:text-foreground hover:bg-gray-100/50 dark:hover:bg-white/5"
               }`}
             >
@@ -124,24 +157,29 @@ export default function Navigation() {
                 viewBox="0 0 24 24"
                 stroke="currentColor"
               >
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M19 9l-7 7-7-7"
+                />
               </svg>
             </button>
-            
+
             {/* Popover Dropdown */}
-            <div 
-              className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-32 transition-all duration-300 origin-top ${
-                isAppsOpen 
-                  ? "opacity-100 translate-y-0 visible scale-100" 
+            <div
+              className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-48 transition-all duration-300 origin-top ${
+                isAppsOpen
+                  ? "opacity-100 translate-y-0 visible scale-100"
                   : "opacity-0 -translate-y-1 invisible scale-95"
               }`}
             >
-              <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-border/60 p-1 shadow-lg ring-1 ring-black/5 dark:ring-white/5 overflow-hidden">
+              <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-border/60 p-1.5 shadow-lg ring-1 ring-black/5 dark:ring-white/5 overflow-hidden">
                 <a
                   href="https://cornac.preferred.ai"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center py-2 px-3 text-sm font-bold text-foreground/80 hover:text-primary hover:bg-primary/10 dark:hover:bg-white/5 rounded-xl transition-all"
+                  className="flex items-center justify-center py-2.5 px-4 text-sm font-bold text-foreground/80 hover:text-primary hover:bg-primary/10 dark:hover:bg-white/5 rounded-xl transition-all"
                 >
                   Cornac
                 </a>
@@ -150,21 +188,47 @@ export default function Navigation() {
           </div>
         </div>
 
-        {/* Right Section: Theme Toggle & Join CTA button (Desktop) */}
-        <div className="hidden md:flex items-center gap-3">
-          {mounted && (
+          {/* Theme Toggle & Join CTA button (Desktop) */}
+          <div className="flex items-center gap-3">
+          {!mounted ? (
+            /* Reserve the toggle's footprint pre-hydration to avoid layout shift */
+            <div aria-hidden="true" className="p-1.5">
+              <div className="h-4.5 w-4.5" />
+            </div>
+          ) : (
             <button
+              type="button"
               onClick={toggleTheme}
               className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5 transition-all cursor-pointer hover:rotate-12 active:scale-90"
               aria-label="Toggle Theme"
             >
               {isDark ? (
-                <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                <svg
+                  className="h-4.5 w-4.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+                  />
                 </svg>
               ) : (
-                <svg className="h-4.5 w-4.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                <svg
+                  className="h-4.5 w-4.5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                  />
                 </svg>
               )}
             </button>
@@ -180,11 +244,15 @@ export default function Navigation() {
           >
             JOIN US
           </Link>
+          </div>
         </div>
 
         {/* Mobile Menu Button (Hamburger Icon that animates into "X") */}
         <button
+          type="button"
           onClick={toggleMobileMenu}
+          aria-expanded={isMobileMenuOpen}
+          aria-controls="mobile-nav-menu"
           className="flex md:hidden flex-col gap-1.5 p-2 rounded-full hover:bg-muted dark:hover:bg-white/5 transition-colors relative z-50 cursor-pointer"
           aria-label="Toggle menu"
         >
@@ -204,11 +272,10 @@ export default function Navigation() {
             }`}
           />
         </button>
-
       </nav>
 
       {/* Mobile Navigation Panel */}
-      <div 
+      <div
         className={`fixed inset-0 z-40 md:hidden transition-all duration-500 ${
           isMobileMenuOpen ? "opacity-100 visible" : "opacity-0 invisible"
         }`}
@@ -220,7 +287,8 @@ export default function Navigation() {
         />
 
         {/* Drawer Menu Panel */}
-        <nav 
+        <nav
+          id="mobile-nav-menu"
           className={`fixed right-0 top-0 h-full w-72 bg-white/95 dark:bg-zinc-950/95 backdrop-blur-md shadow-2xl border-l border-border/60 flex flex-col p-6 pt-24 gap-4 transition-transform duration-500 cubic-bezier(0.16, 1, 0.3, 1) ${
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           }`}
@@ -262,19 +330,42 @@ export default function Navigation() {
           {/* Theme Toggle for Mobile */}
           {mounted && (
             <div className="flex items-center justify-between border-t border-border/60 pt-4 mt-2 px-4 select-none">
-              <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider">Theme</span>
+              <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider">
+                Theme
+              </span>
               <button
+                type="button"
                 onClick={toggleTheme}
                 className="p-1.5 rounded-full text-muted-foreground hover:text-foreground bg-muted dark:bg-white/5 transition-all cursor-pointer"
                 aria-label="Toggle Theme"
               >
                 {isDark ? (
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z" />
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+                    />
                   </svg>
                 ) : (
-                  <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    />
                   </svg>
                 )}
               </button>

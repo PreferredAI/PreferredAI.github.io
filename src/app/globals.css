@@ -31,6 +31,10 @@
   --input: 220 15% 91%;
   --ring: 0 77% 42%;
 
+  /* Links: brand crimson at rest (~6.3:1 on the near-white bg), deeper on hover */
+  --link: 0 77% 42%;
+  --link-hover: 0 77% 32%;
+
   --radius: 0.75rem;
 }
 
@@ -56,9 +60,14 @@
   --accent: 0 77% 15%;
   --accent-foreground: 0 77% 85%;
 
-  --border: 222 20 14%;
+  --border: 222 20% 14%;
   --input: 222 20% 14%;
   --ring: 0 77% 42%;
+
+  /* Full crimson only clears ~3:1 on the near-black bg, so links lift to a
+     lighter crimson at rest (~6:1) and brighten further on hover. */
+  --link: 0 80% 66%;
+  --link-hover: 0 85% 70%;
 }
 
 @theme {
@@ -133,10 +142,10 @@
 
   a {
     @apply transition-colors duration-200;
-    color: hsl(var(--primary));
+    color: hsl(var(--link));
   }
   a:hover {
-    color: #1e3a8a; /* Darker navy hover color */
+    color: hsl(var(--link-hover));
   }
 
   /* Visible keyboard focus ring for interactive elements */
@@ -149,6 +158,43 @@
     outline: 2px solid hsl(var(--ring));
     outline-offset: 2px;
     border-radius: 4px;
+  }
+}
+
+/* Homepage feed entrance: featured card leads, grid cards follow in sequence.
+   Authored under no-preference so reduced-motion users get a visible resting
+   state (opacity:1) and the section never ships blank. */
+@media (prefers-reduced-motion: no-preference) {
+  .feed-feature {
+    opacity: 0;
+    animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  .feed-grid > * {
+    opacity: 0;
+    animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+  }
+  /* Bounded stagger: caps at ~0.38s so a full page of posts never feels slow */
+  .feed-grid > *:nth-child(1) { animation-delay: 0.08s; }
+  .feed-grid > *:nth-child(2) { animation-delay: 0.14s; }
+  .feed-grid > *:nth-child(3) { animation-delay: 0.20s; }
+  .feed-grid > *:nth-child(4) { animation-delay: 0.26s; }
+  .feed-grid > *:nth-child(5) { animation-delay: 0.32s; }
+  .feed-grid > *:nth-child(n+6) { animation-delay: 0.38s; }
+}
+
+/* Reduced-motion safety net: collapse every animation/transition to instant.
+   PRODUCT.md requires reduced-motion support; this covers hovers, the page
+   fade, the team carousel, and anything added later. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    animation-delay: 0ms !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
@@ -198,7 +244,7 @@
   color: hsl(var(--primary));
 }
 .category-link:hover {
-  color: hsl(0 77% 32%);
+  color: hsl(var(--link-hover));
 }
 
 .post-date {

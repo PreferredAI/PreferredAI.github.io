@@ -17,7 +17,7 @@ export default async function PaginatedHomePage({ params }: PageProps) {
     notFound();
   }
 
-  const { posts, pages } = await getAllPosts(currentPage, 10);
+  const { posts, pages } = await getAllPosts(currentPage, 10, { firstPageLimit: 9 });
 
   if (currentPage > pages) {
     notFound();
@@ -45,7 +45,7 @@ export default async function PaginatedHomePage({ params }: PageProps) {
 }
 
 export async function generateStaticParams() {
-  const { pages } = await getAllPosts(1, 10);
+  const { pages } = await getAllPosts(1, 10, { firstPageLimit: 9 });
 
   return Array.from({ length: pages }, (_, i) => ({
     page: (i + 1).toString(),

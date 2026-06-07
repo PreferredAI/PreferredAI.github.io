@@ -39,7 +39,7 @@ export function PostCard({ post, priority }: PostCardProps) {
           </div>
         ) : (
           <div className="aspect-video w-full bg-gradient-to-br from-primary/10 to-card flex items-center justify-center border border-border/40 rounded-2xl">
-            <span className="text-[10px] font-bold text-primary/60 tracking-wider">PREFERRED.AI</span>
+            <span className="text-[10px] font-bold text-primary/80 tracking-wider">PREFERRED.AI</span>
           </div>
         )}
       </Link>
@@ -69,7 +69,7 @@ export function PostCard({ post, priority }: PostCardProps) {
           )}
 
           {/* Title */}
-          <h2 className="text-lg sm:text-xl font-extrabold leading-tight text-foreground group-hover:text-primary transition-colors duration-200">
+          <h2 className="text-lg sm:text-xl font-extrabold leading-tight text-balance text-foreground group-hover:text-primary transition-colors duration-200">
             <Link href={`/blog/${post.slug}`}>
               {post.title}
             </Link>
@@ -78,16 +78,16 @@ export function PostCard({ post, priority }: PostCardProps) {
 
         {/* Excerpt Summary */}
         {post.excerpt && (
-          <p className="text-sm sm:text-[15px] leading-relaxed text-muted-foreground line-clamp-3">
+          <p className="text-sm sm:text-[15px] leading-relaxed text-pretty text-muted-foreground line-clamp-3">
             {post.excerpt}
           </p>
         )}
 
         {/* Bottom Panel: Date Metadata */}
         {post.date && (
-          <div className="border-t border-border/50 pt-3 select-none">
-            <time dateTime={post.date} className="text-xs font-bold text-gray-400 dark:text-gray-500 tracking-wider uppercase">
-              🗓️ {formatDate(post.date)}
+          <div className="border-t border-border/50 pt-3">
+            <time dateTime={post.date} className="text-xs font-bold text-muted-foreground tracking-wider uppercase">
+              {formatDate(post.date)}
             </time>
           </div>
         )}
