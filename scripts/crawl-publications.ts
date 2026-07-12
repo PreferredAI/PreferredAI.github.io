@@ -348,7 +348,21 @@ function parsePublicationFromLi(liContent: string): Publication | null {
   let authors = '';
   let venue = '';
 
-  const byIndex = text.search(/,?\s*by\s+/i);
+  let byIndex = -1;
+  if (title) {
+    const titleIndex = text.indexOf(title);
+    if (titleIndex !== -1) {
+      const searchRest = text.slice(titleIndex + title.length);
+      const match = searchRest.match(/,?\s*by\s+/i);
+      if (match && match.index !== undefined) {
+        byIndex = titleIndex + title.length + match.index;
+      }
+    }
+  }
+
+  if (byIndex === -1) {
+    byIndex = text.search(/,?\s*by\s+/i);
+  }
   if (byIndex > 0) {
     const afterBy = text.slice(byIndex).replace(/^,?\s*by\s+/i, '');
 
