@@ -76,7 +76,7 @@ export function FeaturedPostCard({ post }: FeaturedPostCardProps) {
 
           {/* Title */}
           <h2 className="text-xl sm:text-2xl md:text-3xl font-extrabold leading-tight text-balance text-foreground group-hover:text-primary transition-colors duration-200">
-            <Link href={`/blog/${post.slug}`}>
+            <Link href={`/blog/${post.slug}`} className="text-inherit">
               {post.title}
             </Link>
           </h2>

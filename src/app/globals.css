@@ -64,10 +64,9 @@
   --input: 222 20% 14%;
   --ring: 0 77% 42%;
 
-  /* Full crimson only clears ~3:1 on the near-black bg, so links lift to a
-     lighter crimson at rest (~6:1) and brighten further on hover. */
-  --link: 0 80% 66%;
-  --link-hover: 0 85% 70%;
+  /* Unified links using Preferred.AI Brand Crimson */
+  --link: 0 77% 42%;
+  --link-hover: 0 77% 52%;
 }
 
 @theme {

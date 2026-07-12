@@ -267,6 +267,7 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
                               href={pub.pdfUrl}
                               target="_blank"
                               rel="noopener noreferrer"
+                              className="text-inherit"
                             >
                               {pub.title}
                             </a>
