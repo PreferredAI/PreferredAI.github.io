@@ -1,6 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
 import { format } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
 
 interface PostCardProps {
   post: {
@@ -23,9 +23,11 @@ function formatDate(dateString: string): string {
 export function PostCard({ post, priority }: PostCardProps) {
   return (
     <article className="group flex flex-col bg-card/85 border border-border/70 rounded-3xl p-5 shadow-sm shadow-black/[0.01] hover:-translate-y-1 hover:shadow-md hover:border-border hover:bg-card transition-all duration-300">
-      
       {/* Featured Image Link */}
-      <Link href={`/blog/${post.slug}`} className="mb-4 block overflow-hidden rounded-2xl relative select-none">
+      <Link
+        href={`/blog/${post.slug}`}
+        className="mb-4 block overflow-hidden rounded-2xl relative select-none"
+      >
         {post.featuredImage ? (
           <div className="relative aspect-video w-full">
             <Image
@@ -39,14 +41,15 @@ export function PostCard({ post, priority }: PostCardProps) {
           </div>
         ) : (
           <div className="aspect-video w-full bg-gradient-to-br from-primary/10 to-card flex items-center justify-center border border-border/40 rounded-2xl">
-            <span className="text-[10px] font-bold text-primary/80 tracking-wider">PREFERRED.AI</span>
+            <span className="text-[10px] font-bold text-primary/80 tracking-wider">
+              PREFERRED.AI
+            </span>
           </div>
         )}
       </Link>
 
       {/* Card Content info */}
       <div className="flex flex-col flex-1 space-y-3 justify-between">
-        
         <div className="space-y-2">
           {/* Categories Pill Badging */}
           {post.categories.length > 0 && (
@@ -86,12 +89,14 @@ export function PostCard({ post, priority }: PostCardProps) {
         {/* Bottom Panel: Date Metadata */}
         {post.date && (
           <div className="border-t border-border/50 pt-3">
-            <time dateTime={post.date} className="text-xs font-bold text-muted-foreground tracking-wider uppercase">
+            <time
+              dateTime={post.date}
+              className="text-xs font-bold text-muted-foreground tracking-wider uppercase"
+            >
               {formatDate(post.date)}
             </time>
           </div>
         )}
-
       </div>
     </article>
   );

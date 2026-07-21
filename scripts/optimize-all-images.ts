@@ -35,7 +35,11 @@ async function optimizeImage(srcRelativePath: string) {
   const srcMtime = srcStats.mtimeMs;
 
   for (const width of TARGET_WIDTHS) {
-    const destRelativePath = path.join("optimized", String(width), srcRelativePath);
+    const destRelativePath = path.join(
+      "optimized",
+      String(width),
+      srcRelativePath,
+    );
     const destAbsolutePath = path.join(PUBLIC_DIR, destRelativePath);
 
     // Incremental cache check: Skip if optimized file exists and is newer than source
@@ -67,7 +71,10 @@ async function optimizeImage(srcRelativePath: string) {
       await transformer.toFile(destAbsolutePath);
       // console.log(`✅ Optimized: /${srcRelativePath} ➡️ /${destRelativePath}`);
     } catch (error) {
-      console.error(`❌ Failed to optimize /${srcRelativePath} at width ${width}:`, error);
+      console.error(
+        `❌ Failed to optimize /${srcRelativePath} at width ${width}:`,
+        error,
+      );
     }
   }
 }

@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState, useMemo, useEffect, useRef } from "react";
-import { Publication, YearSection } from "@/data/publications";
 import { PUBLICATION_CATEGORIES } from "@/data/publicationCategories";
+import type { Publication, YearSection } from "@/data/publications";
+import type React from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import {
-  SearchIcon,
-  PdfIcon,
   CodeIcon,
+  LinkIcon,
+  PdfIcon,
+  SearchIcon,
   SlidesIcon,
   VideoIcon,
-  LinkIcon,
 } from "./icons";
 
 // Lowercase and strip diacritics so search is case- and accent-insensitive.

@@ -1,6 +1,6 @@
-import { getAllPosts } from "@/lib/markdown-posts";
-import { PostCard } from "@/components/PostCard";
 import Pagination from "@/components/Pagination";
+import { PostCard } from "@/components/PostCard";
+import { getAllPosts } from "@/lib/markdown-posts";
 
 export default async function BlogPage() {
   const { posts, pages } = await getAllPosts(1, 12);

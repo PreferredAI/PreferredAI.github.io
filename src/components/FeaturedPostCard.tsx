@@ -1,6 +1,6 @@
-import Link from "next/link";
-import Image from "next/image";
 import { format } from "date-fns";
+import Image from "next/image";
+import Link from "next/link";
 
 interface FeaturedPostCardProps {
   post: {
@@ -22,10 +22,9 @@ function formatDate(dateString: string): string {
 export function FeaturedPostCard({ post }: FeaturedPostCardProps) {
   return (
     <article className="group relative flex flex-col md:grid md:grid-cols-12 md:gap-8 bg-card/90 border border-border/70 rounded-3xl p-6 shadow-sm shadow-black/[0.01] hover:-translate-y-1 hover:shadow-md hover:border-primary/45 transition-all duration-300 overflow-hidden mb-10">
-      
       {/* Featured Image Link (7 columns on desktop) */}
-      <Link 
-        href={`/blog/${post.slug}`} 
+      <Link
+        href={`/blog/${post.slug}`}
         className="md:col-span-7 overflow-hidden rounded-2xl relative select-none block aspect-video md:aspect-[16/10] w-full"
       >
         {post.featuredImage ? (
@@ -39,16 +38,16 @@ export function FeaturedPostCard({ post }: FeaturedPostCardProps) {
           />
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-primary/10 to-card flex items-center justify-center border border-border/40 rounded-2xl">
-            <span className="text-xs font-bold text-primary/80 tracking-widest">FEATURED POST</span>
+            <span className="text-xs font-bold text-primary/80 tracking-widest">
+              FEATURED POST
+            </span>
           </div>
         )}
       </Link>
 
       {/* Card Content Info (5 columns on desktop) */}
       <div className="md:col-span-5 flex flex-col justify-between mt-6 md:mt-0 space-y-4">
-        
         <div className="space-y-3">
-          
           <div className="flex items-center gap-2">
             <span className="px-2.5 py-0.5 rounded-md text-[9px] font-black bg-primary text-white tracking-widest uppercase">
               FEATURED
@@ -92,7 +91,10 @@ export function FeaturedPostCard({ post }: FeaturedPostCardProps) {
         {/* Date Metadata */}
         {post.date && (
           <div className="border-t border-border/50 pt-4 flex items-center justify-between">
-            <time dateTime={post.date} className="text-xs font-bold text-muted-foreground tracking-wider uppercase">
+            <time
+              dateTime={post.date}
+              className="text-xs font-bold text-muted-foreground tracking-wider uppercase"
+            >
               {formatDate(post.date)}
             </time>
             <span className="text-xs font-bold text-primary group-hover:translate-x-1.5 transition-transform duration-300">
@@ -100,7 +102,6 @@ export function FeaturedPostCard({ post }: FeaturedPostCardProps) {
             </span>
           </div>
         )}
-
       </div>
     </article>
   );

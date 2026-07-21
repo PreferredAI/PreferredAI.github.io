@@ -1,18 +1,18 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 
 // =============================================================================
 // CONFIGURATION (Hyper-parameters) - Edit these values to customize the crawler behavior
 // =============================================================================
 
 /** Source URL for publications page */
-const PUBLICATIONS_URL = 'https://www.hadylauw.com/publications';
+const PUBLICATIONS_URL = "https://www.hadylauw.com/publications";
 
 /** Output path for generated TypeScript file */
-const OUTPUT_PATH = path.join(process.cwd(), 'src', 'data', 'publications.ts');
+const OUTPUT_PATH = path.join(process.cwd(), "src", "data", "publications.ts");
 
 /** User agent string for HTTP requests */
-const USER_AGENT = 'Mozilla/5.0 (compatible; PublicationsCrawler/1.0)';
+const USER_AGENT = "Mozilla/5.0 (compatible; PublicationsCrawler/1.0)";
 
 /** Minimum year to include publications from (inclusive). Set to null to include all years. */
 const YEAR_LIMIT: number | null = 2014;
@@ -38,18 +38,18 @@ const MIN_TITLE_LINK_TEXT_LENGTH = 15;
 // -----------------------------------------------------------------------------
 
 const PAPER_HOST_DOMAINS = [
-  'dropbox',
-  'arxiv',
-  '.pdf',
-  'doi.org',
-  'acm.org',
-  'ieee',
-  'jmlr',
-  'jair',
-  'openproceedings',
-  'direct.mit.edu',
-  'rdcu.be',
-  'kdd.org',
+  "dropbox",
+  "arxiv",
+  ".pdf",
+  "doi.org",
+  "acm.org",
+  "ieee",
+  "jmlr",
+  "jair",
+  "openproceedings",
+  "direct.mit.edu",
+  "rdcu.be",
+  "kdd.org",
 ] as const;
 
 // -----------------------------------------------------------------------------
@@ -58,28 +58,83 @@ const PAPER_HOST_DOMAINS = [
 
 const VENUE_INDICATORS = [
   // General publication types
-  'Conference', 'Journal', 'Proceedings', 'Workshop', 'Symposium', 'Transactions',
+  "Conference",
+  "Journal",
+  "Proceedings",
+  "Workshop",
+  "Symposium",
+  "Transactions",
 
   // Major CS organizations and conferences
-  'ACM', 'IEEE', 'AAAI', 'IJCAI', 'KDD', 'WWW', 'WSDM', 'CIKM', 'SIGIR', 'ICML',
-  'NeurIPS', 'ICLR', 'EMNLP', 'ACL', 'ECIR', 'UAI', 'ICDM', 'SDM', 'RecSys',
-  'ECML', 'AIED', 'EDBT', 'ICDE', 'BigData', 'Multimedia', 'VLDB', 'COLING',
-  'DEXA', 'PAKDD',
+  "ACM",
+  "IEEE",
+  "AAAI",
+  "IJCAI",
+  "KDD",
+  "WWW",
+  "WSDM",
+  "CIKM",
+  "SIGIR",
+  "ICML",
+  "NeurIPS",
+  "ICLR",
+  "EMNLP",
+  "ACL",
+  "ECIR",
+  "UAI",
+  "ICDM",
+  "SDM",
+  "RecSys",
+  "ECML",
+  "AIED",
+  "EDBT",
+  "ICDE",
+  "BigData",
+  "Multimedia",
+  "VLDB",
+  "COLING",
+  "DEXA",
+  "PAKDD",
 
   // Journals
-  'JMLR', 'JAIR', 'DAMI', 'TIST', 'TKDE', 'TKDD', 'TOIS', 'TWEB', 'TNNLS',
-  'Machine Learning', 'Internet Computing', 'Computational Linguistics',
+  "JMLR",
+  "JAIR",
+  "DAMI",
+  "TIST",
+  "TKDE",
+  "TKDD",
+  "TOIS",
+  "TWEB",
+  "TNNLS",
+  "Machine Learning",
+  "Internet Computing",
+  "Computational Linguistics",
 
   // Other indicators
-  'Encyclopedia', 'SIGKDD Explorations',
-  'Neural Information Processing', 'International Conference', 'Annual Meeting',
+  "Encyclopedia",
+  "SIGKDD Explorations",
+  "Neural Information Processing",
+  "International Conference",
+  "Annual Meeting",
 
   // Volume/page indicators
-  'Vol.', 'vol.', 'pp.',
+  "Vol.",
+  "vol.",
+  "pp.",
 
   // Month abbreviations (for journal publications)
-  'Jan ', 'Feb ', 'Mar ', 'Apr ', 'May ', 'Jun ',
-  'Jul ', 'Aug ', 'Sep ', 'Oct ', 'Nov ', 'Dec ',
+  "Jan ",
+  "Feb ",
+  "Mar ",
+  "Apr ",
+  "May ",
+  "Jun ",
+  "Jul ",
+  "Aug ",
+  "Sep ",
+  "Oct ",
+  "Nov ",
+  "Dec ",
 ] as const;
 
 // -----------------------------------------------------------------------------
@@ -99,26 +154,26 @@ interface AwardConfig {
 
 const AWARD_PATTERNS: AwardConfig[] = [
   {
-    searchText: 'Distinguished Paper Award',
-    displayText: 'Distinguished Paper Award',
-    url: 'https://ijcai20.org/distinguished-papers/',
+    searchText: "Distinguished Paper Award",
+    displayText: "Distinguished Paper Award",
+    url: "https://ijcai20.org/distinguished-papers/",
     venueCleanupPattern: /\.?\s*Distinguished Paper Award\.?/gi,
   },
   {
-    searchText: 'Honorable Mention',
-    displayText: 'Honorable Mention (Nominee for the Outstanding Paper Award)',
-    url: 'http://www.aaai.org/Awards/paper.php',
+    searchText: "Honorable Mention",
+    displayText: "Honorable Mention (Nominee for the Outstanding Paper Award)",
+    url: "http://www.aaai.org/Awards/paper.php",
     venueCleanupPattern: /,?\s*Honorable Mention[^.]*\.?/gi,
   },
   {
-    searchText: 'Test of Time Award',
-    displayText: 'Won the CIKM-25 Test of Time Award',
+    searchText: "Test of Time Award",
+    displayText: "Won the CIKM-25 Test of Time Award",
     venueCleanupPattern: /\.?\s*Won the CIKM-25 Test of Time Award\.?/gi,
   },
   {
-    searchText: 'Conference Award Track',
-    displayText: 'Conference Award Track',
-    url: 'https://jair.org/index.php/jair/awardedPapers',
+    searchText: "Conference Award Track",
+    displayText: "Conference Award Track",
+    url: "https://jair.org/index.php/jair/awardedPapers",
     venueCleanupPattern: /\.?\s*Conference Award Track\.?/gi,
   },
 ];
@@ -129,33 +184,39 @@ const AWARD_PATTERNS: AwardConfig[] = [
 
 /** Keywords in link text that indicate supplementary materials */
 const EXTRA_LINK_KEYWORDS = [
-  'code',
-  'dataset',
-  'video',
-  'slides',
-  'poster',
+  "code",
+  "dataset",
+  "video",
+  "slides",
+  "poster",
 ] as const;
 
 /** Domains that host supplementary materials */
 const EXTRA_LINK_DOMAINS = [
-  'github.com',
-  'bitbucket.org',
-  'preferred.ai',
-  'aclweb.org/anthology/attachments',
+  "github.com",
+  "bitbucket.org",
+  "preferred.ai",
+  "aclweb.org/anthology/attachments",
 ] as const;
 
 /** Keywords to remove from venue text (in parentheses) */
-const VENUE_CLEANUP_KEYWORDS = ['Code', 'Dataset', 'Video', 'slides', 'poster'] as const;
+const VENUE_CLEANUP_KEYWORDS = [
+  "Code",
+  "Dataset",
+  "Video",
+  "slides",
+  "poster",
+] as const;
 
 // -----------------------------------------------------------------------------
 // Internal Link Filtering
 // -----------------------------------------------------------------------------
 
 /** Domain to filter out internal links (except specific paths) */
-const INTERNAL_DOMAIN = 'hadylauw.com/';
+const INTERNAL_DOMAIN = "hadylauw.com/";
 
 /** Paths on internal domain that should still be included */
-const INTERNAL_ALLOWED_PATHS = ['dropbox', 'publications/elis09.pdf'] as const;
+const INTERNAL_ALLOWED_PATHS = ["dropbox", "publications/elis09.pdf"] as const;
 
 // =============================================================================
 // INTERFACES
@@ -184,11 +245,13 @@ async function fetchPublicationsPage(): Promise<string> {
 
   const response = await fetch(PUBLICATIONS_URL, {
     headers: {
-      'User-Agent': USER_AGENT,
-    }
+      "User-Agent": USER_AGENT,
+    },
   });
   if (!response.ok) {
-    throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+    throw new Error(
+      `Failed to fetch: ${response.status} ${response.statusText}`,
+    );
   }
 
   return await response.text();
@@ -200,7 +263,8 @@ function parsePublications(html: string): YearSection[] {
   // Find year headings - they're in <h3> tags with span containing year
   // Note: For years 2022+, the year may be split across TWO spans: <span>202</span><span>5</span>
   // For older years it's a single span: <span>2021</span>
-  const yearHeadingPattern = /<h3[^>]*id="h\.[^"]*"[^>]*>[\s\S]*?<span[^>]*class="C9DxTc[^"]*"[^>]*>(202|20\d{2}|2007 and earlier)<\/span>(?:<span[^>]*class="C9DxTc[^"]*"[^>]*>(\d)<\/span>)?[\s\S]*?<\/h3>/gi;
+  const yearHeadingPattern =
+    /<h3[^>]*id="h\.[^"]*"[^>]*>[\s\S]*?<span[^>]*class="C9DxTc[^"]*"[^>]*>(202|20\d{2}|2007 and earlier)<\/span>(?:<span[^>]*class="C9DxTc[^"]*"[^>]*>(\d)<\/span>)?[\s\S]*?<\/h3>/gi;
 
   // Split by year sections
   const yearMatches: { year: string; index: number }[] = [];
@@ -215,11 +279,11 @@ function parsePublications(html: string): YearSection[] {
   // Dedupe years (the page has duplicates due to structure)
   // Also filter out years before YEAR_LIMIT and special entries like "2007 and earlier"
   const seenYears = new Set<string>();
-  const uniqueYearMatches = yearMatches.filter(m => {
+  const uniqueYearMatches = yearMatches.filter((m) => {
     if (seenYears.has(m.year)) return false;
     // Skip "2007 and earlier" or similar non-numeric year entries
-    const yearNum = parseInt(m.year, 10);
-    if (isNaN(yearNum)) return false;
+    const yearNum = Number.parseInt(m.year, 10);
+    if (Number.isNaN(yearNum)) return false;
     // Skip years before YEAR_LIMIT
     if (YEAR_LIMIT !== null && yearNum < YEAR_LIMIT) return false;
     seenYears.add(m.year);
@@ -243,7 +307,7 @@ function parsePublications(html: string): YearSection[] {
     if (publications.length > 0) {
       sections.push({
         year: yearMatch.year,
-        publications
+        publications,
       });
     }
   }
@@ -278,12 +342,12 @@ function parsePublicationsFromSection(sectionHtml: string): Publication[] {
 
 function decodeHtmlEntities(text: string): string {
   return text
-    .replace(/&amp;/g, '&')
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
+    .replace(/&amp;/g, "&")
+    .replace(/&lt;/g, "<")
+    .replace(/&gt;/g, ">")
     .replace(/&quot;/g, '"')
     .replace(/&#39;/g, "'")
-    .replace(/&nbsp;/g, ' ');
+    .replace(/&nbsp;/g, " ");
 }
 
 function parsePublicationFromLi(liContent: string): Publication | null {
@@ -294,11 +358,15 @@ function parsePublicationFromLi(liContent: string): Publication | null {
   let linkMatch;
   while ((linkMatch = linkPattern.exec(liContent)) !== null) {
     const url = decodeHtmlEntities(linkMatch[1]);
-    const text = decodeHtmlEntities(linkMatch[2].replace(/<[^>]+>/g, '').trim());
+    const text = decodeHtmlEntities(
+      linkMatch[2].replace(/<[^>]+>/g, "").trim(),
+    );
 
     // Skip internal links that aren't papers
-    if (url.includes(INTERNAL_DOMAIN) &&
-        !INTERNAL_ALLOWED_PATHS.some(path => url.includes(path))) {
+    if (
+      url.includes(INTERNAL_DOMAIN) &&
+      !INTERNAL_ALLOWED_PATHS.some((path) => url.includes(path))
+    ) {
       continue;
     }
 
@@ -306,31 +374,34 @@ function parsePublicationFromLi(liContent: string): Publication | null {
     if (!text) continue;
 
     // Determine if this is likely the title link (paper PDF)
-    const isPaperHost = PAPER_HOST_DOMAINS.some(domain => url.includes(domain));
-    const isTitle = isPaperHost &&
+    const isPaperHost = PAPER_HOST_DOMAINS.some((domain) =>
+      url.includes(domain),
+    );
+    const isTitle =
+      isPaperHost &&
       text.length > MIN_TITLE_LINK_TEXT_LENGTH &&
-      (!text.toLowerCase().includes('code') || text.length > 30);
+      (!text.toLowerCase().includes("code") || text.length > 30);
 
     links.push({ text, url, isTitle });
   }
 
   // Clean up HTML to text
   let text = liContent
-    .replace(/<br\s*\/?>/gi, '\n')
-    .replace(/<[^>]+>/g, '')
-    .replace(/\s+/g, ' ')
+    .replace(/<br\s*\/?>/gi, "\n")
+    .replace(/<[^>]+>/g, "")
+    .replace(/\s+/g, " ")
     .trim();
   text = decodeHtmlEntities(text);
 
   // Skip if doesn't look like a publication
   if (text.length < MIN_PUBLICATION_TEXT_LENGTH) return null;
-  if (!text.toLowerCase().includes('by ')) return null;
+  if (!text.toLowerCase().includes("by ")) return null;
 
   // Find the title (first title link or text before "by")
-  let title = '';
+  let title = "";
   let pdfUrl: string | undefined;
 
-  const titleLink = links.find(l => l.isTitle);
+  const titleLink = links.find((l) => l.isTitle);
   if (titleLink) {
     title = titleLink.text;
     pdfUrl = titleLink.url;
@@ -345,8 +416,8 @@ function parsePublicationFromLi(liContent: string): Publication | null {
   if (!title || title.length < MIN_TITLE_LENGTH) return null;
 
   // Extract authors and venue
-  let authors = '';
-  let venue = '';
+  let authors = "";
+  let venue = "";
 
   let byIndex = -1;
   if (title) {
@@ -364,7 +435,7 @@ function parsePublicationFromLi(liContent: string): Publication | null {
     byIndex = text.search(/,?\s*by\s+/i);
   }
   if (byIndex > 0) {
-    const afterBy = text.slice(byIndex).replace(/^,?\s*by\s+/i, '');
+    const afterBy = text.slice(byIndex).replace(/^,?\s*by\s+/i, "");
 
     // Find the position where venue starts using configured indicators
     let venueStart = -1;
@@ -372,7 +443,7 @@ function parsePublicationFromLi(liContent: string): Publication | null {
       const idx = afterBy.indexOf(indicator);
       if (idx !== -1) {
         // Find the preceding comma
-        const commaIdx = afterBy.lastIndexOf(',', idx);
+        const commaIdx = afterBy.lastIndexOf(",", idx);
         if (commaIdx !== -1 && (venueStart === -1 || commaIdx < venueStart)) {
           venueStart = commaIdx;
         }
@@ -384,7 +455,7 @@ function parsePublicationFromLi(liContent: string): Publication | null {
       venue = afterBy.slice(venueStart + 1).trim();
     } else {
       // Fallback: assume last part after comma is venue
-      const lastComma = afterBy.lastIndexOf(',');
+      const lastComma = afterBy.lastIndexOf(",");
       if (lastComma !== -1 && lastComma > afterBy.length * 0.3) {
         authors = afterBy.slice(0, lastComma).trim();
         venue = afterBy.slice(lastComma + 1).trim();
@@ -395,13 +466,19 @@ function parsePublicationFromLi(liContent: string): Publication | null {
   }
 
   // Clean up
-  title = title.replace(/[,.]$/, '').trim();
-  authors = authors.replace(/^,\s*/, '').replace(/,\s*$/, '').trim();
-  venue = venue.replace(/\.$/, '').replace(/\s*\([^)]*\)\s*$/, '').trim();
+  title = title.replace(/[,.]$/, "").trim();
+  authors = authors.replace(/^,\s*/, "").replace(/,\s*$/, "").trim();
+  venue = venue
+    .replace(/\.$/, "")
+    .replace(/\s*\([^)]*\)\s*$/, "")
+    .trim();
 
   // Remove "(Code)" etc from venue using configured keywords
-  const venueCleanupRegex = new RegExp(`\\s*\\(\\s*(${VENUE_CLEANUP_KEYWORDS.join('|')})\\s*\\)`, 'gi');
-  venue = venue.replace(venueCleanupRegex, '');
+  const venueCleanupRegex = new RegExp(
+    `\\s*\\(\\s*(${VENUE_CLEANUP_KEYWORDS.join("|")})\\s*\\)`,
+    "gi",
+  );
+  venue = venue.replace(venueCleanupRegex, "");
 
   // Detect awards and remove award text from venue using configured patterns
   let award: { text: string; url?: string } | undefined;
@@ -412,31 +489,37 @@ function parsePublicationFromLi(liContent: string): Publication | null {
         award.url = awardConfig.url;
       }
       if (awardConfig.venueCleanupPattern) {
-        venue = venue.replace(awardConfig.venueCleanupPattern, '').trim();
+        venue = venue.replace(awardConfig.venueCleanupPattern, "").trim();
       }
       break; // Only match first award
     }
   }
 
   // Extract extra links (Code, Dataset, Video, etc.) - exclude title duplicates
-  const extraLinks = links.filter(l => {
-    const lowerText = l.text.toLowerCase();
-    // Skip if this link text matches the title (case insensitive)
-    if (l.text.toLowerCase() === title.toLowerCase()) return false;
-    // Skip if this is likely a paper PDF link (same as pdfUrl)
-    if (l.url === pdfUrl) return false;
+  const extraLinks = links
+    .filter((l) => {
+      const lowerText = l.text.toLowerCase();
+      // Skip if this link text matches the title (case insensitive)
+      if (l.text.toLowerCase() === title.toLowerCase()) return false;
+      // Skip if this is likely a paper PDF link (same as pdfUrl)
+      if (l.url === pdfUrl) return false;
 
-    // Check if link text contains any configured keywords
-    const hasKeyword = EXTRA_LINK_KEYWORDS.some(keyword => lowerText.includes(keyword));
-    // Check if URL matches any configured domains
-    const hasDomain = EXTRA_LINK_DOMAINS.some(domain => l.url.includes(domain));
+      // Check if link text contains any configured keywords
+      const hasKeyword = EXTRA_LINK_KEYWORDS.some((keyword) =>
+        lowerText.includes(keyword),
+      );
+      // Check if URL matches any configured domains
+      const hasDomain = EXTRA_LINK_DOMAINS.some((domain) =>
+        l.url.includes(domain),
+      );
 
-    return hasKeyword || hasDomain;
-  }).map(l => ({ text: l.text, url: l.url }));
+      return hasKeyword || hasDomain;
+    })
+    .map((l) => ({ text: l.text, url: l.url }));
 
   // Dedupe extra links
-  const uniqueExtraLinks = extraLinks.filter((l, i, arr) =>
-    arr.findIndex(x => x.url === l.url) === i
+  const uniqueExtraLinks = extraLinks.filter(
+    (l, i, arr) => arr.findIndex((x) => x.url === l.url) === i,
   );
 
   return {
@@ -445,7 +528,7 @@ function parsePublicationFromLi(liContent: string): Publication | null {
     venue,
     pdfUrl,
     extraLinks: uniqueExtraLinks,
-    award
+    award,
   };
 }
 
@@ -470,12 +553,12 @@ export interface YearSection {
 export const PUBLICATIONS_DATA: YearSection[] = [\n`;
 
   for (const section of sections) {
-    ts += `  {\n`;
+    ts += "  {\n";
     ts += `    year: "${section.year}",\n`;
-    ts += `    publications: [\n`;
+    ts += "    publications: [\n";
 
     for (const pub of section.publications) {
-      ts += `      {\n`;
+      ts += "      {\n";
       ts += `        title: ${JSON.stringify(pub.title)},\n`;
       ts += `        authors: ${JSON.stringify(pub.authors)},\n`;
       ts += `        venue: ${JSON.stringify(pub.venue)},\n`;
@@ -488,21 +571,21 @@ export const PUBLICATIONS_DATA: YearSection[] = [\n`;
       if (pub.award) {
         ts += `        award: ${JSON.stringify(pub.award)},\n`;
       }
-      ts += `      },\n`;
+      ts += "      },\n";
     }
 
-    ts += `    ],\n`;
-    ts += `  },\n`;
+    ts += "    ],\n";
+    ts += "  },\n";
   }
 
-  ts += `];\n`;
+  ts += "];\n";
 
   return ts;
 }
 
 async function main() {
   try {
-    console.log('Starting publications crawler...\n');
+    console.log("Starting publications crawler...\n");
 
     const html = await fetchPublicationsPage();
     console.log(`Fetched ${html.length} bytes of HTML\n`);
@@ -510,30 +593,36 @@ async function main() {
     const sections = parsePublications(html);
 
     // Count total publications
-    const totalPubs = sections.reduce((sum, s) => sum + s.publications.length, 0);
-    console.log(`Parsed ${totalPubs} publications across ${sections.length} years\n`);
+    const totalPubs = sections.reduce(
+      (sum, s) => sum + s.publications.length,
+      0,
+    );
+    console.log(
+      `Parsed ${totalPubs} publications across ${sections.length} years\n`,
+    );
 
     if (totalPubs === 0) {
-      console.error('No publications found. This might indicate a parsing issue.');
+      console.error(
+        "No publications found. This might indicate a parsing issue.",
+      );
       process.exit(1);
     }
 
     const typescript = generateTypeScript(sections);
 
     // Write to file
-    fs.writeFileSync(OUTPUT_PATH, typescript, 'utf8');
+    fs.writeFileSync(OUTPUT_PATH, typescript, "utf8");
 
     console.log(`Successfully wrote publications to ${OUTPUT_PATH}`);
     console.log(`Total publications: ${totalPubs}`);
 
     // Print summary by year
-    console.log('\nPublications by year:');
+    console.log("\nPublications by year:");
     for (const section of sections) {
       console.log(`  ${section.year}: ${section.publications.length}`);
     }
-
   } catch (error) {
-    console.error('Error crawling publications:', error);
+    console.error("Error crawling publications:", error);
     process.exit(1);
   }
 }

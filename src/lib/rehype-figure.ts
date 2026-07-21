@@ -1,5 +1,5 @@
-import { visit } from 'unist-util-visit';
-import type { Root, Element, Parent, ElementContent } from 'hast';
+import type { Element, ElementContent, Parent, Root } from "hast";
+import { visit } from "unist-util-visit";
 
 /**
  * Rehype plugin to wrap images in figure elements with figcaption
@@ -7,59 +7,60 @@ import type { Root, Element, Parent, ElementContent } from 'hast';
  */
 export default function rehypeFigure() {
   return (tree: Root) => {
-    visit(tree, 'element', (node: Element, index, parent: Parent | undefined) => {
-      // Only process img elements
-      if (
-        node.tagName === 'img' &&
-        parent &&
-        index !== undefined
-      ) {
-        const parentElement = parent as Element;
-        const isInParagraph = parent.type === 'element' && parentElement.tagName === 'p';
-        const isInRoot = parent.type === 'root';
+    visit(
+      tree,
+      "element",
+      (node: Element, index, parent: Parent | undefined) => {
+        // Only process img elements
+        if (node.tagName === "img" && parent && index !== undefined) {
+          const parentElement = parent as Element;
+          const isInParagraph =
+            parent.type === "element" && parentElement.tagName === "p";
+          const isInRoot = parent.type === "root";
 
-        if (!isInParagraph && !isInRoot) {
-          return;
-        }
+          if (!isInParagraph && !isInRoot) {
+            return;
+          }
 
-        const alt = node.properties?.alt as string;
+          const alt = node.properties?.alt as string;
 
-        // Create figure element
-        const figure: Element = {
-          type: 'element',
-          tagName: 'figure',
-          properties: {
-            className: ['image-figure'],
-          },
-          children: [
-            {
-              ...node,
-              properties: {
-                ...node.properties,
-                loading: 'lazy',
-              },
+          // Create figure element
+          const figure: Element = {
+            type: "element",
+            tagName: "figure",
+            properties: {
+              className: ["image-figure"],
             },
-          ],
-        };
-
-        // Add figcaption if alt text exists
-        if (alt && alt.trim()) {
-          figure.children.push({
-            type: 'element',
-            tagName: 'figcaption',
-            properties: {},
             children: [
               {
-                type: 'text',
-                value: alt,
+                ...node,
+                properties: {
+                  ...node.properties,
+                  loading: "lazy",
+                },
               },
             ],
-          });
-        }
+          };
 
-        // Replace the image with the figure
-        parent.children[index] = figure as ElementContent;
-      }
-    });
+          // Add figcaption if alt text exists
+          if (alt?.trim()) {
+            figure.children.push({
+              type: "element",
+              tagName: "figcaption",
+              properties: {},
+              children: [
+                {
+                  type: "text",
+                  value: alt,
+                },
+              ],
+            });
+          }
+
+          // Replace the image with the figure
+          parent.children[index] = figure as ElementContent;
+        }
+      },
+    );
   };
 }

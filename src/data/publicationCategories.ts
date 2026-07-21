@@ -27,7 +27,15 @@ export const PUBLICATION_CATEGORIES: CategoryFilter[] = [
   {
     id: "NLP",
     label: "NLP & Text",
-    keywords: ["topic", "text", "language", "nlp", "vocabulary", "word", "review"],
+    keywords: [
+      "topic",
+      "text",
+      "language",
+      "nlp",
+      "vocabulary",
+      "word",
+      "review",
+    ],
   },
   {
     id: "ML",

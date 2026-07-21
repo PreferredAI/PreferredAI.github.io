@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -28,7 +28,10 @@ export default function JoinPage() {
           </h3>
           <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             We hold ourselves to a high standard. Our{" "}
-            <a href="/publications" className="text-primary hover:underline font-semibold">
+            <a
+              href="/publications"
+              className="text-primary hover:underline font-semibold"
+            >
               publications
             </a>{" "}
             appear in top-tier venues. A couple have won awards:{" "}
@@ -145,8 +148,7 @@ export default function JoinPage() {
               CSRankings.org
             </a>{" "}
             places SMU at #30 worldwide (Dec&apos;25) for AI areas (incl. KDD).
-            No
-            mean feat for a young school. You will grow along with us.
+            No mean feat for a young school. You will grow along with us.
           </p>
         </div>
 
@@ -188,7 +190,9 @@ export default function JoinPage() {
               scholarships
             </a>
             . Most other positions are paid{" "}
-            <a className="text-primary hover:underline font-semibold">competitive salaries</a>
+            <span className="text-primary hover:underline font-semibold">
+              competitive salaries
+            </span>
             . You will have enough.
           </p>
         </div>

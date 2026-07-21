@@ -1,16 +1,16 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import TeamPhotos from "@/components/TeamPhotos";
 import { getAllCategories } from "@/lib/markdown-posts";
 import {
-  siteUrl,
-  siteName,
-  siteDescription,
   defaultOgImage,
+  siteDescription,
+  siteName,
   siteSameAs,
+  siteUrl,
 } from "@/lib/site";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -106,7 +106,6 @@ export default function RootLayout({
         <div className="flex flex-1 flex-col pt-28">
           <div className="container flex-1 max-w-[1360px]">
             <div className="flex flex-col gap-10 py-6 lg:flex-row">
-              
               {/* Main Column */}
               <main
                 id="main"
@@ -118,7 +117,6 @@ export default function RootLayout({
               {/* Sidebar Section */}
               <aside className="w-full lg:w-[360px] shrink-0">
                 <div className="sticky top-28 space-y-6">
-                  
                   {/* Team Card Carousel Container */}
                   <div className="bg-card/80 border border-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.01]">
                     <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground select-none">
@@ -149,10 +147,8 @@ export default function RootLayout({
                       ))}
                     </ul>
                   </div>
-
                 </div>
               </aside>
-
             </div>
           </div>
         </div>

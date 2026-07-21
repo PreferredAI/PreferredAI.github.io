@@ -1,6 +1,6 @@
-import { Metadata } from "next";
+import { TEAM_DATA, type TeamMember } from "@/data/team";
+import type { Metadata } from "next";
 import Image from "next/image";
-import { TEAM_DATA, TeamMember } from "@/data/team";
 
 export const metadata: Metadata = {
   title: "Team",
@@ -26,7 +26,7 @@ const students: TeamMember[] = [...TEAM_DATA.students].sort((a, b) => {
 
 // Sort alumni alphabetically by name
 const alumni: TeamMember[] = [...TEAM_DATA.alumni].sort((a, b) =>
-  a.name.localeCompare(b.name)
+  a.name.localeCompare(b.name),
 );
 
 function TeamMemberCard({ member }: { member: TeamMember }) {

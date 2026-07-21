@@ -89,35 +89,59 @@
   --color-border: hsl(var(--border));
   --color-input: hsl(var(--input));
   --color-ring: hsl(var(--ring));
-  
+
   --radius-lg: var(--radius);
   --radius-md: calc(var(--radius) - 2px);
   --radius-sm: calc(var(--radius) - 4px);
-  
+
   --animate-pulse-soft: pulse-soft 2s infinite ease-in-out;
   --animate-fade-in-up: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
   --animate-fade-in: fade-in 0.6s ease-in-out forwards;
-  --animate-slide-up-fade: slide-up-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-slide-up-fade: slide-up-fade 0.6s cubic-bezier(0.16, 1, 0.3, 1)
+    forwards;
 }
 
 @keyframes pulse-soft {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.05); }
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.4;
+    transform: scale(1.05);
+  }
 }
 
 @keyframes fade-in-up {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-up-fade {
-  from { opacity: 0; transform: translateY(4px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @layer base {
@@ -126,18 +150,32 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+      "Helvetica Neue", Arial, sans-serif;
     font-size: 16px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
   }
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     @apply font-extrabold tracking-tight text-foreground leading-snug mb-2;
   }
-  h1 { @apply text-4xl md:text-5xl; }
-  h2 { @apply text-3xl md:text-4xl; }
-  h3 { @apply text-2xl md:text-3xl; }
-  h4 { @apply text-xl md:text-2xl; }
+  h1 {
+    @apply text-4xl md:text-5xl;
+  }
+  h2 {
+    @apply text-3xl md:text-4xl;
+  }
+  h3 {
+    @apply text-2xl md:text-3xl;
+  }
+  h4 {
+    @apply text-xl md:text-2xl;
+  }
 
   a {
     @apply transition-colors duration-200;
@@ -173,12 +211,24 @@
     animation: fade-in-up 0.5s cubic-bezier(0.16, 1, 0.3, 1) both;
   }
   /* Bounded stagger: caps at ~0.38s so a full page of posts never feels slow */
-  .feed-grid > *:nth-child(1) { animation-delay: 0.08s; }
-  .feed-grid > *:nth-child(2) { animation-delay: 0.14s; }
-  .feed-grid > *:nth-child(3) { animation-delay: 0.20s; }
-  .feed-grid > *:nth-child(4) { animation-delay: 0.26s; }
-  .feed-grid > *:nth-child(5) { animation-delay: 0.32s; }
-  .feed-grid > *:nth-child(n+6) { animation-delay: 0.38s; }
+  .feed-grid > *:nth-child(1) {
+    animation-delay: 0.08s;
+  }
+  .feed-grid > *:nth-child(2) {
+    animation-delay: 0.14s;
+  }
+  .feed-grid > *:nth-child(3) {
+    animation-delay: 0.20s;
+  }
+  .feed-grid > *:nth-child(4) {
+    animation-delay: 0.26s;
+  }
+  .feed-grid > *:nth-child(5) {
+    animation-delay: 0.32s;
+  }
+  .feed-grid > *:nth-child(n + 6) {
+    animation-delay: 0.38s;
+  }
 }
 
 /* Reduced-motion safety net: collapse every animation/transition to instant.
@@ -199,15 +249,19 @@
 
 /* Custom modern technical coordinate grid backing */
 .tech-grid {
-  background-image: 
-    linear-gradient(to right, rgba(189, 24, 24, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(189, 24, 24, 0.015) 1px, transparent 1px);
+  background-image: linear-gradient(
+      to right,
+      rgba(189, 24, 24, 0.015) 1px,
+      transparent 1px
+    ), linear-gradient(to bottom, rgba(189, 24, 24, 0.015) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 .dark .tech-grid {
-  background-image: 
-    linear-gradient(to right, rgba(189, 24, 24, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(189, 24, 24, 0.025) 1px, transparent 1px);
+  background-image: linear-gradient(
+      to right,
+      rgba(189, 24, 24, 0.025) 1px,
+      transparent 1px
+    ), linear-gradient(to bottom, rgba(189, 24, 24, 0.025) 1px, transparent 1px);
 }
 
 /* Scrollbar customization */

@@ -78,7 +78,10 @@ export default function Pagination({
         {renderPageNumbers().map((page, index) => {
           if (page === "...") {
             return (
-              <span key={`ellipsis-${index}`} className="px-2 text-muted-foreground/60">
+              <span
+                key={`ellipsis-${index}`}
+                className="px-2 text-muted-foreground/60"
+              >
                 ...
               </span>
             );

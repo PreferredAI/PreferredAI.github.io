@@ -1,8 +1,8 @@
-import Link from "next/link";
-import { getAllPosts } from "@/lib/markdown-posts";
-import { PostCard } from "@/components/PostCard";
 import { FeaturedPostCard } from "@/components/FeaturedPostCard";
 import Pagination from "@/components/Pagination";
+import { PostCard } from "@/components/PostCard";
+import { getAllPosts } from "@/lib/markdown-posts";
+import Link from "next/link";
 
 export default async function Home() {
   const { posts, pages } = await getAllPosts(1, 10, { firstPageLimit: 9 });

@@ -1,6 +1,6 @@
-import { getAllPosts } from "@/lib/markdown-posts";
-import { PostCard } from "@/components/PostCard";
 import Pagination from "@/components/Pagination";
+import { PostCard } from "@/components/PostCard";
+import { getAllPosts } from "@/lib/markdown-posts";
 import { notFound } from "next/navigation";
 
 interface PageProps {
@@ -11,9 +11,9 @@ interface PageProps {
 
 export default async function PaginatedBlogPage({ params }: PageProps) {
   const { page: pageParam } = await params;
-  const currentPage = parseInt(pageParam, 10);
+  const currentPage = Number.parseInt(pageParam, 10);
 
-  if (isNaN(currentPage) || currentPage < 1) {
+  if (Number.isNaN(currentPage) || currentPage < 1) {
     notFound();
   }
 

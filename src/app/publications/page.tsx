@@ -1,6 +1,6 @@
-import { Metadata } from "next";
-import { PUBLICATIONS_DATA } from "@/data/publications";
 import PublicationsExplorer from "@/components/PublicationsExplorer";
+import { PUBLICATIONS_DATA } from "@/data/publications";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Publications",
@@ -13,7 +13,7 @@ export default function PublicationsPage() {
       <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight text-foreground mb-8 border-b border-border/60 pb-3 select-none">
         Read Our Papers
       </h2>
-      
+
       {/* Interactive searchable dashboard */}
       <PublicationsExplorer data={PUBLICATIONS_DATA} />
     </div>

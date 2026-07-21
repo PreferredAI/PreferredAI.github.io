@@ -1,11 +1,11 @@
-import React from "react";
+import type React from "react";
 
 interface IconProps {
   className?: string;
 }
 
-export const SearchIcon: React.FC<IconProps> = ({ 
-  className = "h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors" 
+export const SearchIcon: React.FC<IconProps> = ({
+  className = "h-4 w-4 text-muted-foreground group-focus-within:text-primary transition-colors",
 }) => (
   <svg
     className={className}
@@ -22,8 +22,8 @@ export const SearchIcon: React.FC<IconProps> = ({
   </svg>
 );
 
-export const PdfIcon: React.FC<IconProps> = ({ 
-  className = "h-3.5 w-3.5 text-primary" 
+export const PdfIcon: React.FC<IconProps> = ({
+  className = "h-3.5 w-3.5 text-primary",
 }) => (
   <svg
     className={className}
@@ -45,8 +45,8 @@ export const PdfIcon: React.FC<IconProps> = ({
   </svg>
 );
 
-export const CodeIcon: React.FC<IconProps> = ({ 
-  className = "h-3.5 w-3.5 text-gray-700 dark:text-gray-400" 
+export const CodeIcon: React.FC<IconProps> = ({
+  className = "h-3.5 w-3.5 text-gray-700 dark:text-gray-400",
 }) => (
   <svg
     className={className}
@@ -63,8 +63,8 @@ export const CodeIcon: React.FC<IconProps> = ({
   </svg>
 );
 
-export const SlidesIcon: React.FC<IconProps> = ({ 
-  className = "h-3.5 w-3.5 text-amber-600" 
+export const SlidesIcon: React.FC<IconProps> = ({
+  className = "h-3.5 w-3.5 text-amber-600",
 }) => (
   <svg
     className={className}
@@ -81,8 +81,8 @@ export const SlidesIcon: React.FC<IconProps> = ({
   </svg>
 );
 
-export const VideoIcon: React.FC<IconProps> = ({ 
-  className = "h-3.5 w-3.5 text-primary" 
+export const VideoIcon: React.FC<IconProps> = ({
+  className = "h-3.5 w-3.5 text-primary",
 }) => (
   <svg
     className={className}
@@ -99,8 +99,8 @@ export const VideoIcon: React.FC<IconProps> = ({
   </svg>
 );
 
-export const LinkIcon: React.FC<IconProps> = ({ 
-  className = "h-3.5 w-3.5 text-blue-600" 
+export const LinkIcon: React.FC<IconProps> = ({
+  className = "h-3.5 w-3.5 text-blue-600",
 }) => (
   <svg
     className={className}

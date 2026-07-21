@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { useState, useEffect } from "react";
 import BrandLogo from "@/assets/Brand.png";
+import Image from "next/image";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Navigation() {
   const pathname = usePathname();
@@ -98,7 +98,10 @@ export default function Navigation() {
               unoptimized
             />
           </Link>
-          <span aria-hidden="true" className="hidden xl:block h-5 w-px bg-border" />
+          <span
+            aria-hidden="true"
+            className="hidden xl:block h-5 w-px bg-border"
+          />
           <span className="hidden xl:block text-sm font-medium tracking-tight text-muted-foreground whitespace-nowrap">
             Preferences and Recommendations from Data &amp; AI
           </span>
@@ -108,142 +111,142 @@ export default function Navigation() {
         <div className="hidden md:flex items-center gap-x-3 lg:gap-x-4">
           {/* Navigation Links (Desktop) */}
           <div className="flex items-center gap-x-1.5 lg:gap-x-2.5">
-          {navLinks.map((link) => {
-            const active = isActive(link.href);
-            return (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={`px-4 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 relative ${
-                  active
-                    ? "text-primary"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+            {navLinks.map((link) => {
+              const active = isActive(link.href);
+              return (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className={`px-4 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 relative ${
+                    active
+                      ? "text-primary"
+                      : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                  }`}
+                >
+                  {active && (
+                    <span className="absolute inset-0 bg-primary/8 border border-primary/15 rounded-full -z-10" />
+                  )}
+                  {link.label}
+                </Link>
+              );
+            })}
+
+            {/* Interactive Apps Dropdown Popover */}
+            <div
+              className="relative"
+              onMouseEnter={() => setIsAppsOpen(true)}
+              onMouseLeave={() => setIsAppsOpen(false)}
+              onFocus={() => setIsAppsOpen(true)}
+              onBlur={(e) => {
+                if (!e.currentTarget.contains(e.relatedTarget as Node)) {
+                  setIsAppsOpen(false);
+                }
+              }}
+            >
+              <button
+                type="button"
+                aria-haspopup="true"
+                aria-expanded={isAppsOpen}
+                className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 ${
+                  isAppsOpen
+                    ? "text-foreground bg-gray-100/50 dark:bg-white/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-gray-100/50 dark:hover:bg-white/5"
                 }`}
               >
-                {active && (
-                  <span className="absolute inset-0 bg-primary/8 border border-primary/15 rounded-full -z-10" />
-                )}
-                {link.label}
-              </Link>
-            );
-          })}
-
-          {/* Interactive Apps Dropdown Popover */}
-          <div
-            className="relative"
-            onMouseEnter={() => setIsAppsOpen(true)}
-            onMouseLeave={() => setIsAppsOpen(false)}
-            onFocus={() => setIsAppsOpen(true)}
-            onBlur={(e) => {
-              if (!e.currentTarget.contains(e.relatedTarget as Node)) {
-                setIsAppsOpen(false);
-              }
-            }}
-          >
-            <button
-              type="button"
-              aria-haspopup="true"
-              aria-expanded={isAppsOpen}
-              className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 ${
-                isAppsOpen
-                  ? "text-foreground bg-gray-100/50 dark:bg-white/5"
-                  : "text-muted-foreground hover:text-foreground hover:bg-gray-100/50 dark:hover:bg-white/5"
-              }`}
-            >
-              Apps
-              <svg
-                className={`h-3.5 w-3.5 transition-transform duration-200 ${isAppsOpen ? "rotate-180" : ""}`}
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 9l-7 7-7-7"
-                />
-              </svg>
-            </button>
-
-            {/* Popover Dropdown */}
-            <div
-              className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-48 transition-all duration-300 origin-top ${
-                isAppsOpen
-                  ? "opacity-100 translate-y-0 visible scale-100"
-                  : "opacity-0 -translate-y-1 invisible scale-95"
-              }`}
-            >
-              <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-border/60 p-1.5 shadow-lg ring-1 ring-black/5 dark:ring-white/5 overflow-hidden">
-                <a
-                  href="https://cornac.preferred.ai"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center py-2.5 px-4 text-sm font-bold text-foreground/80 hover:text-primary hover:bg-primary/10 dark:hover:bg-white/5 rounded-xl transition-all"
+                Apps
+                <svg
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${isAppsOpen ? "rotate-180" : ""}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  Cornac
-                </a>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M19 9l-7 7-7-7"
+                  />
+                </svg>
+              </button>
+
+              {/* Popover Dropdown */}
+              <div
+                className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-48 transition-all duration-300 origin-top ${
+                  isAppsOpen
+                    ? "opacity-100 translate-y-0 visible scale-100"
+                    : "opacity-0 -translate-y-1 invisible scale-95"
+                }`}
+              >
+                <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-border/60 p-1.5 shadow-lg ring-1 ring-black/5 dark:ring-white/5 overflow-hidden">
+                  <a
+                    href="https://cornac.preferred.ai"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center justify-center py-2.5 px-4 text-sm font-bold text-foreground/80 hover:text-primary hover:bg-primary/10 dark:hover:bg-white/5 rounded-xl transition-all"
+                  >
+                    Cornac
+                  </a>
+                </div>
               </div>
             </div>
           </div>
-        </div>
 
           {/* Theme Toggle & Join CTA button (Desktop) */}
           <div className="flex items-center gap-3">
-          {!mounted ? (
-            /* Reserve the toggle's footprint pre-hydration to avoid layout shift */
-            <div aria-hidden="true" className="p-1.5">
-              <div className="h-4.5 w-4.5" />
-            </div>
-          ) : (
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5 transition-all cursor-pointer hover:rotate-12 active:scale-90"
-              aria-label="Toggle Theme"
-            >
-              {isDark ? (
-                <svg
-                  className="h-4.5 w-4.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="h-4.5 w-4.5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                  />
-                </svg>
-              )}
-            </button>
-          )}
+            {!mounted ? (
+              /* Reserve the toggle's footprint pre-hydration to avoid layout shift */
+              <div aria-hidden="true" className="p-1.5">
+                <div className="h-4.5 w-4.5" />
+              </div>
+            ) : (
+              <button
+                type="button"
+                onClick={toggleTheme}
+                className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5 transition-all cursor-pointer hover:rotate-12 active:scale-90"
+                aria-label="Toggle Theme"
+              >
+                {isDark ? (
+                  <svg
+                    className="h-4.5 w-4.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364-6.364l-.707.707M6.343 17.657l-.707.707m0-12.728l.707.707m12.728 12.728l.707.707M12 8a4 4 0 100 8 4 4 0 000-8z"
+                    />
+                  </svg>
+                ) : (
+                  <svg
+                    className="h-4.5 w-4.5"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                    />
+                  </svg>
+                )}
+              </button>
+            )}
 
-          <Link
-            href="/join"
-            className={`inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm shadow-primary/10 ${
-              isActive("/join")
-                ? "bg-primary/85 shadow-inner"
-                : "bg-primary hover:bg-primary/90"
-            }`}
-          >
-            JOIN US
-          </Link>
+            <Link
+              href="/join"
+              className={`inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm shadow-primary/10 ${
+                isActive("/join")
+                  ? "bg-primary/85 shadow-inner"
+                  : "bg-primary hover:bg-primary/90"
+              }`}
+            >
+              JOIN US
+            </Link>
           </div>
         </div>
 

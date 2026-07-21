@@ -1,8 +1,7 @@
-import { Metadata } from "next";
 import fs from "fs";
 import path from "path";
-import { remark } from "remark";
-import html from "remark-html";
+import { markdownToHtml } from "@/lib/markdown-posts";
+import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "About",
@@ -15,8 +14,7 @@ async function getAboutContent() {
 
   try {
     const fileContents = fs.readFileSync(filePath, "utf8");
-    const processedContent = await remark().use(html).process(fileContents);
-    return processedContent.toString();
+    return await markdownToHtml(fileContents);
   } catch (error) {
     console.error("Error reading about content:", error);
     return "<h1>About</h1><p>Content not available.</p>";

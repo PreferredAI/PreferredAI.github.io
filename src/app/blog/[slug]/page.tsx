@@ -1,14 +1,14 @@
 import {
+  getAllPostSlugs,
   getPostBySlug,
   markdownToHtml,
-  getAllPostSlugs,
 } from "@/lib/markdown-posts";
-import { siteUrl, siteName } from "@/lib/site";
+import { siteName, siteUrl } from "@/lib/site";
 import { format } from "date-fns";
-import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 function formatDate(dateString: string): string {
   return format(new Date(dateString), "MMMM d, yyyy");
@@ -37,7 +37,9 @@ export async function generateMetadata({
   const images = post.featuredImage ? [post.featuredImage] : undefined;
   // seoTitle bakes in "- Preferred.AI"; strip it so the global title template
   // doesn't double the brand ("Title - Preferred.AI · Preferred.AI").
-  const title = post.seoTitle.replace(/\s*[-–|]\s*Preferred\.AI\s*$/i, "").trim();
+  const title = post.seoTitle
+    .replace(/\s*[-–|]\s*Preferred\.AI\s*$/i, "")
+    .trim();
 
   return {
     title,
@@ -82,12 +84,8 @@ export default async function PostPage({
     headline: post.title,
     description: post.seoDescription,
     datePublished: post.date || undefined,
-    author: post.author
-      ? { "@type": "Person", name: post.author }
-      : undefined,
-    image: post.featuredImage
-      ? `${siteUrl}${post.featuredImage}`
-      : undefined,
+    author: post.author ? { "@type": "Person", name: post.author } : undefined,
+    image: post.featuredImage ? `${siteUrl}${post.featuredImage}` : undefined,
     publisher: {
       "@type": "Organization",
       name: siteName,
@@ -122,26 +120,23 @@ export default async function PostPage({
       </h1>
 
       <div className="mb-8 flex flex-wrap items-center gap-2 text-xs">
-        {post.categories.length > 0 && (
-          <>
-            {post.categories.map((category, index) => {
-              const categorySlug = category.toLowerCase().replace(/\s+/g, "-");
-              return (
-                <span key={categorySlug}>
-                  <Link
-                    href={`/category/${categorySlug}`}
-                    className="category-link"
-                  >
-                    {category.toUpperCase()}
-                  </Link>
-                  {index < post.categories.length - 1 && (
-                    <span className="mx-1 text-gray-400">/</span>
-                  )}
-                </span>
-              );
-            })}
-          </>
-        )}
+        {post.categories.length > 0 &&
+          post.categories.map((category, index) => {
+            const categorySlug = category.toLowerCase().replace(/\s+/g, "-");
+            return (
+              <span key={categorySlug}>
+                <Link
+                  href={`/category/${categorySlug}`}
+                  className="category-link"
+                >
+                  {category.toUpperCase()}
+                </Link>
+                {index < post.categories.length - 1 && (
+                  <span className="mx-1 text-gray-400">/</span>
+                )}
+              </span>
+            );
+          })}
         {post.date && post.categories.length > 0 && (
           <span className="text-gray-400">•</span>
         )}
