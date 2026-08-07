@@ -21,7 +21,7 @@
     "@tailwindcss/typography": "^0.5.19",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
-    "feed": "^5.2.1",
+    "feed": "^6.0.0",
     "gray-matter": "^4.0.3",
     "next": "16.2.7",
     "react": "19.2.7",
