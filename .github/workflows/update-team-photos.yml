@@ -40,8 +40,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run team photos crawler
-        run: pnpm crawl:team
+      - name: Run team photos crawler and format
+        run: |
+          pnpm crawl:team
+          pnpm format
 
       - name: Check for changes
         id: check-changes
