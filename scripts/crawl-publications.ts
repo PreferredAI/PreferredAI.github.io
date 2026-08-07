@@ -268,7 +268,7 @@ function parsePublications(html: string): YearSection[] {
 
   // Split by year sections
   const yearMatches: { year: string; index: number }[] = [];
-  let match;
+  let match: RegExpExecArray | null;
 
   while ((match = yearHeadingPattern.exec(html)) !== null) {
     // Combine split year (e.g., "202" + "5" = "2025") or use single year
@@ -323,7 +323,7 @@ function parsePublicationsFromSection(sectionHtml: string): Publication[] {
   // Each publication is in a <li> with <p> containing the content
   const liPattern = /<li[^>]*>[\s\S]*?<p[^>]*>([\s\S]*?)<\/p>[\s\S]*?<\/li>/gi;
 
-  let match;
+  let match: RegExpExecArray | null;
   while ((match = liPattern.exec(sectionHtml)) !== null) {
     const liContent = match[1];
 
@@ -355,7 +355,7 @@ function parsePublicationFromLi(liContent: string): Publication | null {
   const links: { text: string; url: string; isTitle: boolean }[] = [];
   const linkPattern = /<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi;
 
-  let linkMatch;
+  let linkMatch: RegExpExecArray | null;
   while ((linkMatch = linkPattern.exec(liContent)) !== null) {
     const url = decodeHtmlEntities(linkMatch[1]);
     const text = decodeHtmlEntities(

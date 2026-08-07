@@ -145,6 +145,11 @@ export default function TeamPhotos() {
     }, 600);
   };
 
+  const handleNextRef = useRef(handleNext);
+  const handlePrevRef = useRef(handlePrev);
+  handleNextRef.current = handleNext;
+  handlePrevRef.current = handlePrev;
+
   useEffect(() => {
     if (!isModalOpen) return;
 
@@ -152,9 +157,9 @@ export default function TeamPhotos() {
       if (e.key === "Escape") {
         setIsModalOpen(false);
       } else if (e.key === "ArrowRight") {
-        handleNext();
+        handleNextRef.current();
       } else if (e.key === "ArrowLeft") {
-        handlePrev();
+        handlePrevRef.current();
       } else if (e.key === "Tab") {
         // Trap focus within the lightbox so Tab can't leak to the page behind
         const focusables = modalRef.current?.querySelectorAll<HTMLElement>(
@@ -177,7 +182,7 @@ export default function TeamPhotos() {
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [isModalOpen, currentIndex]);
+  }, [isModalOpen]);
 
   // Move focus into the lightbox on open; restore it to the trigger on close
   useEffect(() => {

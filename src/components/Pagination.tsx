@@ -23,34 +23,34 @@ export default function Pagination({
   };
 
   const renderPageNumbers = () => {
-    const pages = [];
+    const pages: { key: string; value: number | "..." }[] = [];
     const maxVisible = 5;
 
     if (totalPages <= maxVisible) {
       for (let i = 1; i <= totalPages; i++) {
-        pages.push(i);
+        pages.push({ key: `page-${i}`, value: i });
       }
     } else {
       if (currentPage <= 3) {
         for (let i = 1; i <= 4; i++) {
-          pages.push(i);
+          pages.push({ key: `page-${i}`, value: i });
         }
-        pages.push("...");
-        pages.push(totalPages);
+        pages.push({ key: "ellipsis-end", value: "..." });
+        pages.push({ key: `page-${totalPages}`, value: totalPages });
       } else if (currentPage >= totalPages - 2) {
-        pages.push(1);
-        pages.push("...");
+        pages.push({ key: "page-1", value: 1 });
+        pages.push({ key: "ellipsis-start", value: "..." });
         for (let i = totalPages - 3; i <= totalPages; i++) {
-          pages.push(i);
+          pages.push({ key: `page-${i}`, value: i });
         }
       } else {
-        pages.push(1);
-        pages.push("...");
+        pages.push({ key: "page-1", value: 1 });
+        pages.push({ key: "ellipsis-start", value: "..." });
         for (let i = currentPage - 1; i <= currentPage + 1; i++) {
-          pages.push(i);
+          pages.push({ key: `page-${i}`, value: i });
         }
-        pages.push("...");
-        pages.push(totalPages);
+        pages.push({ key: "ellipsis-end", value: "..." });
+        pages.push({ key: `page-${totalPages}`, value: totalPages });
       }
     }
 
@@ -75,24 +75,21 @@ export default function Pagination({
 
       {/* Page Numbers */}
       <div className="flex items-center gap-1">
-        {renderPageNumbers().map((page, index) => {
-          if (page === "...") {
+        {renderPageNumbers().map((item) => {
+          if (item.value === "...") {
             return (
-              <span
-                key={`ellipsis-${index}`}
-                className="px-2 text-muted-foreground/60"
-              >
+              <span key={item.key} className="px-2 text-muted-foreground/60">
                 ...
               </span>
             );
           }
 
-          const pageNum = page as number;
+          const pageNum = item.value as number;
           const isActive = pageNum === currentPage;
 
           return (
             <Link
-              key={pageNum}
+              key={item.key}
               href={getPageUrl(pageNum)}
               className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
                 isActive

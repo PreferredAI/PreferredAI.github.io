@@ -80,6 +80,21 @@ interface ExplorerProps {
   data: YearSection[];
 }
 
+// Helper keyword matcher
+const matchesTab = (pub: Publication, tabId: string) => {
+  if (tabId === "All") return true;
+
+  const filter = PUBLICATION_CATEGORIES.find((c) => c.id === tabId);
+  if (!filter) return true;
+
+  const titleLower = pub.title.toLowerCase();
+  const venueLower = pub.venue.toLowerCase();
+
+  return filter.keywords.some(
+    (keyword) => titleLower.includes(keyword) || venueLower.includes(keyword),
+  );
+};
+
 export default function PublicationsExplorer({ data }: ExplorerProps) {
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState("All");
@@ -100,21 +115,6 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
     window.addEventListener("keydown", handleKeyDown);
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
-
-  // Helper keyword matcher
-  const matchesTab = (pub: Publication, tabId: string) => {
-    if (tabId === "All") return true;
-
-    const filter = PUBLICATION_CATEGORIES.find((c) => c.id === tabId);
-    if (!filter) return true;
-
-    const titleLower = pub.title.toLowerCase();
-    const venueLower = pub.venue.toLowerCase();
-
-    return filter.keywords.some(
-      (keyword) => titleLower.includes(keyword) || venueLower.includes(keyword),
-    );
-  };
 
   // Live searching and categorization filters compilation
   const filteredData = useMemo(() => {
@@ -247,7 +247,10 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
                   }
 
                   return (
-                    <li key={pubIndex} className="relative ml-7 pb-6 group">
+                    <li
+                      key={`${pub.title}-${pubIndex}`}
+                      className="relative ml-7 pb-6 group"
+                    >
                       {/* Timeline concentric indicator bullet (optically centered on the border line) */}
                       <div className="absolute -left-[28px] -translate-x-1/2 w-6 top-[7px] z-10 flex items-center justify-center">
                         {pubIndex === 0 ? (
@@ -300,8 +303,11 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
                         {/* Link badges row */}
                         {links.length > 0 && (
                           <div className="flex flex-wrap gap-2 mt-3">
-                            {links.map((link, idx) => (
-                              <LinkBadge key={idx} link={link} />
+                            {links.map((link) => (
+                              <LinkBadge
+                                key={`${link.url}-${link.label}`}
+                                link={link}
+                              />
                             ))}
                           </div>
                         )}
