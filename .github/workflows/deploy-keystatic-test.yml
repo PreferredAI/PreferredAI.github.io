@@ -44,11 +44,34 @@ jobs:
             exit 1
           fi
 
+      - name: Check Keystatic GitHub configuration
+        env:
+          NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND: ${{ vars.NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND }}
+          NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: ${{ vars.NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG }}
+          KEYSTATIC_GITHUB_CLIENT_ID: ${{ secrets.KEYSTATIC_GITHUB_CLIENT_ID }}
+          KEYSTATIC_GITHUB_CLIENT_SECRET: ${{ secrets.KEYSTATIC_GITHUB_CLIENT_SECRET }}
+          KEYSTATIC_SECRET: ${{ secrets.KEYSTATIC_SECRET }}
+        run: |
+          missing=0
+          for name in \
+            NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND \
+            NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG \
+            KEYSTATIC_GITHUB_CLIENT_ID \
+            KEYSTATIC_GITHUB_CLIENT_SECRET \
+            KEYSTATIC_SECRET
+          do
+            if [ -z "${!name}" ]; then
+              echo "::error::$name is missing from the repository Actions variables or secrets."
+              missing=1
+            fi
+          done
+          exit "$missing"
+
       - name: Build and deploy test Worker
         env:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_WORKERS_API_TOKEN }}
-          KEYSTATIC_STORAGE_KIND: ${{ vars.KEYSTATIC_STORAGE_KIND }}
+          NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND: ${{ vars.NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND }}
           KEYSTATIC_GITHUB_CLIENT_ID: ${{ secrets.KEYSTATIC_GITHUB_CLIENT_ID }}
           KEYSTATIC_GITHUB_CLIENT_SECRET: ${{ secrets.KEYSTATIC_GITHUB_CLIENT_SECRET }}
           KEYSTATIC_SECRET: ${{ secrets.KEYSTATIC_SECRET }}

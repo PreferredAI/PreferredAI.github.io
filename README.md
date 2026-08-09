@@ -59,13 +59,19 @@ For local authoring, run `pnpm dev` and visit [http://localhost:3000/admin](http
 Keystatic writes Markdown and images back to GitHub through server-side API routes. A static Cloudflare Pages export cannot run the admin API, so the hosted editor is deployed as a full-stack Next.js Worker through OpenNext. Set:
 
 ```dotenv
-KEYSTATIC_STORAGE_KIND=github
+NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND=github
 NEXT_OUTPUT_MODE=server
 KEYSTATIC_GITHUB_CLIENT_ID=...
 KEYSTATIC_GITHUB_CLIENT_SECRET=...
 KEYSTATIC_SECRET=...
 NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG=...
 ```
+
+Before the GitHub App exists, start Keystatic's one-time setup mode with
+`NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND=github pnpm dev`, then open
+[http://127.0.0.1:3000/keystatic/setup](http://127.0.0.1:3000/keystatic/setup).
+The storage-mode flag is public because both the browser UI and server route
+must select GitHub storage; it contains no credential or secret.
 
 Copy `.env.example` as a checklist. The GitHub App values can be generated from Keystatic's setup screen. Give the app access only to `PreferredAI/PreferredAI.github.io`; authors must have repository write access. A repository administrator can normally install Keystatic's repository-scoped app unless the organization has restricted installations to owners.
 

@@ -1,8 +1,8 @@
 import { collection, config, fields } from "@keystatic/core";
 
 const isGitHubStorage =
-  process.env.KEYSTATIC_STORAGE_KIND === "github" ||
-  Boolean(process.env.KEYSTATIC_GITHUB_CLIENT_ID);
+  process.env.NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND === "github" ||
+  Boolean(process.env.NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG);
 
 const categoryOptions = [
   "Announcement",

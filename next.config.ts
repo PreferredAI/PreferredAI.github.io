@@ -5,6 +5,7 @@ const isServerBuild = process.env.NEXT_OUTPUT_MODE === "server";
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  allowedDevOrigins: ["127.0.0.1"],
   ...(process.env.NODE_ENV === "production" && !isServerBuild
     ? { output: "export" }
     : {}),
