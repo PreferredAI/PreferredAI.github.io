@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/.pnpm-store/
 /.pnp
 .pnp.*
 .yarn/*
@@ -16,6 +17,8 @@
 # next.js
 /.next/
 /out/
+/.open-next/
+/.wrangler/
 
 # production
 /build
@@ -32,6 +35,8 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
+.dev.vars*
 
 # vercel
 .vercel
@@ -39,6 +44,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+cloudflare-env.d.ts
 
 /src/generated/prisma
 /public/optimized/

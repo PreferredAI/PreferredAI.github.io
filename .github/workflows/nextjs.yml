@@ -12,10 +12,6 @@ on:
       - "scripts/crawl-team.ts"
       - ".github/workflows/update-team-photos.yml"
 
-  # Run on pull requests targeting main to build preview deployments
-  pull_request:
-    branches: ["main"]
-
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 

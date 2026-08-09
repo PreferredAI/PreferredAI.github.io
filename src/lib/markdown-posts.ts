@@ -71,7 +71,9 @@ function parsePostFile(filename: string): MarkdownPost {
     date: data.date || "",
     author: data.author || "",
     excerpt: data.excerpt || "",
-    featuredImage: data.featuredImage || "",
+    // New posts use Keystatic's managed `cover` image. Older posts keep their
+    // existing `featuredImage` paths, so the archive does not need migration.
+    featuredImage: data.cover || data.featuredImage || "",
     categories: data.categories || [],
     tags: data.tags || [],
     seoTitle: data.seoTitle || data.title || "",
