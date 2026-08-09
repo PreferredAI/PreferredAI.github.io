@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import sharp from "sharp";
+import { buildPostsIndex } from "./generate-posts-index";
 
 const TARGET_WIDTHS = [256, 384, 640, 1080, 1920, 3840];
 const PUBLIC_DIR = path.join(process.cwd(), "public");
@@ -80,6 +81,26 @@ async function optimizeImage(srcRelativePath: string) {
 }
 
 async function main() {
+  console.log("📝 Generating posts index JSON...");
+  const posts = buildPostsIndex();
+  let aboutContent = "";
+  const aboutPath = path.join(process.cwd(), "content", "about.md");
+  if (fs.existsSync(aboutPath)) {
+    aboutContent = fs.readFileSync(aboutPath, "utf8");
+  }
+  const outputPath = path.join(
+    process.cwd(),
+    "src",
+    "data",
+    "generated-posts.json",
+  );
+  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  fs.writeFileSync(
+    outputPath,
+    JSON.stringify({ aboutContent, posts }, null, 2),
+    "utf8",
+  );
+
   console.log("🚀 Scanning public directories for image optimization...");
   let allImages: string[] = [];
   for (const dir of DIRS_TO_SCAN) {
