@@ -71,7 +71,9 @@ Copy `.env.example` as a checklist. The GitHub App values can be generated from 
 
 Run `pnpm build:worker` to produce the Cloudflare-compatible server build and `pnpm preview:worker` to test it locally. Keystatic requires server-side routes; a static export cannot provide its API or GitHub OAuth callbacks.
 
-The `test-keystatic` branch deploys to the separate `preferredai-keystatic` Worker through `.github/workflows/deploy-keystatic-test.yml`. This leaves the existing Pages deployment and `preferred.ai` unchanged during testing. See `DEPLOY_GUIDE.md` for the credential, callback URL, validation, cutover, and rollback steps.
+The `test-keystatic` branch deploys to the separate `preferredai-keystatic` Worker through `.github/workflows/deploy-keystatic-test.yml`. This leaves the existing Pages deployment and `preferred.ai` unchanged during testing.
+
+The test workflow uses a separate `CLOUDFLARE_WORKERS_API_TOKEN` Actions secret. Do not replace the existing `CLOUDFLARE_API_TOKEN`, which remains scoped to the production Pages workflow.
 
 Do not merge the Worker deployment into the production workflow or move the custom domain until the temporary Worker passes a complete GitHub login, edit, image upload, save, and rebuild test.
 
