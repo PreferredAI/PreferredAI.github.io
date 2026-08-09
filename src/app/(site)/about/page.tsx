@@ -3,6 +3,8 @@ import path from "path";
 import { markdownToHtml } from "@/lib/markdown-posts";
 import type { Metadata } from "next";
 
+import generatedPostsData from "@/data/generated-posts.json";
+
 export const metadata: Metadata = {
   title: "About",
   description:
@@ -13,12 +15,21 @@ async function getAboutContent() {
   const filePath = path.join(process.cwd(), "content", "about.md");
 
   try {
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    return await markdownToHtml(fileContents);
-  } catch (error) {
-    console.error("Error reading about content:", error);
-    return "<h1>About</h1><p>Content not available.</p>";
+    if (fs.existsSync?.(filePath)) {
+      const fileContents = fs.readFileSync(filePath, "utf8");
+      return await markdownToHtml(fileContents);
+    }
+  } catch {
+    // Edge / Worker runtimes
   }
+
+  const aboutMd =
+    (generatedPostsData as { aboutContent?: string }).aboutContent || "";
+  if (aboutMd) {
+    return await markdownToHtml(aboutMd);
+  }
+
+  return "<h1>About</h1><p>Content not available.</p>";
 }
 
 export default async function AboutPage() {

@@ -8,6 +8,8 @@ import remarkRehype from "remark-rehype";
 import { unified } from "unified";
 import rehypeFigure from "./rehype-figure";
 
+import generatedPostsData from "@/data/generated-posts.json";
+
 const postsDirectory = path.join(process.cwd(), "content", "posts");
 
 export interface MarkdownPost {
@@ -35,24 +37,9 @@ export interface PostPreview {
   tags: string[];
 }
 
-function getAllPostFiles(): string[] {
-  if (!fs.existsSync(postsDirectory)) {
-    return [];
-  }
-  return fs.readdirSync(postsDirectory).filter((file) => file.endsWith(".md"));
-}
-
-interface CacheEntry {
-  post: MarkdownPost;
-  mtime: number;
-}
-
-const postCache = new Map<string, CacheEntry>();
-
 function parsePostFile(filename: string): MarkdownPost {
   const fullPath = path.join(postsDirectory, filename);
 
-  // Use statSync to check modification time for auto-invalidation
   const stats = fs.statSync(fullPath);
   const mtime = stats.mtimeMs;
 
@@ -71,8 +58,6 @@ function parsePostFile(filename: string): MarkdownPost {
     date: data.date || "",
     author: data.author || "",
     excerpt: data.excerpt || "",
-    // New posts use Keystatic's managed `cover` image. Older posts keep their
-    // existing `featuredImage` paths, so the archive does not need migration.
     featuredImage: data.cover || data.featuredImage || "",
     categories: data.categories || [],
     tags: data.tags || [],
@@ -85,18 +70,43 @@ function parsePostFile(filename: string): MarkdownPost {
   return post;
 }
 
+interface CacheEntry {
+  post: MarkdownPost;
+  mtime: number;
+}
+
+const postCache = new Map<string, CacheEntry>();
+
+export function loadAllPosts(): MarkdownPost[] {
+  try {
+    if (fs.existsSync?.(postsDirectory)) {
+      const files = fs
+        .readdirSync(postsDirectory)
+        .filter((file) => file.endsWith(".md"));
+      if (files.length > 0) {
+        const diskPosts = files.map(parsePostFile);
+        diskPosts.sort(
+          (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+        );
+        return diskPosts;
+      }
+    }
+  } catch {
+    // Edge / Worker runtimes do not have process.cwd()/content/posts on disk
+  }
+
+  const posts =
+    (generatedPostsData as { posts?: MarkdownPost[] }).posts ||
+    (generatedPostsData as unknown as MarkdownPost[]);
+  return posts;
+}
+
 export function getAllPosts(
   page = 1,
   limit = 10,
   options?: { firstPageLimit?: number },
 ): { posts: PostPreview[]; total: number; pages: number } {
-  const files = getAllPostFiles();
-  const allPosts = files.map(parsePostFile);
-
-  // Sort by date descending
-  allPosts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
+  const allPosts = loadAllPosts();
 
   const total = allPosts.length;
   const firstPageLimit = options?.firstPageLimit ?? limit;
@@ -132,19 +142,23 @@ export function getAllPosts(
 }
 
 export function getPostBySlug(slug: string): MarkdownPost | null {
-  const filename = `${slug}.md`;
-  const fullPath = path.join(postsDirectory, filename);
+  try {
+    const filename = `${slug}.md`;
+    const fullPath = path.join(postsDirectory, filename);
 
-  if (!fs.existsSync(fullPath)) {
-    return null;
+    if (fs.existsSync?.(fullPath)) {
+      return parsePostFile(filename);
+    }
+  } catch {
+    // Edge / Worker runtimes do not have disk files
   }
 
-  return parsePostFile(filename);
+  const allPosts = loadAllPosts();
+  return allPosts.find((p) => p.slug === slug) || null;
 }
 
 export function getPostsByCategory(categorySlug: string, page = 1, limit = 10) {
-  const files = getAllPostFiles();
-  const allPosts = files.map(parsePostFile);
+  const allPosts = loadAllPosts();
 
   // Filter by category (case-insensitive)
   const filteredPosts = allPosts.filter((post) =>
@@ -152,11 +166,6 @@ export function getPostsByCategory(categorySlug: string, page = 1, limit = 10) {
       (cat) =>
         cat.toLowerCase().replace(/\s+/g, "-") === categorySlug.toLowerCase(),
     ),
-  );
-
-  // Sort by date descending
-  filteredPosts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
   const total = filteredPosts.length;
@@ -194,19 +203,13 @@ export function getPostsByCategory(categorySlug: string, page = 1, limit = 10) {
 }
 
 export function getPostsByTag(tagSlug: string, page = 1, limit = 10) {
-  const files = getAllPostFiles();
-  const allPosts = files.map(parsePostFile);
+  const allPosts = loadAllPosts();
 
   // Filter by tag (case-insensitive)
   const filteredPosts = allPosts.filter((post) =>
     post.tags.some(
       (tag) => tag.toLowerCase().replace(/\s+/g, "-") === tagSlug.toLowerCase(),
     ),
-  );
-
-  // Sort by date descending
-  filteredPosts.sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
   const total = filteredPosts.length;
@@ -243,8 +246,7 @@ export function getPostsByTag(tagSlug: string, page = 1, limit = 10) {
 }
 
 export function getAllCategories() {
-  const files = getAllPostFiles();
-  const allPosts = files.map(parsePostFile);
+  const allPosts = loadAllPosts();
 
   const categoriesMap = new Map<
     string,
@@ -266,8 +268,7 @@ export function getAllCategories() {
 }
 
 export function getAllTags() {
-  const files = getAllPostFiles();
-  const allPosts = files.map(parsePostFile);
+  const allPosts = loadAllPosts();
 
   const tagsMap = new Map<
     string,
@@ -289,8 +290,8 @@ export function getAllTags() {
 }
 
 export function getAllPostSlugs(): string[] {
-  const files = getAllPostFiles();
-  return files.map((file) => file.replace(/\.md$/, ""));
+  const allPosts = loadAllPosts();
+  return allPosts.map((p) => p.slug);
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {
