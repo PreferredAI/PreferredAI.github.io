@@ -10,7 +10,7 @@
     "dev": "next dev",
     "build": "npx tsx scripts/optimize-all-images.ts && next build --webpack",
     "build:server": "npx tsx scripts/optimize-all-images.ts && NEXT_OUTPUT_MODE=server next build --webpack",
-    "build:worker": "NEXT_OUTPUT_MODE=server opennextjs-cloudflare build",
+    "build:worker": "npx tsx scripts/optimize-all-images.ts && NEXT_OUTPUT_MODE=server opennextjs-cloudflare build",
     "preview:worker": "pnpm build:worker && opennextjs-cloudflare preview",
     "deploy:worker": "pnpm build:worker && opennextjs-cloudflare deploy -- --keep-vars",
     "start": "next start",

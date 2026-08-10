@@ -47,6 +47,16 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Cache optimized images
+        uses: actions/cache@v6
+        with:
+          path: |
+            public/optimized
+            src/data/generated-posts.json
+          key: ${{ runner.os }}-images-${{ hashFiles('public/team/**', 'public/uploads/**', 'content/**', 'scripts/optimize-all-images.ts') }}
+          restore-keys: |
+            ${{ runner.os }}-images-
+
       - name: Lint
         run: pnpm lint
 
