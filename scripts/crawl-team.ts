@@ -9,7 +9,7 @@ import { TEAM_PHOTOS, type TeamPhoto } from "../src/data/teamPhotos";
 
 const GROUP_URL = "https://www.hadylauw.com/group";
 const OUTPUT_PATH = path.join(process.cwd(), "src", "data", "teamPhotos.ts");
-const TEAM_DIR = path.join(process.cwd(), "public", "team");
+const TEAM_DIR = path.join(process.cwd(), "public", "team", "activities");
 const USER_AGENT = "Mozilla/5.0 (compatible; TeamPhotosCrawler/1.0)";
 
 // =============================================================================
@@ -294,7 +294,7 @@ async function main() {
         // Simple case: no existing photos in month, only 1 new photo
         const photo = groupPhotos[0];
         const filename = `${ym}.jpg`;
-        const url = `/team/${filename}`;
+        const url = `/team/activities/${filename}`;
         const destPath = path.join(TEAM_DIR, filename);
 
         await downloadImage(photo.src, destPath);
@@ -326,7 +326,7 @@ async function main() {
           const photo = groupPhotos[j];
           const suffix = maxSuffix + 1 + j;
           const filename = `${ym}.${suffix}.jpg`;
-          const url = `/team/${filename}`;
+          const url = `/team/activities/${filename}`;
           const destPath = path.join(TEAM_DIR, filename);
 
           await downloadImage(photo.src, destPath);
