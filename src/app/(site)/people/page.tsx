@@ -54,7 +54,7 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
           rel="noopener noreferrer"
           className="text-sm text-primary hover:underline"
         >
-          {member.link}
+          {member.link.replace(/\/$/, "")}
         </a>
       )}
     </div>
