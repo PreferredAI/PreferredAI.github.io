@@ -44,7 +44,7 @@ jobs:
       - name: Run publications crawler and format
         run: |
           pnpm crawl:publications
-          pnpm format
+          pnpm check
 
       - name: Check for changes
         id: check-changes

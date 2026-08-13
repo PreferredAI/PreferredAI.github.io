@@ -44,7 +44,7 @@ jobs:
       - name: Run team photos crawler and format
         run: |
           pnpm crawl:team
-          pnpm format
+          pnpm check
 
       - name: Check for changes
         id: check-changes

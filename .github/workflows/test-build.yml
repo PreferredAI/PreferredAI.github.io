@@ -39,7 +39,7 @@ jobs:
             ${{ runner.os }}-images-
 
       - name: Lint
-        run: pnpm lint
+        run: pnpm check
 
       - name: Build for Cloudflare Workers
         run: pnpm build:worker
