@@ -5,21 +5,9 @@ on:
   # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
-    paths-ignore:
-      # If there are changes to these files, wait for the update workflows to finish
-      - "scripts/crawl-publications.ts"
-      - ".github/workflows/update-publications.yml"
-      - "scripts/crawl-team.ts"
-      - ".github/workflows/update-team-photos.yml"
 
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-
-  # Run after update workflows
-  workflow_run:
-    workflows: ["Update Publications", "Update Team Photos"]
-    types:
-      - completed
 
 permissions:
   contents: read
