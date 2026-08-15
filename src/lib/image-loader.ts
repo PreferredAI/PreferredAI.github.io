@@ -1,4 +1,10 @@
 import type { ImageLoaderProps } from "next/image";
+import {
+  getGeneratedImagePath,
+  getImageManifestEntry,
+  selectGeneratedWidth,
+} from "./image-manifest";
+import { getGeneratedWidths } from "./image-widths";
 
 export default function imageLoader({ src, width }: ImageLoaderProps) {
   // If it's a remote URL or external asset, return it as-is
@@ -16,19 +22,10 @@ export default function imageLoader({ src, width }: ImageLoaderProps) {
     return `${src}${separator}w=${width}`;
   }
 
-  // Ensure cleanSrc starts with a slash
-  let cleanSrc = src;
-  if (!cleanSrc.startsWith("/")) {
-    cleanSrc = `/${cleanSrc}`;
-  }
+  const entry = getImageManifestEntry(src);
+  const generatedWidth = entry
+    ? selectGeneratedWidth(getGeneratedWidths(entry.sourceWidth), width)
+    : undefined;
 
-  // We only optimize local images located in /team/ and /uploads/ folders
-  const isOptimizedFolder =
-    cleanSrc.startsWith("/team/") || cleanSrc.startsWith("/uploads/");
-  if (!isOptimizedFolder) {
-    return src;
-  }
-
-  // Return the path pointing to the static optimized directory
-  return `/optimized/${width}${cleanSrc}`;
+  return generatedWidth ? getGeneratedImagePath(src, generatedWidth) : src;
 }

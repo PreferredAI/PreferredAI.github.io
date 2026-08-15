@@ -40,13 +40,17 @@ jobs:
         with:
           path: |
             public/optimized
-            src/data/generated-posts.json
-          key: ${{ runner.os }}-images-${{ hashFiles('public/team/**', 'public/uploads/**', 'content/**', 'scripts/optimize-all-images.ts') }}
+            .cache/image-optimizer.json
+            src/data/generated-image-manifest.json
+          key: ${{ runner.os }}-images-v2-${{ hashFiles('public/team/**', 'public/uploads/**', 'scripts/optimize-all-images.ts', 'src/lib/image-widths.ts') }}
           restore-keys: |
-            ${{ runner.os }}-images-
+            ${{ runner.os }}-images-v2-
 
-      - name: Lint
+      - name: Validate (read-only)
         run: pnpm check
+
+      - name: Audit all dependencies
+        run: pnpm audit:dependencies
 
       - name: Build and deploy to Cloudflare Workers
         env:

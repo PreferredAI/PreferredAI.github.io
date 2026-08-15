@@ -73,7 +73,7 @@ function main() {
   };
 
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
-  fs.writeFileSync(outputPath, JSON.stringify(payload, null, 2), "utf8");
+  fs.writeFileSync(outputPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
   console.log(`✅ Generated ${posts.length} posts into ${outputPath}`);
 }
 

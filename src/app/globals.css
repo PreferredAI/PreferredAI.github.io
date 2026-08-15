@@ -323,3 +323,13 @@
   text-align: center;
   font-style: italic;
 }
+
+.prose iframe.video-embed {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  margin: 2rem 0;
+  border: 0;
+  border-radius: var(--radius);
+}

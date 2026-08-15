@@ -1,12 +1,17 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import rehypeRaw from "rehype-raw";
+import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import gfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
+import { markdownSanitizeSchema } from "./markdown-sanitize-schema";
 import rehypeFigure from "./rehype-figure";
+import rehypeResponsiveImages from "./rehype-responsive-images";
+import rehypeSafeEmbeds from "./rehype-safe-embeds";
 
 import generatedPostsData from "@/data/generated-posts.json";
 
@@ -299,8 +304,12 @@ export async function markdownToHtml(markdown: string): Promise<string> {
     .use(remarkParse)
     .use(gfm)
     .use(remarkRehype, { allowDangerousHtml: true })
+    .use(rehypeRaw)
+    .use(rehypeSafeEmbeds)
+    .use(rehypeResponsiveImages)
     .use(rehypeFigure)
-    .use(rehypeStringify, { allowDangerousHtml: true })
+    .use(rehypeSanitize, markdownSanitizeSchema)
+    .use(rehypeStringify)
     .process(markdown);
   return result.toString();
 }

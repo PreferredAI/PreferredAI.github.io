@@ -1,0 +1,1657 @@
+{
+  "version": 2,
+  "images": {
+    "/team/activities/2013-03.jpg": {
+      "sourceWidth": 3264,
+      "sourceHeight": 2448
+    },
+    "/team/activities/2013-12.jpg": {
+      "sourceWidth": 3264,
+      "sourceHeight": 2448
+    },
+    "/team/activities/2014-04.jpg": {
+      "sourceWidth": 4000,
+      "sourceHeight": 2672
+    },
+    "/team/activities/2014-10.jpg": {
+      "sourceWidth": 3264,
+      "sourceHeight": 2448
+    },
+    "/team/activities/2015-04.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2015-10.jpg": {
+      "sourceWidth": 2448,
+      "sourceHeight": 3264
+    },
+    "/team/activities/2016-06.1.jpg": {
+      "sourceWidth": 6000,
+      "sourceHeight": 3376
+    },
+    "/team/activities/2016-06.2.jpg": {
+      "sourceWidth": 6000,
+      "sourceHeight": 3376
+    },
+    "/team/activities/2016-12.1.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 4032
+    },
+    "/team/activities/2016-12.2.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2017-05.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2017-07.jpg": {
+      "sourceWidth": 4000,
+      "sourceHeight": 2672
+    },
+    "/team/activities/2017-10.1.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2017-10.2.jpg": {
+      "sourceWidth": 3652,
+      "sourceHeight": 2460
+    },
+    "/team/activities/2018-05.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2018-07.jpg": {
+      "sourceWidth": 3840,
+      "sourceHeight": 2160
+    },
+    "/team/activities/2018-11.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2019-01.jpg": {
+      "sourceWidth": 4266,
+      "sourceHeight": 2400
+    },
+    "/team/activities/2019-04.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2019-07.jpg": {
+      "sourceWidth": 3968,
+      "sourceHeight": 2976
+    },
+    "/team/activities/2019-09.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/team/activities/2020-12.1.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2020-12.2.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2022-04.1.jpg": {
+      "sourceWidth": 2800,
+      "sourceHeight": 2100
+    },
+    "/team/activities/2022-04.2.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/team/activities/2022-09.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2022-11.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/team/activities/2023-03.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2023-05.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2023-08.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2023-09.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2023-11.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2024-06.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2025-02.1.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2025-02.2.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2025-05.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2025-07.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/activities/2026-05.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/team/members/andrew-le.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/team/members/ce-zhang.png": {
+      "sourceWidth": 447,
+      "sourceHeight": 447
+    },
+    "/team/members/chongcher.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 1024
+    },
+    "/team/members/darryl-ong.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/team/members/derrick.jpg": {
+      "sourceWidth": 587,
+      "sourceHeight": 587
+    },
+    "/team/members/dilan.jpeg": {
+      "sourceWidth": 800,
+      "sourceHeight": 800
+    },
+    "/team/members/ezekiel.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/team/members/ghiles.png": {
+      "sourceWidth": 499,
+      "sourceHeight": 499
+    },
+    "/team/members/hady-lauw.png": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/team/members/hoang-le.png": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/team/members/hoang.jpg": {
+      "sourceWidth": 1053,
+      "sourceHeight": 1054
+    },
+    "/team/members/hongtuonie.jpeg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 1838
+    },
+    "/team/members/jaime-hieu.jpg": {
+      "sourceWidth": 3004,
+      "sourceHeight": 3004
+    },
+    "/team/members/jiapeng.png": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/team/members/khanh.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/team/members/konstantinos.jpeg": {
+      "sourceWidth": 675,
+      "sourceHeight": 675
+    },
+    "/team/members/luke.jpeg": {
+      "sourceWidth": 746,
+      "sourceHeight": 800
+    },
+    "/team/members/maksim.png": {
+      "sourceWidth": 150,
+      "sourceHeight": 150
+    },
+    "/team/members/phuong.jpeg": {
+      "sourceWidth": 450,
+      "sourceHeight": 450
+    },
+    "/team/members/quang.jpg": {
+      "sourceWidth": 1456,
+      "sourceHeight": 1458
+    },
+    "/team/members/thuat.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/team/members/trong-le.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 1024
+    },
+    "/team/members/tuan-truong.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/team/members/ween-jiann.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/04/2018-03-06-17.05.32_spb_rooftop-e1528105099740.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/04/2018-03-06-17.05.32_spb_rooftop.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/04/Andrew.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/uploads/2018/04/ghiles.png": {
+      "sourceWidth": 499,
+      "sourceHeight": 499
+    },
+    "/uploads/2018/04/Jingyao.jpg": {
+      "sourceWidth": 462,
+      "sourceHeight": 462
+    },
+    "/uploads/2018/04/maksim.jpg": {
+      "sourceWidth": 1368,
+      "sourceHeight": 1368
+    },
+    "/uploads/2018/04/maksim2.png": {
+      "sourceWidth": 150,
+      "sourceHeight": 150
+    },
+    "/uploads/2018/04/photo_20171011b-e1528105169794.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 689
+    },
+    "/uploads/2018/04/photo_20171011b.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 689
+    },
+    "/uploads/2018/04/photo_tuantruong.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/uploads/2018/04/Potrait-2.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/04/Screen-Shot-2018-04-09-at-12.16.34-PM-e1528105226421.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 636
+    },
+    "/uploads/2018/04/Screen-Shot-2018-04-09-at-12.16.34-PM.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 636
+    },
+    "/uploads/2018/04/Screen-Shot-2018-04-09-at-12.16.50-PM-e1528105208657.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 271
+    },
+    "/uploads/2018/04/Screen-Shot-2018-04-09-at-12.16.50-PM.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 271
+    },
+    "/uploads/2018/04/TrongLe_Avatar.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/05/Capture.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 486
+    },
+    "/uploads/2018/05/vscnn_basemodel_architecture-e1528105019495.png": {
+      "sourceWidth": 1021,
+      "sourceHeight": 324
+    },
+    "/uploads/2018/05/vscnn_basemodel_architecture.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 325
+    },
+    "/uploads/2018/05/vscnn_basemodel_business_negative_short-e1528104922782.png": {
+      "sourceWidth": 1023,
+      "sourceHeight": 619
+    },
+    "/uploads/2018/05/vscnn_basemodel_business_negative_short.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 620
+    },
+    "/uploads/2018/05/vscnn_basemodel_business_positive_short-e1528104987774.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 615
+    },
+    "/uploads/2018/05/vscnn_basemodel_business_positive_short.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 615
+    },
+    "/uploads/2018/06/CJcube.png": {
+      "sourceWidth": 724,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/06/Data-Science-SG-Meetup_EDM.jpg": {
+      "sourceWidth": 709,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/06/foodrecce_contributors.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/06/foodrecce_snapshot1.png": {
+      "sourceWidth": 576,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/06/foodrecce_snapshot2.png": {
+      "sourceWidth": 575,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/06/headshot-square.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/06/hoangle_photo.png": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/uploads/2018/06/kdd-sg_tutorial_20180609_brochure1.jpg": {
+      "sourceWidth": 791,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/06/kdd-sg_tutorial_20180609_brochure2.jpg": {
+      "sourceWidth": 791,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/06/photo_20180530.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/06/photo_20180609_tutorial_audience.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/06/photo_20180609_tutorial_hady.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/06/photo_20180609_tutorial_tuan.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/06/photo_hadylauw.png": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/uploads/2018/07/ijcai18_acceptedpapers-e1532825555718.jpg": {
+      "sourceWidth": 691,
+      "sourceHeight": 680
+    },
+    "/uploads/2018/07/ijcai18_acceptedpapers.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/07/ijcai18_c2pf-e1532826682726.jpg": {
+      "sourceWidth": 870,
+      "sourceHeight": 588
+    },
+    "/uploads/2018/07/ijcai18_c2pf.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/07/ijcai18_cbsdfn-e1532826325721.jpg": {
+      "sourceWidth": 865,
+      "sourceHeight": 611
+    },
+    "/uploads/2018/07/ijcai18_cbsdfn-e1532826445617.jpg": {
+      "sourceWidth": 793,
+      "sourceHeight": 568
+    },
+    "/uploads/2018/07/ijcai18_cbsdfn-e1532826791860.jpg": {
+      "sourceWidth": 793,
+      "sourceHeight": 537
+    },
+    "/uploads/2018/07/ijcai18_cbsdfn.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/07/ijcai18_cityhall.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/07/ijcai18_dancing-e1532825326999.jpg": {
+      "sourceWidth": 478,
+      "sourceHeight": 640
+    },
+    "/uploads/2018/07/ijcai18_dancing.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/07/ijcai18_djurgarden.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/07/ijcai18_nobel.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/07/ijcai18_nobel0bama.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/07/ijcai18_nobelchair.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/07/ijcai18_posters.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 683
+    },
+    "/uploads/2018/07/ijcai18_stockholmsmassan.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/09/20180807_084821.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/09/20180808_082934-1.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/09/20180808_082950.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/09/20180808_153839.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/09/20180808_194712.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/09/20180809_145604.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/09/20180809_180751-1.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/09/20180809_181655.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_bestparticipation.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/10/iprep_bestproject.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/10/iprep_datacollection.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_group1_coaching.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_group1_presentation.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_group2_coaching.png": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/10/iprep_group2_presentation.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_group3_coaching.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_group3_presentation.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_group4_coaching.png": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/10/iprep_group4_presentation.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_group5_coaching.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/10/iprep_group5_presentation.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_group6_coaching.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/10/iprep_group6_presentation.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/iprep_instructionteam.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/10/iprep_regression.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/10/张策的帅照.png": {
+      "sourceWidth": 447,
+      "sourceHeight": 447
+    },
+    "/uploads/2018/11/1540886449669-1.jpg": {
+      "sourceWidth": 640,
+      "sourceHeight": 360
+    },
+    "/uploads/2018/11/1540886449669.jpg": {
+      "sourceWidth": 640,
+      "sourceHeight": 360
+    },
+    "/uploads/2018/11/43590297_2726155657410082_4629946862160314368_o.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 724
+    },
+    "/uploads/2018/11/44683253_2146113568740306_6902887531373658112_n-1.jpg": {
+      "sourceWidth": 540,
+      "sourceHeight": 960
+    },
+    "/uploads/2018/11/44683253_2146113568740306_6902887531373658112_n.jpg": {
+      "sourceWidth": 540,
+      "sourceHeight": 960
+    },
+    "/uploads/2018/11/banquet.png": {
+      "sourceWidth": 879,
+      "sourceHeight": 354
+    },
+    "/uploads/2018/11/car.jpg": {
+      "sourceWidth": 640,
+      "sourceHeight": 360
+    },
+    "/uploads/2018/11/conference_presentation.jpg": {
+      "sourceWidth": 825,
+      "sourceHeight": 583
+    },
+    "/uploads/2018/11/conference_venue-1.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 338
+    },
+    "/uploads/2018/11/conference_venue.png": {
+      "sourceWidth": 823,
+      "sourceHeight": 276
+    },
+    "/uploads/2018/11/CongressiLingotto.jpg": {
+      "sourceWidth": 500,
+      "sourceHeight": 332
+    },
+    "/uploads/2018/11/egyptian.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 226
+    },
+    "/uploads/2018/11/juventus-e1541230635343.jpg": {
+      "sourceWidth": 640,
+      "sourceHeight": 360
+    },
+    "/uploads/2018/11/juventus.jpg": {
+      "sourceWidth": 640,
+      "sourceHeight": 360
+    },
+    "/uploads/2018/11/keynote1.jpg": {
+      "sourceWidth": 497,
+      "sourceHeight": 349
+    },
+    "/uploads/2018/11/keynote2.jpg": {
+      "sourceWidth": 482,
+      "sourceHeight": 346
+    },
+    "/uploads/2018/11/keynote3.jpg": {
+      "sourceWidth": 456,
+      "sourceHeight": 342
+    },
+    "/uploads/2018/11/main_entrance-1.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 576
+    },
+    "/uploads/2018/11/main_entrance.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 576
+    },
+    "/uploads/2018/11/Mole.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 226
+    },
+    "/uploads/2018/11/photo_20131212.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/11/photo_20181102.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/11/photo_20181102a.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/11/photo_20181102b.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/11/photo_20181109a.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/11/photo_20181109b.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/11/photo_20181109c.jpg": {
+      "sourceWidth": 768,
+      "sourceHeight": 1024
+    },
+    "/uploads/2018/12/aaai19-tutorial-cover-1.png": {
+      "sourceWidth": 720,
+      "sourceHeight": 540
+    },
+    "/uploads/2018/12/aaai19-tutorial-cover-2.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/12/aaai19-tutorial-cover.png": {
+      "sourceWidth": 720,
+      "sourceHeight": 405
+    },
+    "/uploads/2018/12/Andrew.jpg": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2018/12/data-science-pipeline.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 124
+    },
+    "/uploads/2018/12/photo_hadylauw.png": {
+      "sourceWidth": 350,
+      "sourceHeight": 350
+    },
+    "/uploads/2018/12/venom-regression-201812-cover.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/12/venom-regression-201812-cover2.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2018/12/venom-regression-201812-cover3.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 768
+    },
+    "/uploads/2019/01/benchmark-10k-1.png": {
+      "sourceWidth": 994,
+      "sourceHeight": 591
+    },
+    "/uploads/2019/01/benchmark-10k.png": {
+      "sourceWidth": 994,
+      "sourceHeight": 591
+    },
+    "/uploads/2019/01/benchmark-8t.png": {
+      "sourceWidth": 994,
+      "sourceHeight": 592
+    },
+    "/uploads/2019/01/Brand.png": {
+      "sourceWidth": 1891,
+      "sourceHeight": 425
+    },
+    "/uploads/2019/01/general-purpose-crawling.png": {
+      "sourceWidth": 1102,
+      "sourceHeight": 972
+    },
+    "/uploads/2019/01/photo_20190116b.png": {
+      "sourceWidth": 1024,
+      "sourceHeight": 1024
+    },
+    "/uploads/2019/01/responsive-lightbox-thumbnail.png": {
+      "sourceWidth": 5120,
+      "sourceHeight": 2880
+    },
+    "/uploads/2019/01/vscnn_contrast1.jpg": {
+      "sourceWidth": 1178,
+      "sourceHeight": 709
+    },
+    "/uploads/2019/01/vscnn_disagreement.jpg": {
+      "sourceWidth": 1216,
+      "sourceHeight": 513
+    },
+    "/uploads/2019/01/vscnn_full-model.jpg": {
+      "sourceWidth": 1369,
+      "sourceHeight": 842
+    },
+    "/uploads/2019/01/web-data.jpeg": {
+      "sourceWidth": 1200,
+      "sourceHeight": 582
+    },
+    "/uploads/2019/02/20190116_autobelay.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190116_belay.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190116_belay2-e1549333746342.jpg": {
+      "sourceWidth": 3264,
+      "sourceHeight": 4912
+    },
+    "/uploads/2019/02/20190116_belay2.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190116_bouldering.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190116_briefing.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190116_dinner.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190121_comparison.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190121_cover.jpg": {
+      "sourceWidth": 2016,
+      "sourceHeight": 1134
+    },
+    "/uploads/2019/02/20190121_opening.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190121_pizza.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2019/02/20190121_recommendation.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/20190121_sentiment.jpg": {
+      "sourceWidth": 4912,
+      "sourceHeight": 3264
+    },
+    "/uploads/2019/02/Crawling_to_the_finish.jpg": {
+      "sourceWidth": 1024,
+      "sourceHeight": 440
+    },
+    "/uploads/2019/02/vscnn_contrast2.jpg": {
+      "sourceWidth": 1436,
+      "sourceHeight": 867
+    },
+    "/uploads/2019/03/aaai19-acceptance.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/03/aaai19-comparelda.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2019/03/aaai19-hilton.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/03/aaai19-tutorial.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/03/aaai19-vistanet.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/uploads/2019/03/portrait.jpg": {
+      "sourceWidth": 838,
+      "sourceHeight": 839
+    },
+    "/uploads/2019/03/ThanhBinh_TRAN.jpeg": {
+      "sourceWidth": 1265,
+      "sourceHeight": 1265
+    },
+    "/uploads/2019/04/ccchia.png": {
+      "sourceWidth": 520,
+      "sourceHeight": 245
+    },
+    "/uploads/2019/04/icecream_2_regression.png": {
+      "sourceWidth": 1497,
+      "sourceHeight": 984
+    },
+    "/uploads/2019/04/icecream_2_sample_trunc.png": {
+      "sourceWidth": 644,
+      "sourceHeight": 119
+    },
+    "/uploads/2019/04/icecream_3_sample_trunc.png": {
+      "sourceWidth": 462,
+      "sourceHeight": 117
+    },
+    "/uploads/2019/04/icecream_regression.png": {
+      "sourceWidth": 1278,
+      "sourceHeight": 989
+    },
+    "/uploads/2019/04/icecream_sample_trunc.png": {
+      "sourceWidth": 406,
+      "sourceHeight": 117
+    },
+    "/uploads/2019/04/kl2019_presentation3.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/04/kl2019_presentation4a1.jpg": {
+      "sourceWidth": 1008,
+      "sourceHeight": 756
+    },
+    "/uploads/2019/04/kl2019_presentation4b1.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/04/kl2019_presentation4c1.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/04/kl2019_presentation4d.jpg": {
+      "sourceWidth": 3968,
+      "sourceHeight": 2976
+    },
+    "/uploads/2019/04/kl2019_presentation5.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3016
+    },
+    "/uploads/2019/04/photo_20141009.jpg": {
+      "sourceWidth": 3264,
+      "sourceHeight": 2448
+    },
+    "/uploads/2019/04/photo_20190424.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/04/photo_20190424a.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/04/photo_20190424b.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/04/photo_20190424c.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/06/ContextualPreference.png": {
+      "sourceWidth": 1191,
+      "sourceHeight": 321
+    },
+    "/uploads/2019/06/dp_400-1.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/uploads/2019/06/item_context_post2-e1560861332106.png": {
+      "sourceWidth": 518,
+      "sourceHeight": 244
+    },
+    "/uploads/2019/06/item_context_post2.png": {
+      "sourceWidth": 520,
+      "sourceHeight": 245
+    },
+    "/uploads/2019/06/res_c2pf_clothing.png": {
+      "sourceWidth": 795,
+      "sourceHeight": 109
+    },
+    "/uploads/2019/06/www19_pic0.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/06/www19_pic1-e1559399742750.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 4032
+    },
+    "/uploads/2019/06/www19_pic1-e1559399776500.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 2429
+    },
+    "/uploads/2019/06/www19_pic1.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/06/www19_pic2-e1559400096397.jpg": {
+      "sourceWidth": 2160,
+      "sourceHeight": 3840
+    },
+    "/uploads/2019/06/www19_pic2-e1559400187800.jpg": {
+      "sourceWidth": 2160,
+      "sourceHeight": 2870
+    },
+    "/uploads/2019/06/www19_pic2.jpg": {
+      "sourceWidth": 3840,
+      "sourceHeight": 2160
+    },
+    "/uploads/2019/06/www19_pic3-e1559528200244.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 4032
+    },
+    "/uploads/2019/06/www19_pic3-e1559534314713.jpg": {
+      "sourceWidth": 2429,
+      "sourceHeight": 3628
+    },
+    "/uploads/2019/06/www19_pic3.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2019/06/www19_pic4.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 4032
+    },
+    "/uploads/2019/07/cheryl.png": {
+      "sourceWidth": 150,
+      "sourceHeight": 150
+    },
+    "/uploads/2019/07/download-1.jpg": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/07/download.jpg": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/07/group.jpg": {
+      "sourceWidth": 3968,
+      "sourceHeight": 2976
+    },
+    "/uploads/2019/07/hoang.png": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/07/kar-sen.png": {
+      "sourceWidth": 167,
+      "sourceHeight": 166
+    },
+    "/uploads/2019/07/max.png": {
+      "sourceWidth": 150,
+      "sourceHeight": 150
+    },
+    "/uploads/2019/07/ming-shan.jpg": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/07/photo.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 3023
+    },
+    "/uploads/2019/07/steffi_photo.png": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/07/techfest-resized.png": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/07/techfest.jpg": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/07/Wanyue_photo.jpg": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/07/Wei_Ming.jpg": {
+      "sourceWidth": 154,
+      "sourceHeight": 155
+    },
+    "/uploads/2019/07/yilong.png": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/08/cropped-fav-1.png": {
+      "sourceWidth": 512,
+      "sourceHeight": 512
+    },
+    "/uploads/2019/08/cropped-fav.png": {
+      "sourceWidth": 512,
+      "sourceHeight": 512
+    },
+    "/uploads/2019/08/cropped-favi.png": {
+      "sourceWidth": 512,
+      "sourceHeight": 512
+    },
+    "/uploads/2019/08/cropped-LogoS-1.png": {
+      "sourceWidth": 1720,
+      "sourceHeight": 198
+    },
+    "/uploads/2019/08/cropped-LogoS-2.png": {
+      "sourceWidth": 3508,
+      "sourceHeight": 1056
+    },
+    "/uploads/2019/08/cropped-LogoS-3.png": {
+      "sourceWidth": 1902,
+      "sourceHeight": 450
+    },
+    "/uploads/2019/08/cropped-LogoS-4.png": {
+      "sourceWidth": 1746,
+      "sourceHeight": 286
+    },
+    "/uploads/2019/08/cropped-LogoS.png": {
+      "sourceWidth": 1500,
+      "sourceHeight": 186
+    },
+    "/uploads/2019/08/favi.png": {
+      "sourceWidth": 512,
+      "sourceHeight": 512
+    },
+    "/uploads/2019/08/For-Wordpress-Only.png": {
+      "sourceWidth": 1300,
+      "sourceHeight": 240
+    },
+    "/uploads/2019/08/jiayu.jpg": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2019/08/Logo-Wordpress-Only.png": {
+      "sourceWidth": 1952,
+      "sourceHeight": 360
+    },
+    "/uploads/2019/11/full_fukuta_1565621166_1.jpeg": {
+      "sourceWidth": 1000,
+      "sourceHeight": 750
+    },
+    "/uploads/2019/11/full_masakazu.ishihata_1565659665_0.jpeg": {
+      "sourceWidth": 1000,
+      "sourceHeight": 750
+    },
+    "/uploads/2019/11/full_ryu.6171_1565656857_0.jpeg": {
+      "sourceWidth": 1000,
+      "sourceHeight": 750
+    },
+    "/uploads/2019/11/paris.jpg": {
+      "sourceWidth": 1035,
+      "sourceHeight": 802
+    },
+    "/uploads/2019/11/smu-1.jpg": {
+      "sourceWidth": 1600,
+      "sourceHeight": 1200
+    },
+    "/uploads/2019/11/smu.jpg": {
+      "sourceWidth": 1600,
+      "sourceHeight": 1200
+    },
+    "/uploads/2019/11/somewhere.jpg": {
+      "sourceWidth": 1080,
+      "sourceHeight": 824
+    },
+    "/uploads/2019/11/sw.jpg": {
+      "sourceWidth": 1080,
+      "sourceHeight": 810
+    },
+    "/uploads/2019/11/swe.jpg": {
+      "sourceWidth": 1072,
+      "sourceHeight": 816
+    },
+    "/uploads/2019/11/vietnamse.jpg": {
+      "sourceWidth": 1049,
+      "sourceHeight": 824
+    },
+    "/uploads/2019/12/cover.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 621
+    },
+    "/uploads/2020/01/photo_20150428.jpg": {
+      "sourceWidth": 3264,
+      "sourceHeight": 2448
+    },
+    "/uploads/2020/01/photo_20190911a.jpg": {
+      "sourceWidth": 3968,
+      "sourceHeight": 2976
+    },
+    "/uploads/2020/01/photo_20190911b.png": {
+      "sourceWidth": 2957,
+      "sourceHeight": 2802
+    },
+    "/uploads/2020/01/photo_20190911c.png": {
+      "sourceWidth": 2998,
+      "sourceHeight": 2206
+    },
+    "/uploads/2020/01/photo_20190911d.png": {
+      "sourceWidth": 2877,
+      "sourceHeight": 1695
+    },
+    "/uploads/2020/01/photo_20190913.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2020/03/IMG_0103.jpg": {
+      "sourceWidth": 3264,
+      "sourceHeight": 2448
+    },
+    "/uploads/2020/04/blue-planet-earth-planet-globe.jpg": {
+      "sourceWidth": 910,
+      "sourceHeight": 607
+    },
+    "/uploads/2020/04/ml_blog_fig.png": {
+      "sourceWidth": 381,
+      "sourceHeight": 252
+    },
+    "/uploads/2020/04/test-1.png": {
+      "sourceWidth": 1163,
+      "sourceHeight": 545
+    },
+    "/uploads/2020/08/adjacent_encoder_cover.jpg": {
+      "sourceWidth": 1200,
+      "sourceHeight": 800
+    },
+    "/uploads/2020/08/cover.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/uploads/2020/08/image-1.png": {
+      "sourceWidth": 219,
+      "sourceHeight": 227
+    },
+    "/uploads/2020/08/image-2.png": {
+      "sourceWidth": 452,
+      "sourceHeight": 125
+    },
+    "/uploads/2020/08/image-3.png": {
+      "sourceWidth": 583,
+      "sourceHeight": 333
+    },
+    "/uploads/2020/08/image-4.png": {
+      "sourceWidth": 583,
+      "sourceHeight": 333
+    },
+    "/uploads/2020/08/image-5.png": {
+      "sourceWidth": 303,
+      "sourceHeight": 314
+    },
+    "/uploads/2020/08/image-6.png": {
+      "sourceWidth": 603,
+      "sourceHeight": 166
+    },
+    "/uploads/2020/08/image.png": {
+      "sourceWidth": 378,
+      "sourceHeight": 215
+    },
+    "/uploads/2020/08/photo_hieu2.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/uploads/2020/08/photo_thuat2.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/uploads/2020/08/summer_internship_2020.jpg": {
+      "sourceWidth": 1919,
+      "sourceHeight": 1074
+    },
+    "/uploads/2020/08/sunglasses.jpg": {
+      "sourceWidth": 500,
+      "sourceHeight": 245
+    },
+    "/uploads/2020/09/indexing-for-MF-recommendation-retrieval-1.png": {
+      "sourceWidth": 994,
+      "sourceHeight": 327
+    },
+    "/uploads/2020/09/indexing-for-MF-recommendation-retrieval.png": {
+      "sourceWidth": 994,
+      "sourceHeight": 327
+    },
+    "/uploads/2020/09/mf-based-recommendation-retrieval-1.png": {
+      "sourceWidth": 1054,
+      "sourceHeight": 524
+    },
+    "/uploads/2020/09/mf-based-recommendation-retrieval.png": {
+      "sourceWidth": 1054,
+      "sourceHeight": 524
+    },
+    "/uploads/2020/11/5fbc21e65019928d2c5448dae1c49041.jpg": {
+      "sourceWidth": 500,
+      "sourceHeight": 750
+    },
+    "/uploads/2020/11/download-1.jpg": {
+      "sourceWidth": 343,
+      "sourceHeight": 147
+    },
+    "/uploads/2020/11/Indexable_Rep_Learning.png": {
+      "sourceWidth": 1037,
+      "sourceHeight": 636
+    },
+    "/uploads/2020/11/MIPS-to-NNS-Reduction.png": {
+      "sourceWidth": 1037,
+      "sourceHeight": 434
+    },
+    "/uploads/2020/12/photo_jiapeng.png": {
+      "sourceWidth": 200,
+      "sourceHeight": 200
+    },
+    "/uploads/2020/12/way-918900_1920.jpg": {
+      "sourceWidth": 1920,
+      "sourceHeight": 1078
+    },
+    "/uploads/2021/07/azhar-j-t2hgHV1R7_g-unsplash.jpg": {
+      "sourceWidth": 3600,
+      "sourceHeight": 2400
+    },
+    "/uploads/2022/02/photo_20161205.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 4032
+    },
+    "/uploads/2022/02/photo_defense_tuan0.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/uploads/2022/02/photo_defense_tuan1.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/02/photo_defense_tuan2.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/02/photo_defense_tuan3.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/11/1.jpg": {
+      "sourceWidth": 6528,
+      "sourceHeight": 4896
+    },
+    "/uploads/2022/11/2.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/11/3.jpeg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 1536
+    },
+    "/uploads/2022/11/4.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/11/5-1.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/uploads/2022/11/5.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/uploads/2022/11/6.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/11/7.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/11/Washington-D.C.jpg": {
+      "sourceWidth": 4896,
+      "sourceHeight": 6528
+    },
+    "/uploads/2022/12/adnec.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 962
+    },
+    "/uploads/2022/12/batata-harra.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/12/ice_cream.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/12/kayak.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/uploads/2022/12/morph_cost.png": {
+      "sourceWidth": 1058,
+      "sourceHeight": 662
+    },
+    "/uploads/2022/12/myposter-1.jpg": {
+      "sourceWidth": 480,
+      "sourceHeight": 1220
+    },
+    "/uploads/2022/12/myposter.jpg": {
+      "sourceWidth": 964,
+      "sourceHeight": 1280
+    },
+    "/uploads/2022/12/neurips22_celebration_dinner.jpg": {
+      "sourceWidth": 1234,
+      "sourceHeight": 926
+    },
+    "/uploads/2022/12/neurips22_conf.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2022/12/neurips22_jackson_square.jpg": {
+      "sourceWidth": 1250,
+      "sourceHeight": 938
+    },
+    "/uploads/2022/12/new_orleans_convention_center.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2022/12/pitta.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2022/12/recon_cost.png": {
+      "sourceWidth": 1058,
+      "sourceHeight": 662
+    },
+    "/uploads/2022/12/sem_cost.png": {
+      "sourceWidth": 1058,
+      "sourceHeight": 662
+    },
+    "/uploads/2022/12/zhangce_poster.jpg": {
+      "sourceWidth": 3769,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/04/pexels-pixabay-45182.jpg": {
+      "sourceWidth": 7572,
+      "sourceHeight": 5839
+    },
+    "/uploads/2023/05/2020-02-06-14.35.14.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/05/2022-11-29-11.13.17.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/05/2022-11-29-11.14.34.jpg": {
+      "sourceWidth": 9176,
+      "sourceHeight": 3910
+    },
+    "/uploads/2023/05/2022-11-29-21.47.36.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/05/52715657572_b57b014178_k.jpg": {
+      "sourceWidth": 1152,
+      "sourceHeight": 2047
+    },
+    "/uploads/2023/05/52717857690_aa482b6737_k.jpg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 1365
+    },
+    "/uploads/2023/05/52717872863_64760e6c7e_k.jpg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 1365
+    },
+    "/uploads/2023/05/8d432987-2d2d-49b3-a05a-fe72c5f2c433.jpg": {
+      "sourceWidth": 1536,
+      "sourceHeight": 2048
+    },
+    "/uploads/2023/05/Distinguished_Paper-Le.jpg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 1536
+    },
+    "/uploads/2023/05/IMG_6593.jpg": {
+      "sourceWidth": 560,
+      "sourceHeight": 419
+    },
+    "/uploads/2023/05/IMG_6640.jpg": {
+      "sourceWidth": 1000,
+      "sourceHeight": 635
+    },
+    "/uploads/2023/05/photo_20180530.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/05/photo_20180803.jpg": {
+      "sourceWidth": 3840,
+      "sourceHeight": 2160
+    },
+    "/uploads/2023/05/photo_20200206.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 4032
+    },
+    "/uploads/2023/05/photo_2023-05-13_10-57-22.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 960
+    },
+    "/uploads/2023/05/photo_2023-05-13_10-57-54.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/uploads/2023/05/photo_20230512.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/uploads/2023/05/photo_dilan.jpeg": {
+      "sourceWidth": 800,
+      "sourceHeight": 800
+    },
+    "/uploads/2023/05/photo_hongtuonie.jpeg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 1838
+    },
+    "/uploads/2023/05/photo_konstantinos.jpeg": {
+      "sourceWidth": 675,
+      "sourceHeight": 675
+    },
+    "/uploads/2023/05/photo_www23_dinner-1.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/05/photo_www23_dinner.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/08/IMG_6566.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/08/IMG_9854-1.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/08/IMG_9854.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/08/IMG_9872.jpg": {
+      "sourceWidth": 3024,
+      "sourceHeight": 4032
+    },
+    "/uploads/2023/08/IMG_9879.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/08/IMG_9895.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/08/IMG_9921.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/09/20210319_193626.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2023/09/381204585_244192071495435_7811873861459035717_n.jpg": {
+      "sourceWidth": 1242,
+      "sourceHeight": 931
+    },
+    "/uploads/2023/09/F6etHvjbIAAcRsY-1.jpeg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 2048
+    },
+    "/uploads/2023/09/F6etHvjbIAAcRsY.jpeg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 2048
+    },
+    "/uploads/2023/09/F6nNZirbIAEooCf.jpeg": {
+      "sourceWidth": 4096,
+      "sourceHeight": 2732
+    },
+    "/uploads/2023/09/IMG_20210319_192651-COLLAGE.jpg": {
+      "sourceWidth": 2046,
+      "sourceHeight": 2046
+    },
+    "/uploads/2023/09/Screenshot-2023-09-28-at-12.02.57 PM.jpg": {
+      "sourceWidth": 1930,
+      "sourceHeight": 992
+    },
+    "/uploads/2024/01/photo_20190424.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2024/01/photo_2023-12-01_17-19-14.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/uploads/2024/01/photo_ezekiel.jpg": {
+      "sourceWidth": 960,
+      "sourceHeight": 1280
+    },
+    "/uploads/2024/01/photo_phuong.jpg": {
+      "sourceWidth": 683,
+      "sourceHeight": 1024
+    },
+    "/uploads/2024/01/photo_quang.jpg": {
+      "sourceWidth": 1456,
+      "sourceHeight": 1458
+    },
+    "/uploads/2024/01/photo_ricetable_201707.jpeg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
+    "/uploads/2024/02/banner_resized.jpg": {
+      "sourceWidth": 857,
+      "sourceHeight": 450
+    },
+    "/uploads/2024/02/feedback.png": {
+      "sourceWidth": 346,
+      "sourceHeight": 286
+    },
+    "/uploads/2024/02/insights_resized.png": {
+      "sourceWidth": 650,
+      "sourceHeight": 679
+    },
+    "/uploads/2024/02/main_page_resized.jpg": {
+      "sourceWidth": 630,
+      "sourceHeight": 640
+    },
+    "/uploads/2024/02/Screenshot-2024-02-15-at-6.22.40-PM-1.jpg": {
+      "sourceWidth": 838,
+      "sourceHeight": 851
+    },
+    "/uploads/2024/02/Screenshot-2024-02-15-at-6.25.32-PM-1.png": {
+      "sourceWidth": 346,
+      "sourceHeight": 286
+    },
+    "/uploads/2024/02/Screenshot-2024-02-15-at-9.31.58-PM-1.jpg": {
+      "sourceWidth": 1462,
+      "sourceHeight": 1526
+    },
+    "/uploads/2024/02/thriftcity_og-1.jpg": {
+      "sourceWidth": 1200,
+      "sourceHeight": 630
+    },
+    "/uploads/2024/07/53727900728_a5f97d9ee4_k.jpg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 1366
+    },
+    "/uploads/2024/07/53728024029_591b2c8e77_k.jpg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 1365
+    },
+    "/uploads/2024/07/53738267528_16d4e7e365_k.jpg": {
+      "sourceWidth": 2048,
+      "sourceHeight": 1365
+    },
+    "/uploads/2024/07/IMG_20240625_150557.jpg": {
+      "sourceWidth": 3658,
+      "sourceHeight": 2743
+    },
+    "/uploads/2024/07/IMG_20240625_154631.jpg": {
+      "sourceWidth": 4096,
+      "sourceHeight": 3072
+    },
+    "/uploads/2024/07/IMG_2645.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2024/07/IMG_6196.jpg": {
+      "sourceWidth": 5712,
+      "sourceHeight": 4284
+    },
+    "/uploads/2024/07/IMG_6206.jpg": {
+      "sourceWidth": 5712,
+      "sourceHeight": 4284
+    },
+    "/uploads/2024/07/kl2019_seafood3.jpg": {
+      "sourceWidth": 4032,
+      "sourceHeight": 3024
+    },
+    "/uploads/2025/04/image-1.png": {
+      "sourceWidth": 706,
+      "sourceHeight": 940
+    },
+    "/uploads/2025/04/image.png": {
+      "sourceWidth": 706,
+      "sourceHeight": 940
+    },
+    "/uploads/2025/04/Picture1.jpg": {
+      "sourceWidth": 602,
+      "sourceHeight": 451
+    },
+    "/uploads/2025/12/derrick.jpg": {
+      "sourceWidth": 587,
+      "sourceHeight": 587
+    },
+    "/uploads/2025/12/hieu.jpg": {
+      "sourceWidth": 3004,
+      "sourceHeight": 3004
+    },
+    "/uploads/2025/12/hoang.jpg": {
+      "sourceWidth": 1053,
+      "sourceHeight": 1054
+    },
+    "/uploads/2025/12/khanh.jpg": {
+      "sourceWidth": 400,
+      "sourceHeight": 400
+    },
+    "/uploads/2026/04/phuong.jpeg": {
+      "sourceWidth": 450,
+      "sourceHeight": 450
+    }
+  }
+}

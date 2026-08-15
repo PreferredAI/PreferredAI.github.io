@@ -41,10 +41,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run team photos crawler and format
-        run: |
-          pnpm crawl:team
-          pnpm check
+      - name: Run team photos crawler
+        run: pnpm crawl:team
+
+      - name: Format generated team data
+        run: pnpm exec biome check --write src/data/teamPhotos.ts
+
+      - name: Validate before automatic commit
+        run: pnpm check
+
+      - name: Audit all dependencies
+        run: pnpm audit:dependencies
 
       - name: Check for changes
         id: check-changes

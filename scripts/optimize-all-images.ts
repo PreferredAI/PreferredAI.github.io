@@ -1,123 +1,245 @@
-import fs from "fs";
-import path from "path";
+import crypto from "node:crypto";
+import fs from "node:fs";
+import path from "node:path";
 import sharp from "sharp";
-import { buildPostsIndex } from "./generate-posts-index";
+import { getGeneratedWidths } from "../src/lib/image-widths";
 
-const TARGET_WIDTHS = [256, 384, 640, 1080, 1920, 3840];
+const PIPELINE_VERSION = 2;
 const PUBLIC_DIR = path.join(process.cwd(), "public");
-
-// Directories to scan recursively for images
+const OPTIMIZED_DIR = path.join(PUBLIC_DIR, "optimized");
+const MANIFEST_PATH = path.join(
+  process.cwd(),
+  "src",
+  "data",
+  "generated-image-manifest.json",
+);
+const CACHE_MANIFEST_PATH = path.join(
+  process.cwd(),
+  ".cache",
+  "image-optimizer.json",
+);
 const DIRS_TO_SCAN = ["team", "uploads"];
-const IMAGE_EXTENSIONS = [".jpg", ".jpeg", ".png"];
+const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png"]);
+const CONCURRENCY = 4;
 
-function getFilesRecursively(dir: string, fileList: string[] = []): string[] {
-  const absoluteDir = path.join(PUBLIC_DIR, dir);
-  if (!fs.existsSync(absoluteDir)) return fileList;
-
-  const files = fs.readdirSync(absoluteDir);
-  for (const file of files) {
-    const relativePath = path.join(dir, file);
-    const absolutePath = path.join(PUBLIC_DIR, relativePath);
-    if (fs.statSync(absolutePath).isDirectory()) {
-      getFilesRecursively(relativePath, fileList);
-    } else {
-      const ext = path.extname(file).toLowerCase();
-      if (IMAGE_EXTENSIONS.includes(ext)) {
-        fileList.push(relativePath);
-      }
-    }
-  }
-  return fileList;
+interface ImageManifestEntry {
+  sourceWidth: number;
+  sourceHeight: number;
 }
 
-async function optimizeImage(srcRelativePath: string) {
-  const srcAbsolutePath = path.join(PUBLIC_DIR, srcRelativePath);
-  const srcStats = fs.statSync(srcAbsolutePath);
-  const srcMtime = srcStats.mtimeMs;
+interface ImageCacheEntry {
+  sourceHash: string;
+  widths: number[];
+}
 
-  for (const width of TARGET_WIDTHS) {
-    const destRelativePath = path.join(
-      "optimized",
-      String(width),
-      srcRelativePath,
-    );
-    const destAbsolutePath = path.join(PUBLIC_DIR, destRelativePath);
+interface ImageCacheManifest {
+  version: number;
+  images: Record<string, ImageCacheEntry>;
+}
 
-    // Incremental cache check: Skip if optimized file exists and is newer than source
-    if (fs.existsSync(destAbsolutePath)) {
-      const destStats = fs.statSync(destAbsolutePath);
-      if (destStats.mtimeMs >= srcMtime) {
-        continue;
-      }
-    }
+interface OptimizationResult {
+  key: string;
+  entry: ImageManifestEntry;
+  cacheEntry: ImageCacheEntry;
+  expectedOutputs: string[];
+  converted: number;
+}
 
-    // Create target directory if it doesn't exist
-    const destDir = path.dirname(destAbsolutePath);
-    fs.mkdirSync(destDir, { recursive: true });
+function toPosixPath(value: string): string {
+  return value.split(path.sep).join("/");
+}
 
-    try {
-      const ext = path.extname(srcRelativePath).toLowerCase();
-      const image = sharp(srcAbsolutePath);
+function getFilesRecursively(relativeDirectory: string): string[] {
+  const absoluteDirectory = path.join(PUBLIC_DIR, relativeDirectory);
+  if (!fs.existsSync(absoluteDirectory)) return [];
 
-      // Perform high-quality resizing
-      // withoutEnlargement: true ensures we don't upscale small original images
-      let transformer = image.resize({ width, withoutEnlargement: true });
+  return fs
+    .readdirSync(absoluteDirectory, { withFileTypes: true })
+    .flatMap((entry) => {
+      const relativePath = path.join(relativeDirectory, entry.name);
+      if (entry.isDirectory()) return getFilesRecursively(relativePath);
+      return IMAGE_EXTENSIONS.has(path.extname(entry.name).toLowerCase())
+        ? [toPosixPath(relativePath)]
+        : [];
+    });
+}
 
-      if (ext === ".png") {
-        transformer = transformer.png({ compressionLevel: 8, palette: true });
-      } else {
-        transformer = transformer.jpeg({ quality: 80, progressive: true });
-      }
+function readJson<T>(filename: string): T | null {
+  try {
+    return JSON.parse(fs.readFileSync(filename, "utf8"));
+  } catch {
+    return null;
+  }
+}
 
-      await transformer.toFile(destAbsolutePath);
-      // console.log(`✅ Optimized: /${srcRelativePath} ➡️ /${destRelativePath}`);
-    } catch (error) {
-      console.error(
-        `❌ Failed to optimize /${srcRelativePath} at width ${width}:`,
-        error,
-      );
+function readPreviousCacheManifest(): ImageCacheManifest | null {
+  const cacheManifest = readJson<ImageCacheManifest>(CACHE_MANIFEST_PATH);
+  if (cacheManifest) return cacheManifest;
+
+  // One-time migration from pipeline v2 manifests that included build-only hashes.
+  return readJson<ImageCacheManifest>(MANIFEST_PATH);
+}
+
+function hashFile(filename: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const hash = crypto.createHash("sha256");
+    const stream = fs.createReadStream(filename);
+    stream.on("error", reject);
+    stream.on("data", (chunk) => hash.update(chunk));
+    stream.on("end", () => resolve(hash.digest("hex")));
+  });
+}
+
+function getOutputPath(relativeSource: string, width: number): string {
+  return path.join(OPTIMIZED_DIR, String(width), `${relativeSource}.webp`);
+}
+
+async function optimizeImage(
+  relativeSource: string,
+  previousManifest: ImageCacheManifest | null,
+): Promise<OptimizationResult> {
+  const absoluteSource = path.join(PUBLIC_DIR, relativeSource);
+  const [metadata, sourceHash] = await Promise.all([
+    sharp(absoluteSource).metadata(),
+    hashFile(absoluteSource),
+  ]);
+
+  if (!metadata.width || !metadata.height) {
+    throw new Error(`Could not read image dimensions: /${relativeSource}`);
+  }
+
+  const widths = getGeneratedWidths(metadata.width);
+  const key = `/${relativeSource}`;
+  const previous = previousManifest?.images[key];
+  const sourceIsUnchanged =
+    previousManifest?.version === PIPELINE_VERSION &&
+    previous?.sourceHash === sourceHash &&
+    previous.widths.join(",") === widths.join(",");
+  const expectedOutputs: string[] = [];
+  let converted = 0;
+
+  for (const width of widths) {
+    const outputPath = getOutputPath(relativeSource, width);
+    expectedOutputs.push(outputPath);
+
+    if (sourceIsUnchanged && fs.existsSync(outputPath)) continue;
+
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    await sharp(absoluteSource)
+      .resize({ width, withoutEnlargement: true })
+      .webp({ quality: 82, alphaQuality: 90, effort: 4 })
+      .toFile(outputPath);
+    converted++;
+  }
+
+  return {
+    key,
+    expectedOutputs,
+    converted,
+    entry: {
+      sourceWidth: metadata.width,
+      sourceHeight: metadata.height,
+    },
+    cacheEntry: {
+      sourceHash,
+      widths,
+    },
+  };
+}
+
+async function mapWithConcurrency<T, R>(
+  values: T[],
+  worker: (value: T) => Promise<R>,
+): Promise<R[]> {
+  const results = new Array<R>(values.length);
+  let nextIndex = 0;
+
+  async function runWorker() {
+    while (nextIndex < values.length) {
+      const index = nextIndex++;
+      results[index] = await worker(values[index]);
     }
   }
+
+  await Promise.all(
+    Array.from({ length: Math.min(CONCURRENCY, values.length) }, runWorker),
+  );
+  return results;
+}
+
+function removeStaleOutputs(expectedOutputs: Set<string>): number {
+  if (!fs.existsSync(OPTIMIZED_DIR)) return 0;
+  let removed = 0;
+
+  function visitDirectory(directory: string) {
+    for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+      const absolutePath = path.join(directory, entry.name);
+      if (entry.isDirectory()) {
+        visitDirectory(absolutePath);
+        if (fs.readdirSync(absolutePath).length === 0)
+          fs.rmdirSync(absolutePath);
+      } else if (!expectedOutputs.has(absolutePath)) {
+        fs.unlinkSync(absolutePath);
+        removed++;
+      }
+    }
+  }
+
+  visitDirectory(OPTIMIZED_DIR);
+  return removed;
 }
 
 async function main() {
-  console.log("📝 Generating posts index JSON...");
-  const posts = buildPostsIndex();
-  let aboutContent = "";
-  const aboutPath = path.join(process.cwd(), "content", "about.md");
-  if (fs.existsSync(aboutPath)) {
-    aboutContent = fs.readFileSync(aboutPath, "utf8");
-  }
-  const outputPath = path.join(
-    process.cwd(),
-    "src",
-    "data",
-    "generated-posts.json",
+  const allImages = DIRS_TO_SCAN.flatMap(getFilesRecursively).sort((a, b) =>
+    a.localeCompare(b),
   );
-  fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+  const previousManifest = readPreviousCacheManifest();
+
+  console.log(`Optimizing ${allImages.length} source images...`);
+  const startedAt = Date.now();
+  const results = await mapWithConcurrency(allImages, (relativeSource) =>
+    optimizeImage(relativeSource, previousManifest),
+  );
+
+  const images = Object.fromEntries(
+    results.map(({ key, entry }) => [key, entry]),
+  );
+  const cacheImages = Object.fromEntries(
+    results.map(({ key, cacheEntry }) => [key, cacheEntry]),
+  );
+  const expectedOutputs = new Set(
+    results.flatMap(({ expectedOutputs: outputPaths }) => outputPaths),
+  );
+  const removed = removeStaleOutputs(expectedOutputs);
+  const converted = results.reduce(
+    (total, result) => total + result.converted,
+    0,
+  );
+
+  fs.mkdirSync(path.dirname(MANIFEST_PATH), { recursive: true });
   fs.writeFileSync(
-    outputPath,
-    JSON.stringify({ aboutContent, posts }, null, 2),
+    MANIFEST_PATH,
+    `${JSON.stringify({ version: PIPELINE_VERSION, images }, null, 2)}\n`,
+    "utf8",
+  );
+  fs.mkdirSync(path.dirname(CACHE_MANIFEST_PATH), { recursive: true });
+  fs.writeFileSync(
+    CACHE_MANIFEST_PATH,
+    `${JSON.stringify(
+      { version: PIPELINE_VERSION, images: cacheImages },
+      null,
+      2,
+    )}\n`,
     "utf8",
   );
 
-  console.log("🚀 Scanning public directories for image optimization...");
-  let allImages: string[] = [];
-  for (const dir of DIRS_TO_SCAN) {
-    allImages = allImages.concat(getFilesRecursively(dir));
-  }
-
-  console.log(`🔍 Found ${allImages.length} images to optimize.`);
-
-  const startTime = Date.now();
-  for (const relativePath of allImages) {
-    await optimizeImage(relativePath);
-  }
-  const duration = ((Date.now() - startTime) / 1000).toFixed(2);
-  console.log(`🎉 Image optimization pipeline finished in ${duration}s.`);
+  const duration = ((Date.now() - startedAt) / 1000).toFixed(2);
+  console.log(
+    `Image pipeline finished in ${duration}s: ${converted} converted, ${expectedOutputs.size - converted} reused, ${removed} stale removed.`,
+  );
 }
 
-main().catch((err) => {
-  console.error("FATAL: Image optimization script failed:", err);
-  process.exit(1);
+main().catch((error) => {
+  console.error("Image optimization failed:", error);
+  process.exitCode = 1;
 });
