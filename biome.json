@@ -8,11 +8,16 @@
   "files": {
     "ignoreUnknown": true,
     "ignore": [
+      ".cache/**",
       ".next/**",
+      ".open-next/**",
+      ".wrangler/**",
+      "public/optimized/**",
       "out/**",
       "build/**",
       "node_modules/**",
-      "next-env.d.ts"
+      "next-env.d.ts",
+      "cloudflare-env.d.ts"
     ]
   },
   "formatter": {
