@@ -1,0 +1,16 @@
+name: Keystatic Branch Update
+
+on:
+  push:
+    branches:
+      - "keystatic/**"
+
+permissions:
+  contents: read
+
+jobs:
+  signal:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Record branch update
+        run: echo "A Keystatic editorial branch was updated."

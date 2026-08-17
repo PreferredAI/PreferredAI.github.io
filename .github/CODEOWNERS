@@ -1,0 +1,14 @@
+# Code and repository configuration default to the current maintainer.
+* @hieuddo
+
+# Editorial blog content intentionally has no required code owner.
+/content/posts/**
+/public/uploads/**
+
+# People content currently follows the same check-only policy as blog content.
+/content/people/**
+/public/team/members/**
+
+# Keep the publishing system and its ownership rules under technical review.
+/keystatic.config.ts @hieuddo
+/.github/** @hieuddo

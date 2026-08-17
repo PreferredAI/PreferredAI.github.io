@@ -1,48 +1,46 @@
 # Preferred.AI Website
 
-## Quick Start (Development)
+The public site and the Keystatic editor are deployed together as a Next.js application on Cloudflare Workers. Editors can publish blog posts and team-member profiles from [preferred.ai/keystatic](https://preferred.ai/keystatic); GitHub pull requests provide validation, approvals, and an audit trail.
 
-### Option 1: GitHub Codespaces (No Local Setup!)
+## Local development
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/PreferredAI/PreferredAI.github.io)
-
-1. Click the button above (or go to repo → **Code** → **Codespaces** → **Create codespace on main**)
-2. Wait ~2-3 minutes for the environment to set up
-3. Run the dev server:
-   ```bash
-   pnpm dev
-   ```
-4. A preview window will automatically open
-5. Edit files in `content/posts/` and see live changes!
-6. Commit and push when done
-
-> **Free Tier Limits:**
-> - **GitHub Free:** 120 core-hours/month (~60 hrs on 2-core machine)
-> - **GitHub Pro:** 180 core-hours/month (~90 hrs on 2-core machine)
-> - Auto-stops after 30 min idle (just close the tab when done!)
-> - Check usage: [github.com/settings/billing](https://github.com/settings/billing)
-
-### Option 2: Local Development
+Install Node.js 22 or newer and pnpm, then run:
 
 ```bash
 pnpm install
 pnpm dev
 ```
 
-Visit [http://localhost:3000](http://localhost:3000)
+Open [http://localhost:3000](http://localhost:3000) for the website or [http://localhost:3000/keystatic](http://localhost:3000/keystatic) for the local editor. Local Keystatic writes directly to the working tree, so review the changed files before committing them.
 
-## Creating a Blog Post
+Useful checks before opening a pull request:
 
-### Admin UI (Recommended)
+```bash
+pnpm check
+pnpm build:worker
+```
 
-1. Open `/admin` (it redirects to Keystatic's required `/keystatic` route).
-2. Open **Posts** and choose **Create post**.
-3. Enter the title first. It becomes the post slug and its image-folder name.
-4. Choose or drop a featured image into **Featured image**.
-5. In **Content**, use the image toolbar button, paste an image, or drag and drop it into the editor.
-6. Add useful alt text, preview the post, and save.
+`pnpm check` runs linting, type checking, Markdown security checks, People-content validation, and publishing-policy tests. The Worker build also regenerates the blog and People aggregate data used in production.
 
-New images are committed with the post and organized automatically:
+## Browser publishing with Keystatic
+
+Go to [preferred.ai/keystatic](https://preferred.ai/keystatic) and sign in with GitHub. Saving an entry creates or updates a branch whose name begins with `keystatic/`. The publishing automation then:
+
+1. Creates or reuses a pull request for the complete branch diff.
+2. Classifies every changed path as blog, People, mixed editorial, or non-editorial.
+3. Runs `Test Build`, including content validation, dependency audit, image optimization, and the full Cloudflare Worker build.
+4. Enables squash auto-merge only when the diff is limited to approved editorial paths.
+5. Deploys the production Worker after the pull request merges into `main`.
+
+### Write a blog post
+
+1. Open **Posts** and choose **Create post**.
+2. Enter the title first; it becomes the post slug and image-folder name.
+3. Choose or drop a featured image into **Featured image**.
+4. Write the post in **Content**. Use the image toolbar, paste an image, or drag and drop it into the editor.
+5. Add useful alt text, preview the post, and save.
+
+New posts and images are stored together:
 
 ```text
 content/posts/my-new-post.md
@@ -50,96 +48,64 @@ public/uploads/my-new-post/cover.jpg
 public/uploads/my-new-post/diagram-one.png
 ```
 
-Existing posts keep their legacy `/uploads/YYYY/MM/...` image paths. The **Existing featured image path (legacy)** field is only for those posts; leave it empty when creating a new post.
+Existing posts may keep their legacy `/uploads/YYYY/MM/...` paths. Leave **Existing featured image path (legacy)** empty for a new post.
 
-For local authoring, run `pnpm dev` and visit [http://localhost:3000/admin](http://localhost:3000/admin).
+A blog-only pull request merges automatically after all required checks pass; it does not need a peer approval.
 
-### Online Admin Setup (No Local `pnpm dev`)
+### Update Team Members
 
-Keystatic writes Markdown and images back to GitHub through server-side API routes. A static Cloudflare Pages export cannot run the admin API, so the hosted editor is deployed as a full-stack Next.js Worker through OpenNext. Set:
+1. Open **People**, then create or select a profile.
+2. Enter the person's name and confirm the URL-safe slug. The slug also names the managed photo directory.
+3. Choose **Professor**, **Research Staff**, **PhD Candidate**, **PhD Co-supervisee**, or **Alumni**.
+4. Upload or replace the profile photo and optionally add a title and personal or professional URL.
+5. Preview `/people`, then save.
+
+Each profile and its photo are stored under the same slug:
+
+```text
+content/people/jane-doe.json
+public/team/members/jane-doe/photo.jpg
+```
+
+Delete profiles and replace photos through Keystatic so the record and managed image stay in sync.
+
+A People pull request currently merges automatically after all required checks pass, without a peer approval. Mixed blog-and-People changes follow the same check-only editorial policy.
+
+### Publishing policy
+
+| Complete pull-request diff                    | Merge requirement                                  |
+| --------------------------------------------- | -------------------------------------------------- |
+| `content/posts/**`, `public/uploads/**`       | Required checks                                    |
+| `content/people/**`, `public/team/members/**` | Required checks                                    |
+| A mixture of the two editorial groups         | Required checks                                    |
+| Any other path                                | Editorial auto-merge is disabled and need approval |
+
+The classifier evaluates the complete diff, so adding a code or configuration file to an editorial branch cannot bypass technical review.
+
+## Local authoring fallback
+
+The local Keystatic editor is the preferred fallback when the hosted editor is unavailable: run `pnpm dev`, edit at [http://localhost:3000/keystatic](http://localhost:3000/keystatic), preview the result, and commit the generated content and images to a new branch.
+
+Blog posts can also be edited directly in `content/posts/` using [.github/BLOG_POST_TEMPLATE.md](.github/BLOG_POST_TEMPLATE.md). Put their images in `public/uploads/`, preview locally, run the checks above, and open a pull request. People records should be changed through Keystatic because it keeps their JSON and managed photos aligned.
+
+## Hosted Keystatic configuration
+
+Keystatic needs server-side API routes and GitHub OAuth, so production must use the full-stack Worker build rather than a static export. Configure these GitHub Actions variables and secrets:
 
 ```dotenv
 NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND=github
-NEXT_OUTPUT_MODE=server
 KEYSTATIC_GITHUB_CLIENT_ID=...
 KEYSTATIC_GITHUB_CLIENT_SECRET=...
 KEYSTATIC_SECRET=...
 NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG=...
 ```
 
-Before the GitHub App exists, start Keystatic's one-time setup mode with
-`NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND=github pnpm dev`, then open
-[http://127.0.0.1:3000/keystatic/setup](http://127.0.0.1:3000/keystatic/setup).
-The storage-mode flag is public because both the browser UI and server route
-must select GitHub storage; it contains no credential or secret.
+Use `.env.example` as the local checklist. Give the GitHub App access only to `PreferredAI/PreferredAI.github.io`; browser editors must have repository write access.
 
-Copy `.env.example` as a checklist. The GitHub App values can be generated from Keystatic's setup screen. Give the app access only to `PreferredAI/PreferredAI.github.io`; authors must have repository write access. A repository administrator can normally install Keystatic's repository-scoped app unless the organization has restricted installations to owners.
+For initial GitHub App setup, run:
 
-Run `pnpm build:worker` to produce the Cloudflare-compatible server build and `pnpm preview:worker` to test it locally. Keystatic requires server-side routes; a static export cannot provide its API or GitHub OAuth callbacks.
+```bash
+NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND=github pnpm dev
+```
 
-The `test-keystatic` branch deploys to the separate `preferredai-keystatic` Worker through `.github/workflows/deploy-keystatic-test.yml`. This leaves the existing Pages deployment and `preferred.ai` unchanged during testing.
-
-The test workflow uses a separate `CLOUDFLARE_WORKERS_API_TOKEN` Actions secret. Do not replace the existing `CLOUDFLARE_API_TOKEN`, which remains scoped to the production Pages workflow.
-
-Do not merge the Worker deployment into the production workflow or move the custom domain until the temporary Worker passes a complete GitHub login, edit, image upload, save, and rebuild test.
-
-### Via GitHub Codespaces (Cloud IDE - Preview Available)
-
-1. Open the project in Codespaces (see above)
-2. Create a new file in `content/posts/` named `your-post-title.md`
-3. Copy content from `.github/BLOG_POST_TEMPLATE.md`
-4. Edit your post and preview live at port 3000
-5. Commit and push
-
-### Via GitHub Web Interface (No Installation Required - No Preview)
-
-1. Copy content from `.github/BLOG_POST_TEMPLATE.md`
-2. Go to `content/posts/` on GitHub
-3. Click **"Add file"** → **"Create new file"**
-4. Name it: `your-post-title.md` (lowercase, hyphens)
-5. Paste the content from `.github/BLOG_POST_TEMPLATE.md`. Frontmatter should look like this:
-   ```yaml
-   ---
-   title: "Your Post Title"
-   date: "2025-12-02"  # YYYY-MM-DD
-   author: "Your Name"
-   excerpt: "Brief summary (1-2 sentences)"
-   featuredImage: "/uploads/2025/12/image.jpg"
-   categories: ["Education"]  # "Presentation, "Travel, "Education", "Announcement", "Video", "Defense", "Publication", "Social"
-   tags: []
-   seoTitle: "Your Post Title - Preferred.AI"
-   seoDescription: "Brief summary for SEO"
-   ---
-   ```
-6. Write your content in Markdown. Upload images to `public/uploads/YYYY/MM/` first if needed. (The Admin UI above handles this automatically for new posts.)
-7. Commit to a **new branch** and create a **Pull Request**
-
-### Local Development (Requires Installation Locally - Preview Available)
-1. Ensure you have [Node.js](https://nodejs.org/) and [pnpm](https://pnpm.io/) installed.
-2. Clone the repository:
-    ```bash
-    git clone https://github.com/PreferredAI/PreferredAI.github.io.git
-    cd PreferredAI.github.io
-    ```
-
-3. Install dependencies:
-    ```bash
-    pnpm install
-    ```
-4. Create a new Markdown file in `content/posts/` using the template from `.github/BLOG_POST_TEMPLATE.md`.
-5. Start the development server:
-   ```bash
-   pnpm dev
-   ```
-6. Open [http://localhost:3000](http://localhost:3000) to preview your post.
-7. Once satisfied, commit your changes to a new branch and push to GitHub. Create a Pull Request for review if needed.
-
-## Common Maintainance Tasks
-
-### Update Team Members
-- Edit name, image (path), title, link in `src/data/team.tsx`
-- Upload corresponding images to `public/uploads/YYYY/MM/`
-
-### Update Team Photos Slideshow
-- Edit photo details (path, date, location) in `src/data/teamPhotos.ts`
-- Upload corresponding images to `public/team/`
+Then open [http://127.0.0.1:3000/keystatic/setup](http://127.0.0.1:3000/keystatic/setup). The storage-kind value is public configuration; the client secret and `KEYSTATIC_SECRET` must remain secret.

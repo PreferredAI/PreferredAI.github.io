@@ -1,0 +1,137 @@
+name: Publish Keystatic Changes
+
+on:
+  workflow_run:
+    workflows: ["Keystatic Branch Update"]
+    types: [completed]
+
+permissions:
+  actions: write
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: keystatic-publisher-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      startsWith(github.event.workflow_run.head_branch, 'keystatic/') &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      REPOSITORY: ${{ github.repository }}
+      BASE_BRANCH: ${{ github.event.repository.default_branch }}
+      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+    steps:
+      - name: Checkout trusted publisher code
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          persist-credentials: false
+
+      - name: Create or reuse pull request
+        id: pr
+        shell: bash
+        run: |
+          set -euo pipefail
+          pr_number="$(gh pr list \
+            --repo "$REPOSITORY" \
+            --state open \
+            --base "$BASE_BRANCH" \
+            --head "$HEAD_BRANCH" \
+            --json number \
+            --jq '.[0].number // empty')"
+
+          if [[ -z "$pr_number" ]]; then
+            gh pr create \
+              --repo "$REPOSITORY" \
+              --base "$BASE_BRANCH" \
+              --head "$HEAD_BRANCH" \
+              --title "Keystatic: publish editorial changes" \
+              --body "Created automatically from Keystatic. Approved blog and People content changes merge after checks. Changes outside the approved CMS paths are excluded from editorial auto-merge and must be handled manually by @hieuddo."
+            pr_number="$(gh pr list \
+              --repo "$REPOSITORY" \
+              --state open \
+              --base "$BASE_BRANCH" \
+              --head "$HEAD_BRANCH" \
+              --json number \
+              --jq '.[0].number // empty')"
+          fi
+
+          if [[ -z "$pr_number" ]]; then
+            echo "Could not create or find the Keystatic pull request." >&2
+            exit 1
+          fi
+          echo "number=$pr_number" >> "$GITHUB_OUTPUT"
+
+      - name: Dispatch required validation for the branch head
+        run: >-
+          gh workflow run test-build.yml
+          --repo "$REPOSITORY"
+          --ref "$HEAD_BRANCH"
+
+      - name: Read complete pull request diff
+        id: diff
+        shell: bash
+        run: |
+          set -euo pipefail
+          changed_files="$(gh pr view \
+            "${{ steps.pr.outputs.number }}" \
+            --repo "$REPOSITORY" \
+            --json changedFiles \
+            --jq '.changedFiles')"
+          echo "changed_files=$changed_files" >> "$GITHUB_OUTPUT"
+          gh api \
+            --paginate \
+            --slurp \
+            "repos/$REPOSITORY/pulls/${{ steps.pr.outputs.number }}/files?per_page=100" \
+            > "$RUNNER_TEMP/keystatic-pr-files.json"
+
+      - name: Classify editorial paths
+        id: policy
+        run: >-
+          node .github/scripts/classify-keystatic-changes.mjs
+          --github-json "$RUNNER_TEMP/keystatic-pr-files.json"
+          --expected-count "${{ steps.diff.outputs.changed_files }}"
+
+      - name: Exclude non-editorial changes from automatic publishing
+        if: steps.policy.outputs.eligible != 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$(gh pr view "${{ steps.pr.outputs.number }}" --repo "$REPOSITORY" --json autoMergeRequest --jq '.autoMergeRequest != null')" == "true" ]]; then
+            gh pr merge "${{ steps.pr.outputs.number }}" \
+              --repo "$REPOSITORY" \
+              --disable-auto
+          fi
+          {
+            echo "### Keystatic publisher: manual handling required"
+            echo "The complete PR diff contains paths outside the approved CMS directories."
+            echo "Ineligible paths: ${{ steps.policy.outputs.ineligible_paths }}"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Enable policy-gated squash auto-merge
+        if: steps.policy.outputs.eligible == 'true'
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh pr merge "${{ steps.pr.outputs.number }}" \
+            --repo "$REPOSITORY" \
+            --auto \
+            --squash \
+            --match-head-commit "$HEAD_SHA"
+          {
+            echo "### Keystatic publisher: auto-merge enabled"
+            echo "Classification: ${{ steps.policy.outputs.kind }}"
+            if [[ "${{ steps.policy.outputs.has_people }}" == "true" ]]; then
+              echo "People policy applies: required checks only."
+            else
+              echo "Blog policy applies: required checks only."
+            fi
+          } >> "$GITHUB_STEP_SUMMARY"

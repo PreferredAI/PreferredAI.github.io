@@ -19,7 +19,7 @@ const CACHE_MANIFEST_PATH = path.join(
   "image-optimizer.json",
 );
 const DIRS_TO_SCAN = ["team", "uploads"];
-const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png"]);
+const IMAGE_EXTENSIONS = new Set([".jpg", ".jpeg", ".png", ".webp"]);
 const CONCURRENCY = 4;
 
 interface ImageManifestEntry {

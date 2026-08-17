@@ -1,0 +1,194 @@
+[
+  {
+    "slug": "hady-lauw",
+    "name": "Hady W. Lauw",
+    "placement": "professor",
+    "photo": "/team/members/hady-lauw/photo.png",
+    "title": "Associate Professor (SMU)",
+    "url": "http://www.hadylauw.com"
+  },
+  {
+    "slug": "jaime-hieu",
+    "name": "Do Dinh Hieu, Jaime",
+    "placement": "research-staff",
+    "photo": "/team/members/jaime-hieu/photo.jpg",
+    "title": "Research Scientist (SMU)",
+    "url": "https://jaimehd.com"
+  },
+  {
+    "slug": "ezekiel",
+    "name": "Ezekiel Ong Young",
+    "placement": "phd-candidate",
+    "photo": "/team/members/ezekiel/photo.jpg",
+    "title": "PhD Candidate (SMU)",
+    "url": "https://www.linkedin.com/in/ezekiel-young"
+  },
+  {
+    "slug": "phuong",
+    "name": "Le Thi Phuong",
+    "placement": "phd-candidate",
+    "photo": "/team/members/phuong/photo.jpeg",
+    "title": "PhD Candidate (SMU)",
+    "url": "https://www.linkedin.com/in/phuonglt26"
+  },
+  {
+    "slug": "jiapeng",
+    "name": "Lim Jia Peng",
+    "placement": "phd-candidate",
+    "photo": "/team/members/jiapeng/photo.png",
+    "title": "PhD Candidate (SMU)",
+    "url": "https://www.linkedin.com/in/jia-peng-lim"
+  },
+  {
+    "slug": "khanh",
+    "name": "Ngo Huu Manh Khanh",
+    "placement": "phd-candidate",
+    "photo": "/team/members/khanh/photo.jpg",
+    "title": "PhD Candidate (SMU)",
+    "url": "https://www.linkedin.com/in/manhkhanhnh"
+  },
+  {
+    "slug": "quang",
+    "name": "Nguyen Minh Quang",
+    "placement": "phd-candidate",
+    "photo": "/team/members/quang/photo.jpg",
+    "title": "PhD Candidate (SMU)",
+    "url": "https://www.linkedin.com/in/mquang-nguyen"
+  },
+  {
+    "slug": "derrick",
+    "name": "Nguyen Quoc Trung, Derrick",
+    "placement": "phd-candidate",
+    "photo": "/team/members/derrick/photo.jpg",
+    "title": "PhD Candidate (SMU)",
+    "url": "https://www.linkedin.com/in/trung-nguyen-370993199"
+  },
+  {
+    "slug": "luke",
+    "name": "Tran Huu-Loc, Luke",
+    "placement": "phd-candidate",
+    "photo": "/team/members/luke/photo.jpeg",
+    "title": "PhD Candidate (SMU)",
+    "url": "https://trhuuloc.github.io"
+  },
+  {
+    "slug": "dilan",
+    "name": "Dilan Dinushka",
+    "placement": "phd-co-supervisee",
+    "photo": "/team/members/dilan/photo.jpeg",
+    "title": "PhD co-supervisee (SMU)",
+    "url": "https://www.linkedin.com/in/ddsdinushka"
+  },
+  {
+    "slug": "hoang",
+    "name": "Dong Viet Hoang, Eric",
+    "placement": "phd-co-supervisee",
+    "photo": "/team/members/hoang/photo.jpg",
+    "title": "PhD co-supervisee (SMU)",
+    "url": "https://hoangdv.me"
+  },
+  {
+    "slug": "ghiles",
+    "name": "Aghiles Salah",
+    "placement": "alumni",
+    "photo": "/team/members/ghiles/photo.png",
+    "title": "Senior Research Scientist (Rakuten)",
+    "url": "http://saghiles.github.io"
+  },
+  {
+    "slug": "chongcher",
+    "name": "Chia Chong Cher",
+    "placement": "alumni",
+    "photo": "/team/members/chongcher/photo.png",
+    "title": "Senior Manager (Singapore Institute of Legal Education)",
+    "url": "https://www.linkedin.com/in/chongcher"
+  },
+  {
+    "slug": "darryl-ong",
+    "name": "Darryl Ong",
+    "placement": "alumni",
+    "photo": "/team/members/darryl-ong/photo.jpg",
+    "title": "Machine Learning Engineer (Hewlett Packard Enterprise)",
+    "url": "https://www.linkedin.com/in/ongrongsheng"
+  },
+  {
+    "slug": "hongtuonie",
+    "name": "Hongtuo Nie",
+    "placement": "alumni",
+    "photo": "/team/members/hongtuonie/photo.jpeg",
+    "title": "",
+    "url": "https://felixnie.github.io"
+  },
+  {
+    "slug": "konstantinos",
+    "name": "Konstantinos Theocharidis",
+    "placement": "alumni",
+    "photo": "/team/members/konstantinos/photo.jpeg",
+    "title": "",
+    "url": "https://www.linkedin.com/in/konstantinos-theocharidis-36299159"
+  },
+  {
+    "slug": "trong-le",
+    "name": "Le Duc Trong, Tony",
+    "placement": "alumni",
+    "photo": "/team/members/trong-le/photo.jpg",
+    "title": "Lecturer (UET-VNU)",
+    "url": "https://sites.google.com/view/trongld"
+  },
+  {
+    "slug": "andrew-le",
+    "name": "Le Duy Dung, Andrew",
+    "placement": "alumni",
+    "photo": "/team/members/andrew-le/photo.jpg",
+    "title": "Assistant Professor (VinUni)",
+    "url": "https://andrew-dungle.github.io"
+  },
+  {
+    "slug": "hoang-le",
+    "name": "Le Trung Hoang",
+    "placement": "alumni",
+    "photo": "/team/members/hoang-le/photo.png",
+    "title": "Lecturer (HCMUS-VNU)",
+    "url": "https://lthoang.com"
+  },
+  {
+    "slug": "ween-jiann",
+    "name": "Lee Ween Jiann",
+    "placement": "alumni",
+    "photo": "/team/members/ween-jiann/photo.jpg",
+    "title": "Assistant Principal AI Scientist (ST Engineering)",
+    "url": "https://www.linkedin.com/in/weenjiann"
+  },
+  {
+    "slug": "maksim",
+    "name": "Maksim Tkachenko",
+    "placement": "alumni",
+    "photo": "/team/members/maksim/photo.png",
+    "title": "General Manager, AI Research (Rakuten)",
+    "url": "http://www.mtkachenko.info"
+  },
+  {
+    "slug": "thuat",
+    "name": "Tran Nhu Thuat",
+    "placement": "alumni",
+    "photo": "/team/members/thuat/photo.jpg",
+    "title": "",
+    "url": "https://www.linkedin.com/in/nhu-thuat-tran-84b549161"
+  },
+  {
+    "slug": "tuan-truong",
+    "name": "Truong Quoc Tuan",
+    "placement": "alumni",
+    "photo": "/team/members/tuan-truong/photo.jpg",
+    "title": "Senior ML Engineer (Pinterest)",
+    "url": "https://qtuantruong.github.io"
+  },
+  {
+    "slug": "ce-zhang",
+    "name": "Zhang Ce",
+    "placement": "alumni",
+    "photo": "/team/members/ce-zhang/photo.png",
+    "title": "Lecturer (University of Sheffield)",
+    "url": "https://sites.google.com/view/delvincezhang"
+  }
+]

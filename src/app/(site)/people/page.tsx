@@ -1,4 +1,4 @@
-import { TEAM_DATA, type TeamMember } from "@/data/team";
+import { type Person, groupPeople, loadAllPeople } from "@/lib/people";
 import type { Metadata } from "next";
 import Image from "next/image";
 
@@ -7,35 +7,13 @@ export const metadata: Metadata = {
   description: "Meet the Preferred.AI team and alumni",
 };
 
-const professor = TEAM_DATA.professor;
-const staff = TEAM_DATA.staff;
-
-// Sort students: PhD Candidates first (alphabetically), then PhD co-supervisees (alphabetically)
-const students: TeamMember[] = [...TEAM_DATA.students].sort((a, b) => {
-  const isACand = a.title.includes("PhD Candidate");
-  const isBCand = b.title.includes("PhD Candidate");
-
-  // If both are same type, sort alphabetically by name
-  if (isACand === isBCand) {
-    return a.name.localeCompare(b.name);
-  }
-
-  // PhD Candidates come before co-supervisees
-  return isACand ? -1 : 1;
-});
-
-// Sort alumni alphabetically by name
-const alumni: TeamMember[] = [...TEAM_DATA.alumni].sort((a, b) =>
-  a.name.localeCompare(b.name),
-);
-
-function TeamMemberCard({ member }: { member: TeamMember }) {
+function TeamMemberCard({ member }: { member: Person }) {
   return (
     <div className="flex flex-col items-center text-center">
       <div className="group mb-4 block">
         <div className="relative aspect-square w-48 overflow-hidden rounded-lg transition-transform group-hover:scale-105">
           <Image
-            src={member.image}
+            src={member.photo}
             alt={member.name}
             fill
             className="object-cover"
@@ -47,21 +25,21 @@ function TeamMemberCard({ member }: { member: TeamMember }) {
       {member.title && (
         <p className="mb-2 text-sm text-muted-foreground">{member.title}</p>
       )}
-      {member.link && (
+      {member.url && (
         <a
-          href={member.link}
+          href={member.url}
           target="_blank"
           rel="noopener noreferrer"
           className="text-sm text-primary hover:underline"
         >
-          {member.link.replace(/\/$/, "")}
+          {member.url.replace(/\/$/, "")}
         </a>
       )}
     </div>
   );
 }
 
-function TeamSection({ members }: { members: readonly TeamMember[] }) {
+function TeamSection({ members }: { members: readonly Person[] }) {
   // Check if last row has only 1 person (odd number of members)
   const hasOddMember = members.length % 2 === 1;
 
@@ -71,7 +49,7 @@ function TeamSection({ members }: { members: readonly TeamMember[] }) {
         const isLastAndOdd = hasOddMember && index === members.length - 1;
         return (
           <div
-            key={member.name}
+            key={member.slug}
             className={
               isLastAndOdd ? "sm:col-span-2 sm:flex sm:justify-center" : ""
             }
@@ -85,16 +63,18 @@ function TeamSection({ members }: { members: readonly TeamMember[] }) {
 }
 
 export default function PeoplePage() {
+  const { professors, staff, students, alumni } = groupPeople(loadAllPeople());
+
   return (
     <div>
       <h1 className="mb-12 text-center text-3xl font-bold uppercase tracking-wide text-foreground">
         Meet the Team
       </h1>
 
-      {/* Professor */}
+      {/* Professors */}
       <div className="mb-12 flex justify-center">
-        {professor.map((member) => (
-          <TeamMemberCard key={member.name} member={member} />
+        {professors.map((member) => (
+          <TeamMemberCard key={member.slug} member={member} />
         ))}
       </div>
 

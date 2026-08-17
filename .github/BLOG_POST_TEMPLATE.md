@@ -3,7 +3,7 @@ title: "Your Blog Post Title Here"
 date: "YYYY-MM-DD"
 author: "Your Name"
 excerpt: "A brief summary of your blog post (1-2 sentences). This appears in post listings and previews."
-featuredImage: "/uploads/YYYY/MM/your-image.jpg"
+cover: "/uploads/my-blog-post-title/cover.jpg"
 categories: ["Education"]
 tags: []
 seoTitle: "Your Blog Post Title - Preferred.AI"
@@ -17,6 +17,7 @@ Write your blog post content here using Markdown formatting.
 ## Subheading Example
 
 You can use:
+
 - **Bold text**
 - *Italic text*
 - [Links](https://example.com)
@@ -27,7 +28,7 @@ You can use:
 ## Tips
 
 1. The filename should be lowercase with hyphens: `my-blog-post-title.md`
-2. The date format is: `YYYY-MM-DD` (e.g., `2025-12-02`)
-3. Common categories: "Presentation, "Travel, "Education", "Announcement", "Video", "Defense", "Publication", "Social"
-4. Upload images to `/public/uploads/YYYY/MM/` before referencing them
+2. The date format is `YYYY-MM-DD` (for example, `2026-08-17`)
+3. Valid categories are `Announcement`, `Defense`, `Education`, `Presentation`, `Publication`, `Social`, `Travel`, and `Video`
+4. Put images in `/public/uploads/my-blog-post-title/` before referencing them as `/uploads/my-blog-post-title/image-name.jpg`
 5. The excerpt should be engaging and concise

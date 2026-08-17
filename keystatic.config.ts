@@ -39,13 +39,14 @@ export default config({
     ? {
         kind: "github",
         repo: "PreferredAI/PreferredAI.github.io",
+        branchPrefix: "keystatic/",
       }
     : {
         kind: "local",
       },
   ui: {
     brand: { name: "Preferred.AI Publisher" },
-    navigation: ["posts"],
+    navigation: ["posts", "people"],
   },
   collections: {
     posts: collection({
@@ -124,6 +125,64 @@ export default config({
               transformFilename: sanitizeAssetFilename,
             },
           },
+        }),
+      },
+    }),
+    people: collection({
+      label: "People",
+      slugField: "name",
+      path: "content/people/*",
+      format: "json",
+      entryLayout: "form",
+      columns: ["name", "placement", "title"],
+      previewUrl: "/people",
+      schema: {
+        name: fields.slug({
+          name: {
+            label: "Name",
+            validation: { isRequired: true },
+          },
+          slug: {
+            label: "URL-safe slug",
+            description:
+              "Lowercase letters, numbers, and hyphens. This also names the profile photo folder.",
+            validation: {
+              pattern: {
+                regex: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+                message:
+                  "Use lowercase letters, numbers, and single hyphens only.",
+              },
+            },
+          },
+        }),
+        placement: fields.select({
+          label: "Placement",
+          description: "Controls the section and ordering on the People page.",
+          options: [
+            { label: "Professor", value: "professor" },
+            { label: "Research Staff", value: "research-staff" },
+            { label: "PhD Candidate", value: "phd-candidate" },
+            { label: "PhD Co-supervisee", value: "phd-co-supervisee" },
+            { label: "Alumni", value: "alumni" },
+          ],
+          defaultValue: "phd-candidate",
+        }),
+        photo: fields.image({
+          label: "Profile photo",
+          description:
+            "Choose or drop a JPG, PNG, or WebP image. Keystatic stores it in public/team/members/<person-slug>/photo.<ext>.",
+          directory: "public/team/members",
+          publicPath: "/team/members/",
+          validation: { isRequired: true },
+        }),
+        title: fields.text({
+          label: "Position or title",
+          description:
+            "Optional, including for alumni without a current title.",
+        }),
+        url: fields.url({
+          label: "Personal or professional URL",
+          description: "Optional. Include https:// or http://.",
         }),
       },
     }),
