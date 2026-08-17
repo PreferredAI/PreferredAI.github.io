@@ -32,8 +32,8 @@
     "crawl:team": "tsx scripts/crawl-team.ts"
   },
   "dependencies": {
-    "@keystar/ui": "^0.8.0",
-    "@keystatic/core": "^0.6.0",
+    "@keystar/ui": "^0.9.3",
+    "@keystatic/core": "^0.6.5",
     "@keystatic/next": "^5.0.4",
     "@markdoc/markdoc": "^0.5.8",
     "@tailwindcss/typography": "^0.5.20",
@@ -41,11 +41,11 @@
     "date-fns": "^4.4.0",
     "feed": "^5.2.1",
     "gray-matter": "^4.0.3",
-    "next": "16.3.0",
+    "next": "16.3.1",
     "react": "19.2.8",
-    "react-aria": "3.50.0",
+    "react-aria": "3.51.0",
     "react-dom": "19.2.8",
-    "react-stately": "3.48.0",
+    "react-stately": "3.49.0",
     "rehype-raw": "^7.0.0",
     "rehype-sanitize": "^6.0.0",
     "rehype-stringify": "^10.0.1",
@@ -68,8 +68,8 @@
     "@types/react-dom": "^19.2.4",
     "jsdom": "^29.1.1",
     "tailwindcss": "^4.3.3",
-    "tsx": "^4.23.5",
+    "tsx": "^4.23.12",
     "typescript": "^6.0.3",
-    "wrangler": "^4.120.0"
+    "wrangler": "^4.123.0"
   }
 }
