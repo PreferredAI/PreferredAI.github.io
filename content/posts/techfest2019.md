@@ -109,7 +109,7 @@ Click each title above for the respective slides. Video recordings of the talks 
 
 ![Ngoh Yi Long](/uploads/2019/07/yilong.png)
 
-![Truong Quoc Tuan](/uploads/2018/12/photo_tuantruong.jpg)
+![Truong Quoc Tuan](/uploads/2018/04/photo_tuantruong.jpg)
 
 ![Guo Jingyao](/uploads/2018/04/Jingyao.jpg)
 
@@ -124,4 +124,3 @@ Click each title above for the respective slides. Video recordings of the talks 
 ![Choy Kar Sen](/uploads/2019/07/kar-sen.png)
 
 ![Wei Ming](/uploads/2019/07/Wei_Ming.jpg)
-

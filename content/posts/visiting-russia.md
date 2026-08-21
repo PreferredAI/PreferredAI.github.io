@@ -18,7 +18,12 @@ Plodding wearily on icy sidewalks and snow-banked curbs, as well as zipping chee
 
 Our first visit was to the colorful and bustling Moscow.  We were excited to visit the esteemed PhysTech, also known as [Moscow Institute of Physics and Technology](https://en.wikipedia.org/wiki/Moscow_Institute_of_Physics_and_Technology) or MIPT, as well as the progressive AI Lab of [Sberbank](https://en.wikipedia.org/wiki/Sberbank_of_Russia), which is the largest bank in Russia.  In the evening before leaving Moscow, we gave a talk at the well-attended [Data Science Meetup](https://habr.com/company/avito/blog/349114/) organized by [Avito](https://en.wikipedia.org/wiki/Avito.ru).  Fortunately, the session was recorded, and we are happy to share the video below.
 
+<iframe src="https://www.youtube.com/embed/DhXvNRWBHRE"></iframe>
+
 Our next visit was to the serenely beautiful Saint Petersburg.  Not only does the city have some great museums such as [Hermitage](https://en.wikipedia.org/wiki/Hermitage_Museum), but the city itself is also virtually a living museum.  In between art-laden walks, we mingled with academics at national research universities such as [ITMO University](https://en.wikipedia.org/wiki/ITMO_University) and [Saint Petersburg Academic University](https://en.wikipedia.org/wiki/Saint_Petersburg_Academic_University).  As computer scientists, we would not want to miss a visit to the iconic [CSClub](https://compsciclub.ru/en/).  Our talk there was also recorded, with similar content, but from a different angle and with a nice audio too.
+
+<iframe src="https://www.youtube.com/embed/ZR9IsLHONsA"></iframe>
 
 All in all, the trip was insightful and educational, in more ways than one!  We learnt tons, and got to know great people.  Looking forward to the next opportunity.
 
+![](/uploads/2018/04/2018-03-06-17.05.32_spb_rooftop.jpg)

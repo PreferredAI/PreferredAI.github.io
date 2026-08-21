@@ -116,7 +116,7 @@ export default config({
         content: fields.markdoc({
           label: "Content",
           description:
-            "Use the image toolbar button, paste, or drag and drop. Add meaningful alt text when prompted.",
+            "Use the image toolbar button, paste, or drag and drop. Add meaningful alt text when prompted. Write inline math as $...$ and display math as $$...$$.",
           extension: "md",
           options: {
             image: {

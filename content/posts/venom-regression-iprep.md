@@ -26,15 +26,42 @@ On Day 1, [Ween](https://preferred.ai/team/ween/) anchored the data collection m
 
 To get students to internalize the lessons meaningfully, they worked in small groups on a realistic project involving a specific Web site.  Working with each group was a coach from Preferred.AI.  That the groups managed to build working crawlers by the end of Day 2 spoke of their effective teamwork, the coaches’ able guidance, and [Venom](https://venom.preferred.ai/)‘s powerful features.
 
+![](/uploads/2018/10/iprep_group1_coaching.png)
+
+![](/uploads/2018/10/iprep_group2_coaching.png)
+
+![](/uploads/2018/10/iprep_group3_coaching.png)
+
+![](/uploads/2018/10/iprep_group4_coaching.png)
+
+![](/uploads/2018/10/iprep_group5_coaching.jpg)
+
+![](/uploads/2018/10/iprep_group6_coaching.jpg)
+
 On Day 3, [Max](https://preferred.ai/team/maksim/) instructed the students on how to use machine learning techniques such as linear regression and logistic regression to build prediction models.  On Day 4, the project groups began training their models using the data they were collecting with the crawlers they’d built earlier.
 
 ![](/uploads/2018/10/iprep_regression.jpg)
 
 In true SIS learning style, on Day 5 the student groups took turns presenting, and defending, their projects.  The team camaraderie was palpable.  The coaches were as anxious as their proteges.  In just 5 short days, they bonded.  In the post hoc feedback, 90% of the students rated the coaches as ‘Helpful’ or even ‘Awesome’, without whom the learning experience just wouldn’t be the same.
 
+![](/uploads/2018/10/iprep_group1_presentation.jpg)
+
+![](/uploads/2018/10/iprep_group2_presentation.jpg)
+
+![](/uploads/2018/10/iprep_group3_presentation.jpg)
+
+![](/uploads/2018/10/iprep_group4_presentation.jpg)
+
+![](/uploads/2018/10/iprep_group5_presentation.jpg)
+
+![](/uploads/2018/10/iprep_group6_presentation.jpg)
+
 The projects were finally evaluated by [Hady](https://preferred.ai/team/hadylauw/) and a guest judge, [Wu Huayu](https://www.linkedin.com/in/huayu-wu-4775b835/) (VP, Data Science – DBS Bank).  Huayu had earlier kindly shared his expertise by giving a talk titled “Applications of Data Science in Industries”, a wide-ranging coverage of the history of big data and AI and how their applications touched various industries including banking, manufacturing, etc.
 
 We awarded two prizes.  The Best Project was awarded to the group with the most creative, technically rigorous, impactful, and well-presented project. The Best Class Participation was awarded to the individual student who contributed the most to the class learning.
 
-Once the prizes were announced, the winners were finally revealed.  Yet there was no loser in sight.  After all, when learning takes place, we’re all winners.
+![](/uploads/2018/10/iprep_bestproject.jpg)
 
+![](/uploads/2018/10/iprep_bestparticipation.jpg)
+
+Once the prizes were announced, the winners were finally revealed.  Yet there was no loser in sight.  After all, when learning takes place, we’re all winners.

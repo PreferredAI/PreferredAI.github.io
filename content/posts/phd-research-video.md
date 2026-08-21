@@ -14,3 +14,4 @@ seoDescription: "In collaboration with SMU Office of Research and Tech Transfer,
 
 In collaboration with [SMU Office of Research and Tech Transfer](https://www.linkedin.com/showcase/smu-research/), we produce a fun video that showcases [Maksim](https://preferred.ai/team/maksim/)‘s PhD research.  Enjoy!
 
+<iframe src="https://www.youtube.com/embed/uzJNuAmMnyw"></iframe>

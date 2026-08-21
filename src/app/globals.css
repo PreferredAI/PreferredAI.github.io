@@ -333,3 +333,12 @@
   border: 0;
   border-radius: var(--radius);
 }
+
+/* Keep long display equations readable without widening the article on phones. */
+.prose .katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding-block: 0.25rem;
+  -webkit-overflow-scrolling: touch;
+}

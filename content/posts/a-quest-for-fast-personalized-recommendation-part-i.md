@@ -14,21 +14,25 @@ seoDescription: "Personalized recommender systems attempt to generate a limited 
 
 Personalized recommender systems attempt to generate a limited number of item options (e.g., products on Amazon, movies on Netflix, or videos on Youtube, etc.) that are curated for each individual customer. The necessity of such systems is driven by the explosion of online choices, which makes it difficult for each customer to investigate every option. Therefore, more and more product and service providers are now relying on these systems to improve customer experience and conversion on their websites.
 
-An established and prevalent technique for personalized recommendation is collaborative filtering based on matrix factorization (MF), which attempts to learn customers’ preferences from their historical activities. Let’s assume that there are ***m*** users, denoted as ***U*** and ***n*** items, denoted as ***I***. Typically, a classic matrix factorization model consists of two phases:
+An established and prevalent technique for personalized recommendation is collaborative filtering based on matrix factorization (MF), which attempts to learn customers’ preferences from their historical activities. Let’s assume that there are $m$ users, denoted as $U$ and $n$ items, denoted as $I$. Typically, a classic matrix factorization model consists of two phases:
 
-- ***Learning***: this phase analyses customers’ historical activities, represented by a sparse matrix ***R*** of size ***m*** x ***n***, to learn their preferences. Each customer *u* is represented by a ***d***-dimensional vector ***x_u_*** and each item *i* is represented by a ***d***-dimensional vector ***y_i_***, where ***d*** is the hypothetical number of factors that explain the behaviour of each customer. The degree of preference of a customer *u* for an item *i* is modelled as the inner product score ***(*x_u_*)^T^y_i_***. A higher inner product score implies a higher chance of the customer *u* to prefer the item *i*.
+- ***Learning***: this phase analyses customers’ historical activities, represented by a sparse matrix $R$ of size $m \times n$, to learn their preferences. Each customer $u$ is represented by a $d$-dimensional vector $x_u$ and each item $i$ is represented by a $d$-dimensional vector $y_i$, where $d$ is the hypothetical number of factors that explain the behaviour of each customer. The degree of preference of a customer $u$ for an item $i$ is modelled as the inner product score $(x_u)^T y_i$. A higher inner product score implies a higher chance of the customer $u$ to prefer the item $i$.
 
-- ***Retrieval***: given the output vectors from the learning phase, to arrive at a personalized recommendation list for customer ***u***, we need to identify the top-*K* items in ***I*** that have the highest inner product scores to ***x_u_***. Figure 1 illustrates the pipeline of top-*K* MF recommendation retrieval, in which ***Y***  denotes the item matrix where each row represents an item vector.
+- ***Retrieval***: given the output vectors from the learning phase, to arrive at a personalized recommendation list for customer $u$, we need to identify the top-$K$ items in $I$ that have the highest inner product scores to $x_u$. Figure 1 illustrates the pipeline of top-$K$ MF recommendation retrieval, in which $Y$ denotes the item matrix where each row represents an item vector.
 
 ![Figure 1: Top-K Retrieval of Matrix Factorization Models](/uploads/2020/09/mf-based-recommendation-retrieval-1.png)
 
-The challenge of the *learning* phase is how to design effective algorithms that can learn from the data at the scale of millions of customers and items. This problem has been studied extensively in the research literature. On the other hand, the challenge of the *retrieval* phase is *speed,* due to the real-time nature of the task: *upon the arrival of a targeted customer* *u*, the system needs to quickly generate top-*K* items with highest inner product scores to ***x_u_*** be recommended for *u*.
+The challenge of the *learning* phase is how to design effective algorithms that can learn from the data at the scale of millions of customers and items. This problem has been studied extensively in the research literature. On the other hand, the challenge of the *retrieval* phase is *speed,* due to the real-time nature of the task: *upon the arrival of a targeted customer* $u$, the system needs to quickly generate top-$K$ items with highest inner product scores to $x_u$ be recommended for $u$.
 
 Formally, the above problem of finding the top-*K* MF recommendations can be stated as follows:
 
-**(Maximum Inner Product Search-MIPS)** Given a customer vector *x_u_*, determine the item *i* such that:
+**(Maximum Inner Product Search-MIPS)** Given a customer vector $x_u$, determine the item $i$ such that:
 
-A straightforward solution for MIPS is to compute the inner product between ***x_u_*** and all item vectors {***y_1_***, ***y_2_***, …, ***y_m_***} and rank these scores. However, such solution scales linearly with the number of items, which incurs the prohibitive cost given current number of items in today large-scale systems (see References [1], [2], [3] for more detailed analysis). To achieve real-time personalized recommendation, we shall look for faster alternatives to solve the MIPS problem efficiently, specifically those who can avoid examining all items in *I*. In this post, we will explore such a solution, namely *indexing.*
+$$
+i=\mathrm{argmax}_{j \in I} x_u^T y_j
+$$
+
+A straightforward solution for MIPS is to compute the inner product between $x_u$ and all item vectors $\{y_1, y_2, \ldots, y_m\}$ and rank these scores. However, such solution scales linearly with the number of items, which incurs the prohibitive cost given current number of items in today large-scale systems (see References [1], [2], [3] for more detailed analysis). To achieve real-time personalized recommendation, we shall look for faster alternatives to solve the MIPS problem efficiently, specifically those who can avoid examining all items in $I$. In this post, we will explore such a solution, namely *indexing.*
 
 **Indexing for Matrix Factorization Recommendation Retrieval**
 
@@ -40,7 +44,7 @@ Figure 2 depicts two steps of a top-*K* recommender system with the aid of index
 
 - **Index construction**: process and store the item vectors *Y* in a data structure (e.g., hash tables, binary search trees, etc.) so that similar item vectors are stored closely in the data structure (e.g., on the same buckets of the hash tables or the same leaf nodes of the binary search tree. etc.).
 
-- **Retrieval**: Given the built data structure, a search for the top-*K* most similar items to a customer vector ***x_u_***, i.e., top-*K* recommendations can be performed in order of magnitude faster than naïve exhaustive search. This is primarily due to the property of indexing structures, which can automatically remove potential irrelevant items with high confidence and reduce the number of item candidates for inner product computation and ranking.
+- **Retrieval**: Given the built data structure, a search for the top-$K$ most similar items to a customer vector $x_u$, i.e., top-$K$ recommendations can be performed in order of magnitude faster than naïve exhaustive search. This is primarily due to the property of indexing structures, which can automatically remove potential irrelevant items with high confidence and reduce the number of item candidates for inner product computation and ranking.
 
 The benefit of indexing comes at the cost of constructing the data structures to store the item vectors in new formats that support efficient similarity search, which is a one-time cost to be amortized over the many query instances.
 
@@ -55,4 +59,3 @@ In the next part, we will investigate further some issues with using indexing fo
 **[2]** Le, D. D., & Lauw, H. W. (2017, November). Indexable Bayesian Personalized Ranking for Efficient Top-k Recommendation. In *Proceedings of the 2017 ACM on Conference on Information and Knowledge Management* (pp. 1389-1398). ACM.
 
 **[3]** Le, D. D., & Lauw, H. W (2020, Feb). Stochastically Robust Personalized Ranking for LSH Recommendation Retrieval, In *Proceeding of the 34thAAAI Conference on Artificial Intelligence* (AAAI’20), Feb 2020.
-

@@ -16,6 +16,11 @@ export const markdownSanitizeSchema: Options = {
   ],
   attributes: {
     ...attributes,
+    code: [
+      ...(attributes.code ?? []),
+      ["className", "language-math", "math-inline"],
+    ],
+    div: [...(attributes.div ?? []), ["className", "math-display"]],
     figure: [...(attributes.figure ?? []), "className"],
     img: [
       ...(attributes.img ?? []),

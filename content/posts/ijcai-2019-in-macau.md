@@ -14,6 +14,8 @@ seoDescription: "In August 2019, Andrew attended the 28th International Joint Co
 
 In August 2019, [Andrew](https://preferred.ai/team/andrew/) attended the 28th International Joint Conference on Artificial Intelligence (IJCAI-2019). He shares his learning and experience in this blog post.
 
+![](/uploads/2019/11/full_fukuta_1565621166_1.jpeg)
+
 IJCAI 2019 was hosted in Macau, China, gathering more than 3000 AI scholars and industry leaders. This year, IJCAI received a huge amount of submissions, i.e., 4752, which resulted in 17.8% acceptance rate (850 papers). This is a record for IJCAI, showing a rapidly increasing interest in AI.
 
 ![Some statistics about IJCAI 2019 papers](/uploads/2019/11/full_masakazu.ishihata_1565659665_0.jpeg)
@@ -41,4 +43,3 @@ IJCAI 2019 was also an opportunity for conference attendants to explore Macau, a
 ![](/uploads/2019/11/swe.jpg)
 
 IJCAI is always a great venue to meet and learn from world-class AI researchers and practitioners. [Preferred.AI ](https://preferred.ai/)will definitely be back again!
-

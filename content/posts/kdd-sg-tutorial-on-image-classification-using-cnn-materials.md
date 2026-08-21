@@ -14,5 +14,12 @@ seoDescription: "Our appreciation to KDD.SG (Singapore Chapter of SIGKDD) and DS
 
 Our appreciation to [KDD.SG](http://kdd.sg) (Singapore Chapter of SIGKDD) and [DSSG](http://datascience.sg/) (DataScience Singapore) for jointly organizing and inviting us to deliver a public tutorial on June 9.  [Tuan](https://preferred.ai/team/tuan/) and [Hady](https://preferred.ai/team/hadylauw/) delivered a tutorial on image classification using convolutional neural networks, focusing on two applications, namely: face emotion recognition and visual sentiment analysis.
 
+![Hady opened the tutorial on Image Classification using CNN](/uploads/2018/06/photo_20180609_tutorial_hady.jpg)
+
+![Tuan explained the implementation of Multi Layer Perceptron on Tensorflow](/uploads/2018/06/photo_20180609_tutorial_tuan.jpg)
+
+![The audience was actively involved and participating in the tutorial](/uploads/2018/06/photo_20180609_tutorial_audience.jpg)
+
 For those who missed the tutorial, you may find the materials [here](https://github.com/PreferredAI/tutorials/tree/master/image-classification) for your own self-practice.  A video recording of the event can be found below.
 
+<iframe src="https://www.youtube.com/embed/B76QpeGT1x4"></iframe>

@@ -1,10 +1,12 @@
 import fs from "fs";
 import path from "path";
 import matter from "gray-matter";
+import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
 import rehypeStringify from "rehype-stringify";
 import gfm from "remark-gfm";
+import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
@@ -303,12 +305,17 @@ export async function markdownToHtml(markdown: string): Promise<string> {
   const result = await unified()
     .use(remarkParse)
     .use(gfm)
+    .use(remarkMath)
     .use(remarkRehype, { allowDangerousHtml: true })
     .use(rehypeRaw)
     .use(rehypeSafeEmbeds)
     .use(rehypeResponsiveImages)
     .use(rehypeFigure)
     .use(rehypeSanitize, markdownSanitizeSchema)
+    .use(rehypeKatex, {
+      trust: false,
+      strict: "error",
+    })
     .use(rehypeStringify)
     .process(markdown);
   return result.toString();

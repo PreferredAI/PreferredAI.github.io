@@ -45,5 +45,14 @@ Basic knowledge of Python, machine learning and recommender systems.
 
 **Speakers**
 
-![](/uploads/2018/04/ghiles.png)
+![Quoc-Tuan Truong](/uploads/2018/04/photo_tuantruong.jpg)
 
+Quoc-Tuan Truong is a PhD student at Singapore Management University (SMU). His research focuses on multimodal representation learning and preference modeling for recommender systems. His teaching experiences include a tutorial on “Recommender Systems” at AI Singapore Summer School 2020, and a tutorial on “Facial Expression Recognition using CNN” organized by KDD.SG. More information can be found at his homepage.
+
+![Aghiles Salah](/uploads/2018/04/ghiles.png)
+
+Aghiles Salah is an Applied Research Scientist at the Rakuten Institute of Technology. His research is in machine learning and recommender systems. He is the (co) author of several publications in tier-1 conferences and journals, and he taught (over more than four years) several undergraduate and master’s courses on machine learning, data analysis, and related topics. More information may be found at his homepage.
+
+![Hady W. Lauw](/uploads/2018/06/photo_hadylauw.png)
+
+Hady W. Lauw is an Associate Professor at SMU School of Computing and Information Systems and the current Chair of the Singapore Chapter of ACM SIGKDD (KDD.SG). He publishes actively on AI and recommender systems, earning a Distinguished Paper Award at IJCAI-20 and an Outstanding Paper Nomination at AAAI-14. He has also conducted tutorials in major conferences, such as AAAI-19, IJCAI-11, and CIKM-10. He has 10 years of university teaching experience (twice nominated for teaching awards) at both undergraduate and postgraduate levels, including a master-level course on recommender systems. More information can be found at his homepage.

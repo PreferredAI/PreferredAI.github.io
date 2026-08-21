@@ -26,15 +26,20 @@ In pursuit of an empirical answer to what might have also been a philosophical q
 
 To test the above hypothesis, we formulate a problem known as *visual sentiment analysis*.  Given an image, we seek to determine whether the image is positive (i.e., found within a review with rating of 4 or 5 on a scale of 5) or negative (i.e., associated with a rating of 1 or 2).  We build a binary classifier based on a deep learning framework called [Convolutional Neural Networks](https://en.wikipedia.org/wiki/Convolutional_neural_network).  Our model architecture shown below is reminiscent of [AlexNet](https://en.wikipedia.org/wiki/AlexNet) for object detection, with a twist in its application to binary sentiment classification.  We describe the details of this base model in a [paper](http://www.hadylauw.com/publications/acmmm17.pdf) authored by [Tuan](https://preferred.ai/team/tuan/) and [Hady](https://preferred.ai/team/hadylauw/) and published in the [ACM Multimedia Conference 2017](http://www.acmmm.org/2017/).
 
+![](/uploads/2018/05/vscnn_basemodel_architecture.png)
+
 To cut a fascinating story short, we find that the trained visual sentiment analysis classifier performs significantly better than random, implying that indeed there are signals within an image that help to convey the overall sentiment of the review writer.
 
 > What do positive images look like?
 
 Below we show some examples of images classified as positive.  Happy faces and celebrations seem to mark happy moments.  Note that this is a general image classification, and not specifically about facial emotion recognition (which itself is an interesting but distinct problem).  For another set of examples, if one can afford to dine at restaurants with a view, chances are the experience would be positive.
 
+![](/uploads/2018/05/vscnn_basemodel_business_positive_short.png)
+
 > What do negative images look like?
 
 Well, no one likes paying too much (or perhaps even paying at all?).  It is always a bummer to discover something that does not belong on one’s plate.
 
-Interesting as it is, this is not yet the end of our exploration.  There are other factors that we would consider to improve the performance of visual sentiment analysis.  That’s the subject of a future blog post.  If you really can’t wait, here is the [paper](http://www.hadylauw.com/publications/acmmm17.pdf).
+![](/uploads/2018/05/vscnn_basemodel_business_negative_short.png)
 
+Interesting as it is, this is not yet the end of our exploration.  There are other factors that we would consider to improve the performance of visual sentiment analysis.  That’s the subject of a future blog post.  If you really can’t wait, here is the [paper](http://www.hadylauw.com/publications/acmmm17.pdf).

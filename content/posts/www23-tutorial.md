@@ -48,3 +48,18 @@ Basic knowledge of Python, machine learning and recommender systems.
 
 **Speakers**
 
+![Trung-Hoang Le](/uploads/2018/06/hoangle_photo.png)
+
+Trung-Hoang Le is a PhD candidate in Computer Science at Singapore Management University (SMU). His research focuses on recommendation explanation. Some of his recent work on recommendation explanation has been published at top conferences, including IJCAI, WSDM, and BigData. He won a Distinguished Paper Award at IJCAI-20. He received the 2020 SDSC Dissertation Research Fellowship.
+
+![Quoc-Tuan Truong](/uploads/2018/04/photo_tuantruong.jpg)
+
+Quoc-Tuan Truong is an Applied Scientist at Amazon working large-scale machine learning for personalization. His research focuses on multimodal representation learning and preference modeling for recommender systems. Some of his recent work has been published at top conferences and journals, including AAAI, WWW, ACMMM, WSDM, and JMLR. He is experienced in university teaching, delivering tutorials at RecSys 2021 as well as AI Singapore Summer School 2020.
+
+![Aghiles Salah](/uploads/2018/04/ghiles.png)
+
+Aghiles Salah is an Applied Research Scientist at the Rakuten Institute of Technology. His research is in machine learning and recommender systems. He is the (co) author of several publications in tier-1 conferences and journals, and he taught (over more than six years) several undergraduate and master’s courses on machine learning, data analysis, and related topics.
+
+![Hady W. Lauw](/uploads/2018/06/photo_hadylauw.png)
+
+Hady W. Lauw is an Associate Professor at SMU School of Computing and Information Systems and the current Chair of the Singapore Chapter of ACM SIGKDD (KDD.SG). He publishes actively on AI and recommender systems, earning a Distinguished Paper Award at IJCAI-20 and an Outstanding Paper Nomination at AAAI-14. He has also conducted tutorials in major conferences, such as RecSys-21, AAAI-19, IJCAI-11, and CIKM-10. He has more than 10 years of university teaching experience (twice nominated for teaching awards) at both undergraduate and postgraduate levels, including a master-level course on recommender systems.

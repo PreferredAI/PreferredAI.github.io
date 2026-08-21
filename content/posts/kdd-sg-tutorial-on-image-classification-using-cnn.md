@@ -16,3 +16,6 @@ In collaboration with [KDD.SG](http://kdd.sg) (Singapore Chapter of SIGKDD) and 
 
 Update: See a [follow-up blog post of the event](https://preferred.ai/kdd-sg-tutorial-on-image-classification-using-cnn-materials/).
 
+![](/uploads/2018/06/kdd-sg_tutorial_20180609_brochure1.jpg)
+
+![](/uploads/2018/06/kdd-sg_tutorial_20180609_brochure2.jpg)

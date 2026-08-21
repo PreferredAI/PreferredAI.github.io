@@ -24,7 +24,7 @@ Preferred.AI had one paper at the conference by Hieu and Hady, titled “Continu
 
 During the conference, Hieu unexpectedly reunited with Son, a former member of our research group who is now with A*STAR. Our chance encounter provided an additional avenue for learning as we engaged in discussions about research papers being presented and shared our insights.
 
-![The conference also treated us to a delightful social dinner, complete with a captivating performance featuring traditional Chinese instruments.](/uploads/2023/09/Screenshot-2023-09-28-at-12.02.57 PM.jpg)
+![The conference also treated us to a delightful social dinner, complete with a captivating performance featuring traditional Chinese instruments.](</uploads/2023/09/Screenshot-2023-09-28-at-12.02.57 PM.jpg>)
 
 ![Impressive capture at Marina Bay (though not taken during the conference).](/uploads/2023/09/IMG_20210319_192651-COLLAGE.jpg)
 

@@ -14,5 +14,6 @@ seoDescription: "In collaboration with SDSC (Singapore Data Science Consortium a
 
 In collaboration with [SDSC](http://sdsc.sg/) (Singapore Data Science Consortium and [DSSG](http://datascience.sg/) (DataScience Singapore), we will be giving several talks at a meetup on Thursday 7 June 2018.  For more info, click on the flyer.  See you there!
 
-Update: See a f[ollow-up blog post with videos of the talks](https://preferred.ai/sdsc-dssg-data-science-meetup-videos/).
+Update: See a [follow-up blog post with videos of the talks](https://preferred.ai/sdsc-dssg-data-science-meetup-videos/).
 
+![](/uploads/2018/06/Data-Science-SG-Meetup_EDM.jpg)
