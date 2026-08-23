@@ -20,6 +20,13 @@ export const PUBLICATIONS_DATA: YearSection[] = [
     publications: [
       {
         title:
+          "CLASP: Collaborative Latent Alignment from Semantic Preference Descriptions for Natural Language based Recommendation",
+        authors: "Dilan Dinushka, Antoine Ledent, and Hady W. Lauw",
+        venue:
+          "Conference on Empirical Methods in Natural Language Processing (EMNLP'26), Dec 2026",
+      },
+      {
+        title:
           "Enhancing Review-Augmented Contrastive Recommendation with LLM-based Generation",
         authors: "Hoang Dong, Yuan Fang, and Hady W. Lauw",
         venue:
