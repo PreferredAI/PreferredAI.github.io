@@ -150,8 +150,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-      "Helvetica Neue", Arial, sans-serif;
+    font-family:
+      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
+      Arial, sans-serif;
     font-size: 16px;
     line-height: 1.7;
     -webkit-font-smoothing: antialiased;
@@ -218,7 +219,7 @@
     animation-delay: 0.14s;
   }
   .feed-grid > *:nth-child(3) {
-    animation-delay: 0.20s;
+    animation-delay: 0.2s;
   }
   .feed-grid > *:nth-child(4) {
     animation-delay: 0.26s;
@@ -249,19 +250,15 @@
 
 /* Custom modern technical coordinate grid backing */
 .tech-grid {
-  background-image: linear-gradient(
-      to right,
-      rgba(189, 24, 24, 0.015) 1px,
-      transparent 1px
-    ), linear-gradient(to bottom, rgba(189, 24, 24, 0.015) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(189, 24, 24, 0.015) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(189, 24, 24, 0.015) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 .dark .tech-grid {
-  background-image: linear-gradient(
-      to right,
-      rgba(189, 24, 24, 0.025) 1px,
-      transparent 1px
-    ), linear-gradient(to bottom, rgba(189, 24, 24, 0.025) 1px, transparent 1px);
+  background-image:
+    linear-gradient(to right, rgba(189, 24, 24, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(189, 24, 24, 0.025) 1px, transparent 1px);
 }
 
 /* Scrollbar customization */

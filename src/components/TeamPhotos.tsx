@@ -1,8 +1,8 @@
 "use client";
 
-import { TEAM_PHOTOS } from "@/data/teamPhotos";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { TEAM_PHOTOS } from "@/data/teamPhotos";
 
 // Helper to generate a shuffled array of indices from 1 to N-1
 const generateShuffledPlaylist = (length: number): number[] => {

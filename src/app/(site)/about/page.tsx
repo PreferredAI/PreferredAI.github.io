@@ -1,9 +1,8 @@
 import fs from "fs";
-import path from "path";
-import { markdownToHtml } from "@/lib/markdown-posts";
 import type { Metadata } from "next";
-
+import path from "path";
 import generatedPostsData from "@/data/generated-posts.json";
+import { markdownToHtml } from "@/lib/markdown-posts";
 
 export const metadata: Metadata = {
   title: "About",

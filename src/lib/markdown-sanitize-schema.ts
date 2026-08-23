@@ -1,4 +1,4 @@
-import { type Options, defaultSchema } from "rehype-sanitize";
+import { defaultSchema, type Options } from "rehype-sanitize";
 
 const attributes = defaultSchema.attributes ?? {};
 

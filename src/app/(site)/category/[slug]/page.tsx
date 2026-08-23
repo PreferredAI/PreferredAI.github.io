@@ -1,7 +1,7 @@
-import { PostCard } from "@/components/PostCard";
-import { getAllCategories, getPostsByCategory } from "@/lib/markdown-posts";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { PostCard } from "@/components/PostCard";
+import { getAllCategories, getPostsByCategory } from "@/lib/markdown-posts";
 
 export async function generateStaticParams() {
   const categories = getAllCategories();

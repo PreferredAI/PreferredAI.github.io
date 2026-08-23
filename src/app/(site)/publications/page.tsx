@@ -1,6 +1,6 @@
+import type { Metadata } from "next";
 import PublicationsExplorer from "@/components/PublicationsExplorer";
 import { PUBLICATIONS_DATA } from "@/data/publications";
-import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Publications",

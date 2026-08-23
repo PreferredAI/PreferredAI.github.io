@@ -1,6 +1,6 @@
-import { type Person, groupPeople, loadAllPeople } from "@/lib/people";
 import type { Metadata } from "next";
 import Image from "next/image";
+import { groupPeople, loadAllPeople, type Person } from "@/lib/people";
 
 export const metadata: Metadata = {
   title: "Team",

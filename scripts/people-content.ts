@@ -1,10 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import {
+  comparePeople,
   PEOPLE_PLACEMENTS,
   type PeoplePlacement,
   type Person,
-  comparePeople,
 } from "../src/lib/people-schema";
 
 const PEOPLE_DIRECTORY = path.join(process.cwd(), "content", "people");

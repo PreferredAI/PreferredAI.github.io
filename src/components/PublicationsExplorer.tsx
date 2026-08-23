@@ -1,9 +1,9 @@
 "use client";
 
-import { PUBLICATION_CATEGORIES } from "@/data/publicationCategories";
-import type { Publication, YearSection } from "@/data/publications";
 import type React from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { PUBLICATION_CATEGORIES } from "@/data/publicationCategories";
+import type { Publication, YearSection } from "@/data/publications";
 import {
   CodeIcon,
   LinkIcon,

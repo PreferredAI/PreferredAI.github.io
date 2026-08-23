@@ -1,7 +1,7 @@
+import { notFound } from "next/navigation";
 import Pagination from "@/components/Pagination";
 import { PostCard } from "@/components/PostCard";
 import { getAllPosts } from "@/lib/markdown-posts";
-import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{

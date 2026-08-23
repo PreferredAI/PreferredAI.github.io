@@ -1,6 +1,6 @@
+import { Feed } from "feed";
 import { getAllPosts } from "@/lib/markdown-posts";
 import { siteUrl } from "@/lib/site";
-import { Feed } from "feed";
 
 export const dynamic = "force-static";
 

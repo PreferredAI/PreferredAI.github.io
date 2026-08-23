@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import generatedPeople from "@/data/generated-people.json";
-import { type Person, comparePeople } from "./people-schema";
+import { comparePeople, type Person } from "./people-schema";
 
 const peopleDirectory = path.join(process.cwd(), "content", "people");
 

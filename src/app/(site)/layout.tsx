@@ -1,7 +1,7 @@
+import Link from "next/link";
 import Navigation from "@/components/Navigation";
 import TeamPhotos from "@/components/TeamPhotos";
 import { getAllCategories } from "@/lib/markdown-posts";
-import Link from "next/link";
 
 export default function SiteLayout({
   children,
