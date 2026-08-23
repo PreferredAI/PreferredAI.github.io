@@ -33,9 +33,9 @@
     "crawl:team": "tsx scripts/crawl-team.ts"
   },
   "dependencies": {
-    "@keystar/ui": "^0.9.3",
-    "@keystatic/core": "^0.6.5",
-    "@keystatic/next": "^5.0.4",
+    "@keystar/ui": "^0.9.6",
+    "@keystatic/core": "^0.6.8",
+    "@keystatic/next": "^5.0.5",
     "@markdoc/markdoc": "^0.5.8",
     "@tailwindcss/typography": "^0.5.20",
     "clsx": "^2.1.1",
@@ -74,6 +74,6 @@
     "tailwindcss": "^4.3.3",
     "tsx": "^4.23.12",
     "typescript": "^6.0.3",
-    "wrangler": "^4.123.0"
+    "wrangler": "^4.124.0"
   }
 }
