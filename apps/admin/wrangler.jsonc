@@ -1,12 +1,19 @@
 {
-  "$schema": "./node_modules/wrangler/config-schema.json",
-  "name": "preferredai-keystatic",
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "preferredai-admin",
   "main": ".open-next/worker.js",
   "compatibility_date": "2026-08-08",
   "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "workers_dev": false,
+  "routes": [
+    {
+      "pattern": "admin.preferred.ai",
+      "custom_domain": true
+    }
+  ],
   "vars": {
     "NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND": "github",
-    "NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG": "preferredai-keystatic"
+    "NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG": "preferredai-publisher"
   },
   "assets": {
     "binding": "ASSETS",

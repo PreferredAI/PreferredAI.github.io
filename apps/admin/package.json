@@ -1,0 +1,31 @@
+{
+  "name": "@preferredai/admin",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "node scripts/link-local-content.mjs && next dev",
+    "build": "SKIP_OPENNEXT_DEV_INIT=true next build",
+    "build:worker": "opennextjs-cloudflare build",
+    "preview": "pnpm build:worker && opennextjs-cloudflare preview",
+    "deploy": "pnpm build:worker && opennextjs-cloudflare deploy -- --keep-vars",
+    "typecheck": "node ../../scripts/clean-next-types.mjs && SKIP_OPENNEXT_DEV_INIT=true next typegen && tsc --noEmit"
+  },
+  "dependencies": {
+    "@keystar/ui": "^0.9.6",
+    "@keystatic/core": "^0.6.8",
+    "@keystatic/next": "^5.0.5",
+    "next": "16.3.1",
+    "react": "19.2.8",
+    "react-aria": "3.51.0",
+    "react-dom": "19.2.8",
+    "react-stately": "3.49.0"
+  },
+  "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.2",
+    "@types/node": "^26.2.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "typescript": "^6.0.3",
+    "wrangler": "^4.124.0"
+  }
+}

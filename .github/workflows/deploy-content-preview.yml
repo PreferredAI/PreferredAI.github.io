@@ -1,0 +1,188 @@
+name: Deploy Keystatic content preview
+
+on:
+  workflow_run:
+    workflows: ["Test website build"]
+    types: [completed]
+
+permissions:
+  actions: read
+  contents: read
+
+concurrency:
+  group: keystatic-preview-${{ github.event.workflow_run.head_branch }}
+  cancel-in-progress: true
+
+jobs:
+  preview:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'pull_request' &&
+      startsWith(github.event.workflow_run.head_branch, 'keystatic/') &&
+      github.event.workflow_run.head_repository.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: content-preview
+    steps:
+      - name: Create repository-scoped publisher token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          app-id: ${{ vars.PREFERREDAI_AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.PREFERREDAI_AUTOMATION_APP_PRIVATE_KEY }}
+          owner: PreferredAI
+          repositories: PreferredAI.github.io
+          permission-actions: read
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Resolve the matching open pull request
+        id: pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          pr_number="$(gh pr list \
+            --repo "$GITHUB_REPOSITORY" \
+            --state open \
+            --base main \
+            --head "$HEAD_BRANCH" \
+            --json number,headRefOid \
+            --jq ".[] | select(.headRefOid == \"$HEAD_SHA\") | .number" \
+            | sed -n '1p')"
+          if [[ -z "$pr_number" ]]; then
+            echo "No open pull request matches $HEAD_BRANCH at $HEAD_SHA." >&2
+            exit 1
+          fi
+          echo "number=$pr_number" >> "$GITHUB_OUTPUT"
+
+      - name: Check out trusted publishing policy
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: policy
+          persist-credentials: false
+
+      - name: Read complete pull request diff
+        id: diff
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          changed_files="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json changedFiles --jq '.changedFiles')"
+          echo "changed_files=$changed_files" >> "$GITHUB_OUTPUT"
+          gh api \
+            --paginate \
+            --slurp \
+            "repos/$GITHUB_REPOSITORY/pulls/$PR_NUMBER/files?per_page=100" \
+            > "$RUNNER_TEMP/keystatic-pr-files.json"
+
+      - name: Reclassify editorial paths with trusted policy
+        id: policy
+        run: >-
+          node policy/.github/scripts/classify-keystatic-changes.mjs
+          --github-json "$RUNNER_TEMP/keystatic-pr-files.json"
+          --expected-count "${{ steps.diff.outputs.changed_files }}"
+
+      - name: Reject paths outside the editorial policy
+        if: steps.policy.outputs.eligible != 'true'
+        env:
+          INELIGIBLE_PATHS: ${{ steps.policy.outputs.ineligible_paths }}
+        run: |
+          echo "Preview rejected; ineligible paths: $INELIGIBLE_PATHS" >&2
+          exit 1
+
+      - name: Download validated static artifact
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: test-static-export
+          path: preview
+          github-token: ${{ steps.app-token.outputs.token }}
+          run-id: ${{ github.event.workflow_run.id }}
+
+      - name: Reject executable or invalid Pages artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f preview/index.html
+          test -f preview/_headers
+          test ! -e preview/_worker.js
+          test ! -e preview/_routes.json
+          test ! -d preview/functions
+          test -z "$(find preview -type l -print -quit)"
+          grep -Fq 'name="robots"' preview/index.html
+          grep -Fq 'noindex' preview/index.html
+          grep -Fq 'X-Robots-Tag: noindex, nofollow' preview/_headers
+          file_count="$(find preview -type f | wc -l | tr -d ' ')"
+          test "$file_count" -le 20000
+          while IFS= read -r file; do
+            size="$(stat -c '%s' "$file")"
+            test "$size" -le 26214400
+          done < <(find preview -type f)
+
+      - name: Deploy isolated Pages preview
+        id: pages
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          packageManager: npm
+          wranglerVersion: 4.124.0
+          command: pages deploy ./preview --project-name=preferredai --branch=content-pr-${{ steps.pr.outputs.number }} --commit-hash=${{ github.event.workflow_run.head_sha }}
+
+      - name: Verify Cloudflare Access protects preview
+        env:
+          PREVIEW_URL: ${{ steps.pages.outputs.pages-deployment-alias-url || steps.pages.outputs.deployment-url }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          status="$(curl --silent --output /dev/null --write-out '%{http_code}' "$PREVIEW_URL")"
+          case "$status" in
+            302|401|403) ;;
+            *) echo "Preview is not protected by Access (HTTP $status)." >&2; exit 1 ;;
+          esac
+
+      - name: Comment preview URL
+        uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
+        env:
+          PREVIEW_URL: ${{ steps.pages.outputs.pages-deployment-alias-url || steps.pages.outputs.deployment-url }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        with:
+          github-token: ${{ steps.app-token.outputs.token }}
+          script: |
+            const marker = '<!-- preferredai-content-preview -->';
+            const issue_number = Number(process.env.PR_NUMBER);
+            const body = `${marker}\nAccess-protected preview: ${process.env.PREVIEW_URL}`;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              per_page: 100,
+            });
+            const previous = comments.find((comment) => comment.body?.includes(marker));
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: previous.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                body,
+              });
+            }
+
+      - name: Enable squash auto-merge
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        run: gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --auto --squash --match-head-commit "$HEAD_SHA"

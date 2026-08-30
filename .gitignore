@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/apps/*/node_modules/
 /.pnpm-store/
 /.pnp
 .pnp.*
@@ -19,6 +20,9 @@
 /out/
 /.open-next/
 /.wrangler/
+/apps/admin/.next/
+/apps/admin/.open-next/
+/apps/admin/.wrangler/
 
 # production
 /build
@@ -48,3 +52,13 @@ cloudflare-env.d.ts
 
 /src/generated/prisma
 /public/optimized/
+
+# Build-time indexes are derived from committed editorial content.
+/src/data/generated-posts.json
+/src/data/generated-people.json
+/src/data/generated-image-manifest.json
+/.cache/
+
+# Local Keystatic storage links point at the workspace content directories.
+/apps/admin/content/
+/apps/admin/public/

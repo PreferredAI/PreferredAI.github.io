@@ -26,12 +26,15 @@ export interface MarkdownPost {
 
 export function buildPostsIndex(): MarkdownPost[] {
   if (!fs.existsSync(postsDirectory)) {
-    return [];
+    throw new Error(`Missing posts directory: ${postsDirectory}`);
   }
 
   const files = fs
     .readdirSync(postsDirectory)
     .filter((file) => file.endsWith(".md"));
+  if (files.length === 0) {
+    throw new Error("Posts collection must contain at least one post");
+  }
   const posts: MarkdownPost[] = files.map((filename) => {
     const slug = filename.replace(/\.md$/, "");
     const fullPath = path.join(postsDirectory, filename);
@@ -59,7 +62,7 @@ export function buildPostsIndex(): MarkdownPost[] {
 }
 
 function main() {
-  console.log("📝 Generating posts index for server/worker runtime...");
+  console.log("Generating posts index for the static build...");
   const posts = buildPostsIndex();
   let aboutContent = "";
   const aboutPath = path.join(process.cwd(), "content", "about.md");

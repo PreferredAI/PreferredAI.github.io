@@ -5,6 +5,4 @@ export function generateStaticParams() {
   return [{ params: [] }];
 }
 
-export const { POST, GET } = makeRouteHandler({
-  config,
-});
+export const { POST, GET } = makeRouteHandler({ config });

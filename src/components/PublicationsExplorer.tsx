@@ -248,7 +248,7 @@ export default function PublicationsExplorer({ data }: ExplorerProps) {
 
                   return (
                     <li
-                      key={`${pub.title}-${pubIndex}`}
+                      key={`${pub.title}-${pub.authors}-${pub.venue}`}
                       className="relative ml-7 pb-6 group"
                     >
                       {/* Timeline concentric indicator bullet (optically centered on the border line) */}

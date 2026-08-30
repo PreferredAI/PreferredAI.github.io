@@ -19,7 +19,7 @@ async function getAboutContent() {
       return await markdownToHtml(fileContents);
     }
   } catch {
-    // Edge / Worker runtimes
+    // Next.js may evaluate the module from a bundle without direct source files.
   }
 
   const aboutMd =

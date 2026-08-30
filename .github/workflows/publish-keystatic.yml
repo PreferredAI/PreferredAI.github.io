@@ -6,9 +6,7 @@ on:
     types: [completed]
 
 permissions:
-  actions: write
-  contents: write
-  pull-requests: write
+  contents: read
 
 concurrency:
   group: keystatic-publisher-${{ github.event.workflow_run.head_branch }}
@@ -22,21 +20,33 @@ jobs:
       startsWith(github.event.workflow_run.head_branch, 'keystatic/') &&
       github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
+    environment: editorial-publish
     env:
-      GH_TOKEN: ${{ github.token }}
       REPOSITORY: ${{ github.repository }}
       BASE_BRANCH: ${{ github.event.repository.default_branch }}
       HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
-      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
+      - name: Create repository-scoped publisher token
+        id: app-token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
+        with:
+          app-id: ${{ vars.PREFERREDAI_AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.PREFERREDAI_AUTOMATION_APP_PRIVATE_KEY }}
+          owner: PreferredAI
+          repositories: PreferredAI.github.io
+          permission-contents: write
+          permission-pull-requests: write
+
       - name: Checkout trusted publisher code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
         with:
           ref: ${{ github.event.repository.default_branch }}
           persist-credentials: false
 
       - name: Create or reuse pull request
         id: pr
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         shell: bash
         run: |
           set -euo pipefail
@@ -70,14 +80,10 @@ jobs:
           fi
           echo "number=$pr_number" >> "$GITHUB_OUTPUT"
 
-      - name: Dispatch required validation for the branch head
-        run: >-
-          gh workflow run test-build.yml
-          --repo "$REPOSITORY"
-          --ref "$HEAD_BRANCH"
-
       - name: Read complete pull request diff
         id: diff
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         shell: bash
         run: |
           set -euo pipefail
@@ -102,6 +108,8 @@ jobs:
 
       - name: Exclude non-editorial changes from automatic publishing
         if: steps.policy.outputs.eligible != 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token }}
         shell: bash
         run: |
           set -euo pipefail
@@ -116,22 +124,13 @@ jobs:
             echo "Ineligible paths: ${{ steps.policy.outputs.ineligible_paths }}"
           } >> "$GITHUB_STEP_SUMMARY"
 
-      - name: Enable policy-gated squash auto-merge
+      - name: Record eligible editorial change
         if: steps.policy.outputs.eligible == 'true'
         shell: bash
         run: |
           set -euo pipefail
-          gh pr merge "${{ steps.pr.outputs.number }}" \
-            --repo "$REPOSITORY" \
-            --auto \
-            --squash \
-            --match-head-commit "$HEAD_SHA"
           {
-            echo "### Keystatic publisher: auto-merge enabled"
+            echo "### Keystatic publisher: preview requested"
             echo "Classification: ${{ steps.policy.outputs.kind }}"
-            if [[ "${{ steps.policy.outputs.has_people }}" == "true" ]]; then
-              echo "People policy applies: required checks only."
-            else
-              echo "Blog policy applies: required checks only."
-            fi
+            echo "Squash auto-merge will be enabled only after validation and preview deployment succeed."
           } >> "$GITHUB_STEP_SUMMARY"

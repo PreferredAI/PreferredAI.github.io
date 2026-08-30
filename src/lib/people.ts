@@ -40,7 +40,7 @@ function loadPeopleFromDisk(): Person[] | null {
       })
       .sort(comparePeople);
   } catch {
-    // Cloudflare Workers do not have the repository content directory on disk.
+    // Next.js may evaluate the module from a bundle without direct source files.
     return null;
   }
 }

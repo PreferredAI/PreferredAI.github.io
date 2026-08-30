@@ -98,7 +98,7 @@ export function loadAllPosts(): MarkdownPost[] {
       }
     }
   } catch {
-    // Edge / Worker runtimes do not have process.cwd()/content/posts on disk
+    // Next.js may evaluate the module from a bundle without direct source files.
   }
 
   const posts =

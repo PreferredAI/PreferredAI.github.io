@@ -1,0 +1,94 @@
+name: Deploy Keystatic admin Worker
+
+on:
+  push:
+    branches: ["main"]
+    paths:
+      - "apps/admin/**"
+      - "package.json"
+      - "pnpm-lock.yaml"
+      - "pnpm-workspace.yaml"
+      - ".github/workflows/deploy-admin.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: admin-worker-production
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out trusted admin code
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Type-check admin application
+        run: pnpm --filter @preferredai/admin typecheck
+
+      - name: Build admin Worker without deployment secrets
+        env:
+          KEYSTATIC_GITHUB_CLIENT_ID: build-placeholder
+          KEYSTATIC_GITHUB_CLIENT_SECRET: build-placeholder
+          KEYSTATIC_SECRET: 0000000000000000000000000000000000000000000000000000000000000000
+          NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND: github
+          NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: preferredai-publisher
+        run: pnpm --filter @preferredai/admin build:worker
+
+      - name: Upload Worker bundle
+        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        with:
+          name: admin-worker
+          path: |
+            apps/admin/.open-next
+            apps/admin/wrangler.jsonc
+          include-hidden-files: true
+          if-no-files-found: error
+          retention-days: 3
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: admin-production
+      url: https://admin.preferred.ai/keystatic
+    steps:
+      - name: Download Worker bundle
+        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        with:
+          name: admin-worker
+          path: admin-worker
+
+      - name: Deploy editor-only Worker
+        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_WORKERS_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: admin-worker
+          packageManager: npm
+          wranglerVersion: 4.124.0
+          command: deploy --config wrangler.jsonc --keep-vars
+
+      - name: Smoke-test admin origin
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --silent --show-error --location --retry 10 --retry-all-errors https://admin.preferred.ai/keystatic > /dev/null
+          status="$(curl --silent --output /dev/null --write-out '%{http_code}' https://admin.preferred.ai/)"
+          test "$status" = "307" -o "$status" = "308"

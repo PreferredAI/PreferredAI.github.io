@@ -56,7 +56,7 @@ export default config({
       format: { contentField: "content" },
       entryLayout: "content",
       columns: ["title", "date", "author"],
-      previewUrl: "/blog/{slug}",
+      previewUrl: "https://preferred.ai/blog/{slug}",
       schema: {
         title: fields.slug({
           name: {
@@ -135,7 +135,7 @@ export default config({
       format: "json",
       entryLayout: "form",
       columns: ["name", "placement", "title"],
-      previewUrl: "/people",
+      previewUrl: "https://preferred.ai/people",
       schema: {
         name: fields.slug({
           name: {

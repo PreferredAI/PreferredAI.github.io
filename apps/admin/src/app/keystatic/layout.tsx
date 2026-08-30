@@ -3,7 +3,7 @@ import KeystaticApp from "./keystatic";
 
 export const metadata: Metadata = {
   title: "Publisher",
-  robots: { index: false, follow: false },
+  robots: { index: false, follow: false, nocache: true },
 };
 
 export default function Layout() {

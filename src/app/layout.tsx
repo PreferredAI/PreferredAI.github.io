@@ -9,6 +9,8 @@ import {
   siteUrl,
 } from "@/lib/site";
 
+const isPrivatePreview = process.env.PREFERREDAI_NOINDEX === "true";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -39,6 +41,9 @@ export const metadata: Metadata = {
     description: siteDescription,
     images: [defaultOgImage],
   },
+  ...(isPrivatePreview
+    ? { robots: { index: false, follow: false, nocache: true } }
+    : {}),
 };
 
 const organizationJsonLd = {
