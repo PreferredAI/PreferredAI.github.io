@@ -23,15 +23,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Check out trusted admin code
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7
+        uses: actions/checkout@v7
         with:
           persist-credentials: false
 
       - name: Set up pnpm
-        uses: pnpm/action-setup@0977fd99725f1db4007ccb2928dbb4e90d06cc86 # v6
+        uses: pnpm/action-setup@v6
 
       - name: Set up Node.js
-        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7
+        uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: pnpm
@@ -48,11 +48,11 @@ jobs:
           KEYSTATIC_GITHUB_CLIENT_SECRET: build-placeholder
           KEYSTATIC_SECRET: 0000000000000000000000000000000000000000000000000000000000000000
           NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND: github
-          NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: preferredai-publisher
+          NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: preferredai-keystatic
         run: pnpm --filter @preferredai/admin build:worker
 
       - name: Upload Worker bundle
-        uses: actions/upload-artifact@b7c566a772e6b6bfb58ed0dc250532a479d7789f # v6
+        uses: actions/upload-artifact@v7
         with:
           name: admin-worker
           path: |
@@ -70,13 +70,13 @@ jobs:
       url: https://admin.preferred.ai/keystatic
     steps:
       - name: Download Worker bundle
-        uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7
+        uses: actions/download-artifact@v8
         with:
           name: admin-worker
           path: admin-worker
 
       - name: Deploy editor-only Worker
-        uses: cloudflare/wrangler-action@9acf94ace14e7dc412b076f2c5c20b8ce93c79cd # v3
+        uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_WORKERS_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

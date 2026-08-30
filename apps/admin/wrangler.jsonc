@@ -13,7 +13,7 @@
   ],
   "vars": {
     "NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND": "github",
-    "NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG": "preferredai-publisher"
+    "NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG": "preferredai-keystatic"
   },
   "assets": {
     "binding": "ASSETS",
