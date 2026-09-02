@@ -1652,6 +1652,10 @@
     "/uploads/2026/04/phuong.jpeg": {
       "sourceWidth": 450,
       "sourceHeight": 450
+    },
+    "/uploads/reproducibility-in-recommender-systems/cover.jpg": {
+      "sourceWidth": 2783,
+      "sourceHeight": 1878
     }
   }
 }
