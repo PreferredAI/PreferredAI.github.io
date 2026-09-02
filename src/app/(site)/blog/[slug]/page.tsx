@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { MermaidRenderer } from "@/components/MermaidRenderer";
 import {
   getAllPostSlugs,
   getPostBySlug,
@@ -119,12 +120,12 @@ export default async function PostPage({
         {post.title}
       </h1>
 
-      <div className="mb-8 flex flex-wrap items-center gap-2 text-xs">
-        {post.categories.length > 0 &&
-          post.categories.map((category, index) => {
+      {post.categories.length > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-1.5 text-xs">
+          {post.categories.map((category, index) => {
             const categorySlug = category.toLowerCase().replace(/\s+/g, "-");
             return (
-              <span key={categorySlug}>
+              <span key={categorySlug} className="inline-flex items-center">
                 <Link
                   href={`/category/${categorySlug}`}
                   className="category-link"
@@ -132,25 +133,36 @@ export default async function PostPage({
                   {category.toUpperCase()}
                 </Link>
                 {index < post.categories.length - 1 && (
-                  <span className="mx-1 text-gray-400">/</span>
+                  <span className="mx-1.5 text-gray-400">/</span>
                 )}
               </span>
             );
           })}
-        {post.date && post.categories.length > 0 && (
-          <span className="text-gray-400">•</span>
-        )}
-        {post.date && (
-          <time dateTime={post.date} className="post-date">
-            {formatDate(post.date).toUpperCase()}
-          </time>
-        )}
-      </div>
+        </div>
+      )}
+
+      {(post.author || post.date) && (
+        <div className="mb-8 flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+          {post.author && (
+            <span>
+              By{" "}
+              <span className="font-semibold text-foreground">
+                {post.author}
+              </span>
+            </span>
+          )}
+          {post.author && post.date && <span className="text-gray-400">•</span>}
+          {post.date && (
+            <time dateTime={post.date}>{formatDate(post.date)}</time>
+          )}
+        </div>
+      )}
 
       <div
-        className="prose prose-lg max-w-none"
+        className="prose dark:prose-invert prose-lg max-w-none"
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />
+      <MermaidRenderer />
     </article>
   );
 }

@@ -237,6 +237,9 @@ function readMediaHeader(filename: string): Buffer {
 function validateMediaDirectory(directory: string): number {
   let count = 0;
   for (const entry of fs.readdirSync(directory, { withFileTypes: true })) {
+    if (entry.name.startsWith(".")) {
+      continue;
+    }
     const entryPath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
       count += validateMediaDirectory(entryPath);

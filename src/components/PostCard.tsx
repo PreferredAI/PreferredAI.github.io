@@ -86,15 +86,25 @@ export function PostCard({ post, priority }: PostCardProps) {
           </p>
         )}
 
-        {/* Bottom Panel: Date Metadata */}
-        {post.date && (
-          <div className="border-t border-border/50 pt-3">
-            <time
-              dateTime={post.date}
-              className="text-xs font-bold text-muted-foreground tracking-wider uppercase"
-            >
-              {formatDate(post.date)}
-            </time>
+        {/* Bottom Panel: Author & Date Metadata */}
+        {(post.date || post.author) && (
+          <div className="border-t border-border/50 pt-3 flex items-center flex-wrap gap-x-2 gap-y-1 text-xs text-muted-foreground">
+            {post.author && (
+              <span className="font-semibold text-foreground/90">
+                {post.author}
+              </span>
+            )}
+            {post.author && post.date && (
+              <span className="text-muted-foreground/60">•</span>
+            )}
+            {post.date && (
+              <time
+                dateTime={post.date}
+                className="font-medium tracking-wider uppercase text-muted-foreground"
+              >
+                {formatDate(post.date)}
+              </time>
+            )}
           </div>
         )}
       </div>

@@ -88,15 +88,27 @@ export function FeaturedPostCard({ post }: FeaturedPostCardProps) {
           )}
         </div>
 
-        {/* Date Metadata */}
-        {post.date && (
+        {/* Author & Date Metadata */}
+        {(post.date || post.author) && (
           <div className="border-t border-border/50 pt-4 flex items-center justify-between">
-            <time
-              dateTime={post.date}
-              className="text-xs font-bold text-muted-foreground tracking-wider uppercase"
-            >
-              {formatDate(post.date)}
-            </time>
+            <div className="flex items-center flex-wrap gap-x-2 gap-y-1 text-xs text-muted-foreground">
+              {post.author && (
+                <span className="font-semibold text-foreground/90">
+                  {post.author}
+                </span>
+              )}
+              {post.author && post.date && (
+                <span className="text-muted-foreground/60">•</span>
+              )}
+              {post.date && (
+                <time
+                  dateTime={post.date}
+                  className="font-medium tracking-wider uppercase text-muted-foreground"
+                >
+                  {formatDate(post.date)}
+                </time>
+              )}
+            </div>
             <span className="text-xs font-bold text-primary group-hover:translate-x-1.5 transition-transform duration-300">
               Read article →
             </span>
