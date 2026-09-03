@@ -3,22 +3,98 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "monthly"
       time: "00:00"
       timezone: "Asia/Singapore"
     open-pull-requests-limit: 5
+    cooldown:
+      default-days: 7
+    groups:
+      github-actions:
+        patterns:
+          - "*"
 
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: "weekly"
-      day: "monday"
+      interval: "monthly"
       time: "00:00"
       timezone: "Asia/Singapore"
-    open-pull-requests-limit: 5
+    open-pull-requests-limit: 10
+    cooldown:
+      default-days: 7
+      semver-major-days: 14
+      semver-minor-days: 7
+      semver-patch-days: 3
+
     groups:
-      npm-dependencies:
+      # Tier 1: Core framework & React ecosystem
+      react-next:
+        patterns:
+          - "next"
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+        update-types:
+          - "patch"
+          - "minor"
+
+      # Tier 2: CMS & Admin interface (@preferredai/admin)
+      keystatic:
+        patterns:
+          - "@keystatic/*"
+          - "@keystar/*"
+          - "react-aria*"
+          - "react-stately*"
+        update-types:
+          - "patch"
+          - "minor"
+
+      # Tier 3: Cloudflare deployment & worker runtime
+      cloudflare:
+        patterns:
+          - "@opennextjs/*"
+          - "wrangler*"
+          - "@cloudflare/*"
+        update-types:
+          - "patch"
+          - "minor"
+
+      # Tier 4: Content & Markdown processing pipeline
+      content-pipeline:
+        patterns:
+          - "unified"
+          - "remark*"
+          - "rehype*"
+          - "unist*"
+          - "@markdoc/*"
+          - "gray-matter"
+          - "katex"
+        update-types:
+          - "patch"
+          - "minor"
+
+      # Tier 5: Styling & CSS utilities
+      styling:
+        patterns:
+          - "tailwindcss*"
+          - "@tailwindcss/*"
+          - "tailwind-merge"
+          - "clsx"
+        update-types:
+          - "patch"
+          - "minor"
+
+      # Tier 6: Developer tooling, linters, compilers & types
+      dev-tooling:
+        dependency-type: "development"
+        update-types:
+          - "patch"
+          - "minor"
+
+      # Tier 7: Remaining production dependencies (utilities like date-fns, feed, sharp)
+      other-dependencies:
         patterns:
           - "*"
         update-types:
