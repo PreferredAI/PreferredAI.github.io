@@ -13,6 +13,29 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out proposed revision
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Audit dependencies
+        run: pnpm audit:dependencies
+
   build:
     runs-on: ubuntu-latest
     env:
@@ -47,9 +70,6 @@ jobs:
 
       - name: Validate website and editorial content
         run: pnpm check
-
-      - name: Audit dependencies
-        run: pnpm audit:dependencies
 
       - name: Build static website
         run: pnpm build:prepared

@@ -10,7 +10,8 @@ allowBuilds:
   workerd: true
 
 overrides:
-  '@keystatic/core>js-yaml': 4.3.1
-  'gray-matter>js-yaml': 3.15.1
+  '@keystatic/core>js-yaml': 4.3.2
+  'gray-matter>js-yaml': 3.15.2
   'jsdom>undici': 7.29.0
   qs: ^6.16.0
+  sharp: ^0.35.4
