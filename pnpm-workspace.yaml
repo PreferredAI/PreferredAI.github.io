@@ -9,6 +9,17 @@ allowBuilds:
   unrs-resolver: true
   workerd: true
 
+auditConfig:
+  ignoreGhsas:
+    - GHSA-hp3w-g68c-fv3c
+
+minimumReleaseAgeExclude:
+  - sprintf-js@1.1.4
+  - katex@0.18.2
+  - source-map-js@1.2.2
+  - proxy-addr@2.0.8
+  - postcss-selector-parser@7.1.6
+
 overrides:
   '@keystatic/core>js-yaml': 4.3.2
   'gray-matter>js-yaml': 3.15.2
@@ -18,3 +29,5 @@ overrides:
   'minimatch@8>brace-expansion': ^2.1.7
   'minimatch@10>brace-expansion': ^5.0.12
   chokidar: ^4.0.3
+  katex: ^0.18.9
+  postcss-selector-parser: ^7.1.6

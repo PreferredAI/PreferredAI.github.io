@@ -1,0 +1,98 @@
+# Unified workflow to crawl publications, team photos, and apply LTS security patches
+name: Scheduled Maintenance
+
+on:
+  # Run every Sunday at 00:00 UTC
+  schedule:
+    - cron: "0 0 * * 0"
+
+  push:
+    paths:
+      - ".github/workflows/scheduled-maintenance.yml"
+      - "scripts/crawl-publications.ts"
+      - "scripts/crawl-team.ts"
+
+  # Allow manual trigger with selective options
+  workflow_dispatch:
+    inputs:
+      skip_crawlers:
+        description: "Skip crawling external sites (security update only)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  maintenance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run external crawlers concurrently
+        if: ${{ !inputs.skip_crawlers }}
+        run: |
+          pnpm crawl:publications &
+          PID_PUB=$!
+          pnpm crawl:team &
+          PID_TEAM=$!
+          wait $PID_PUB $PID_TEAM
+
+      - name: Auto-patch security vulnerabilities
+        run: |
+          pnpm audit --fix update || true
+          pnpm install
+
+      - name: Format generated publication and team data
+        run: |
+          pnpm exec biome check --write src/data/publications.ts src/data/teamPhotos.ts || true
+
+      - name: Validate application integrity
+        run: |
+          pnpm lint
+          pnpm typecheck:prepared
+
+      - name: Audit all dependencies
+        run: pnpm audit:dependencies
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          git add src/data/publications.ts src/data/teamPhotos.ts public/team pnpm-lock.yaml pnpm-workspace.yaml package.json apps/admin/package.json
+          git diff --cached --quiet || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          changes=()
+          ! git diff --cached --quiet src/data/publications.ts && changes+=("publications")
+          ! git diff --cached --quiet src/data/teamPhotos.ts public/team && changes+=("team photos")
+          ! git diff --cached --quiet pnpm-lock.yaml pnpm-workspace.yaml package.json apps/admin/package.json && changes+=("security patches")
+
+          msg="chore: update $(IFS=', '; echo "${changes[*]}") [automated]"
+          git commit -m "$msg"
+          git push
+
+      - name: Trigger deploy notice
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          echo "Changes detected and pushed to main. Cloudflare Pages deployment will be triggered automatically."

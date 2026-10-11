@@ -33,6 +33,13 @@ export const PUBLICATIONS_DATA: YearSection[] = [
       },
       {
         title:
+          "GuidedRec: Behaviourally Constrained Portfolio Recommendation with Certified Slate Optimisation",
+        authors: "Ezekiel Ong Young and Hady W. Lauw",
+        venue:
+          "ACM International Conference on AI in Finance (ICAIF'26), Nov 2026",
+      },
+      {
+        title:
           "CLASP: Collaborative Latent Alignment from Semantic Preference Descriptions for Natural Language based Recommendation",
         authors: "Dilan Dinushka, Antoine Ledent, and Hady W. Lauw",
         venue:
