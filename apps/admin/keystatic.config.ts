@@ -86,7 +86,7 @@ export default config({
           description:
             "Choose or drop an image. Keystatic stores it in public/uploads/<post-slug>/cover.<ext>.",
           directory: "public/uploads",
-          publicPath: "/uploads",
+          publicPath: "/uploads/",
         }),
         featuredImage: fields.text({
           label: "Existing featured image path (legacy)",
@@ -121,7 +121,7 @@ export default config({
           options: {
             image: {
               directory: "public/uploads",
-              publicPath: "/uploads",
+              publicPath: "/uploads/",
               transformFilename: sanitizeAssetFilename,
             },
           },

@@ -12,8 +12,8 @@ export default async function Home() {
 
   return (
     <div>
-      <h1 className="mb-8 text-3xl md:text-4xl font-extrabold tracking-tight text-balance text-foreground">
-        Recent posts
+      <h1 className="mb-6 text-xs font-semibold uppercase tracking-[0.08em] text-primary select-none">
+        Featured &amp; Recent Posts
       </h1>
 
       {featuredPost && (
@@ -23,7 +23,7 @@ export default async function Home() {
       )}
 
       {remainingPosts.length > 0 && (
-        <div className="feed-grid grid gap-8 md:grid-cols-2">
+        <div className="feed-grid grid gap-5 sm:gap-6 md:grid-cols-2">
           {remainingPosts.map((post, index) => (
             <PostCard key={post.slug} post={post} priority={index < 2} />
           ))}

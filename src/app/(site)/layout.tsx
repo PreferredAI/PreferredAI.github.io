@@ -36,31 +36,33 @@ export default function SiteLayout({
             </main>
 
             {/* Sidebar Section */}
-            <aside className="w-full lg:w-[360px] shrink-0">
-              <div className="sticky top-28 space-y-6">
+            <aside className="w-full lg:w-[320px] shrink-0">
+              <div className="sticky top-28 space-y-5">
                 {/* Team Card Carousel Container */}
-                <div className="bg-card/80 border border-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.01]">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground select-none">
+                <div className="bg-card border border-border/80 rounded-2xl p-4 sm:p-5 shadow-xs">
+                  <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground/80 select-none">
                     The Team
                   </h3>
                   <TeamPhotos />
                 </div>
 
                 {/* Categories Card Container */}
-                <div className="bg-card/80 border border-border/60 rounded-2xl p-5 shadow-sm shadow-black/[0.01]">
-                  <h3 className="mb-4 text-xs font-bold uppercase tracking-wider text-muted-foreground select-none">
+                <div className="bg-card border border-border/80 rounded-2xl p-4 sm:p-5 shadow-xs">
+                  <h3 className="mb-3 text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground/80 select-none">
                     Categories
                   </h3>
-                  <ul className="space-y-1.5">
+                  <ul className="space-y-1">
                     {categories.map((category) => (
                       <li key={category.slug}>
                         <Link
                           href={`/category/${category.slug}`}
-                          className="flex items-center px-2.5 py-1.5 text-xs font-semibold text-muted-foreground rounded-xl hover:text-primary hover:bg-primary/8 border border-transparent hover:border-primary/10 transition-all select-none"
+                          className="group flex items-center px-2.5 py-1.5 text-xs font-medium text-muted-foreground rounded-lg hover:text-primary hover:bg-primary/5 transition-colors select-none"
                         >
-                          <span className="mr-2 text-gray-300">▸</span>
-                          {category.name}
-                          <span className="ml-auto px-2 py-0.5 text-[10px] font-bold bg-muted text-muted-foreground rounded-full border border-border/20">
+                          <span className="mr-2 text-muted-foreground/40 group-hover:text-primary transition-colors">
+                            ▸
+                          </span>
+                          <span>{category.name}</span>
+                          <span className="ml-auto px-1.5 py-0.5 text-[10px] font-mono font-medium bg-muted group-hover:bg-primary/10 group-hover:text-primary group-hover:border-primary/20 text-muted-foreground/80 rounded border border-border/40 transition-colors">
                             {category.count}
                           </span>
                         </Link>
@@ -75,11 +77,36 @@ export default function SiteLayout({
       </div>
 
       {/* Global Sleek Footer */}
-      <footer className="border-t border-border/50 bg-card/50 backdrop-blur-sm py-8 mt-12 select-none">
-        <div className="container max-w-7xl text-center">
-          <p className="text-xs font-semibold text-muted-foreground">
-            Preferred.AI © {new Date().getFullYear()}. All Rights Reserved.
+      <footer className="border-t border-border/60 bg-card/40 backdrop-blur-xs py-8 mt-16 select-none">
+        <div className="container max-w-[1360px] flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
+          <p className="font-medium">
+            Preferred.AI &copy; {new Date().getFullYear()} &middot; Singapore
+            Management University
           </p>
+          <div className="flex items-center gap-4 text-xs font-medium">
+            <a
+              href="https://github.com/PreferredAI"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground transition-colors"
+            >
+              GitHub
+            </a>
+            <a
+              href="https://cornac.preferred.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-foreground transition-colors"
+            >
+              Cornac
+            </a>
+            <Link
+              href="/feed.xml"
+              className="hover:text-foreground transition-colors"
+            >
+              RSS
+            </Link>
+          </div>
         </div>
       </footer>
     </div>

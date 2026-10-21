@@ -39,6 +39,17 @@ export default function Navigation() {
     };
   }, []);
 
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isMobileMenuOpen]);
+
   const toggleTheme = () => {
     const nextDark = !isDark;
     setIsDark(nextDark);
@@ -110,21 +121,21 @@ export default function Navigation() {
         {/* Right cluster: nav links + apps + actions, grouped to the right */}
         <div className="hidden md:flex items-center gap-x-3 lg:gap-x-4">
           {/* Navigation Links (Desktop) */}
-          <div className="flex items-center gap-x-1.5 lg:gap-x-2.5">
+          <div className="flex items-center gap-x-1 lg:gap-x-1.5">
             {navLinks.map((link) => {
               const active = isActive(link.href);
               return (
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 relative ${
+                  className={`px-3.5 py-1.5 rounded-full text-sm font-medium tracking-normal transition-all duration-200 relative ${
                     active
-                      ? "text-primary"
-                      : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                      ? "text-primary font-semibold"
+                      : "text-muted-foreground hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10"
                   }`}
                 >
                   {active && (
-                    <span className="absolute inset-0 bg-primary/8 border border-primary/15 rounded-full -z-10" />
+                    <span className="absolute bottom-0.5 inset-x-3.5 h-0.5 bg-primary rounded-full" />
                   )}
                   {link.label}
                 </Link>
@@ -147,10 +158,10 @@ export default function Navigation() {
                 type="button"
                 aria-haspopup="true"
                 aria-expanded={isAppsOpen}
-                className={`flex items-center gap-1 px-4 py-2 rounded-full text-sm font-semibold tracking-wide transition-all duration-200 ${
+                className={`flex items-center gap-1 px-3.5 py-1.5 rounded-full text-sm font-medium tracking-normal transition-all duration-200 ${
                   isAppsOpen
-                    ? "text-foreground bg-gray-100/50 dark:bg-white/5"
-                    : "text-muted-foreground hover:text-foreground hover:bg-gray-100/50 dark:hover:bg-white/5"
+                    ? "text-primary bg-primary/10"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10"
                 }`}
               >
                 Apps
@@ -171,20 +182,23 @@ export default function Navigation() {
 
               {/* Popover Dropdown */}
               <div
-                className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-48 transition-all duration-300 origin-top ${
+                className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-44 transition-all duration-200 origin-top ${
                   isAppsOpen
                     ? "opacity-100 translate-y-0 visible scale-100"
                     : "opacity-0 -translate-y-1 invisible scale-95"
                 }`}
               >
-                <div className="rounded-2xl bg-white dark:bg-zinc-900 border border-border/60 p-1.5 shadow-lg ring-1 ring-black/5 dark:ring-white/5 overflow-hidden">
+                <div className="rounded-xl bg-card border border-border/80 p-1.5 shadow-lg overflow-hidden">
                   <a
                     href="https://cornac.preferred.ai"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-center py-2.5 px-4 text-sm font-bold text-foreground/80 hover:text-primary hover:bg-primary/10 dark:hover:bg-white/5 rounded-xl transition-all"
+                    className="flex items-center justify-between py-2 px-3 text-xs font-semibold text-foreground/85 hover:text-primary hover:bg-muted/60 rounded-lg transition-all"
                   >
-                    Cornac
+                    <span>Cornac</span>
+                    <span className="text-[10px] text-muted-foreground font-mono">
+                      ↗
+                    </span>
                   </a>
                 </div>
               </div>
@@ -192,22 +206,22 @@ export default function Navigation() {
           </div>
 
           {/* Theme Toggle & Join CTA button (Desktop) */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2.5">
             {!mounted ? (
               /* Reserve the toggle's footprint pre-hydration to avoid layout shift */
               <div aria-hidden="true" className="p-1.5">
-                <div className="h-4.5 w-4.5" />
+                <div className="h-4 w-4" />
               </div>
             ) : (
               <button
                 type="button"
                 onClick={toggleTheme}
-                className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5 transition-all cursor-pointer hover:rotate-12 active:scale-90"
+                className="p-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-muted/70 dark:hover:bg-white/5 transition-all cursor-pointer hover:rotate-12 active:scale-90"
                 aria-label="Toggle Theme"
               >
                 {isDark ? (
                   <svg
-                    className="h-4.5 w-4.5"
+                    className="h-4 w-4"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -221,7 +235,7 @@ export default function Navigation() {
                   </svg>
                 ) : (
                   <svg
-                    className="h-4.5 w-4.5"
+                    className="h-4 w-4"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
@@ -239,13 +253,13 @@ export default function Navigation() {
 
             <Link
               href="/join"
-              className={`inline-flex items-center justify-center px-5 py-2 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-sm shadow-primary/10 ${
+              className={`inline-flex items-center justify-center px-4 py-1.5 rounded-full text-sm font-semibold tracking-normal text-white transition-all duration-200 hover:scale-105 active:scale-95 shadow-xs ${
                 isActive("/join")
-                  ? "bg-primary/85 shadow-inner"
-                  : "bg-primary hover:bg-primary/90"
+                  ? "bg-primary ring-2 ring-primary/30"
+                  : "bg-primary hover:bg-primary/95"
               }`}
             >
-              JOIN US
+              Join Us
             </Link>
           </div>
         </div>
@@ -303,10 +317,10 @@ export default function Navigation() {
                 key={link.href}
                 href={link.href}
                 onClick={closeMobileMenu}
-                className={`px-4 py-2.5 rounded-full text-sm font-semibold tracking-wide text-center transition-all ${
+                className={`px-4 py-2.5 rounded-xl text-sm font-medium tracking-normal text-center transition-all ${
                   active
-                    ? "bg-primary/8 text-primary border border-primary/15"
-                    : "text-muted-foreground hover:text-foreground hover:bg-muted dark:hover:bg-white/5"
+                    ? "bg-primary/10 font-semibold text-primary border border-primary/20"
+                    : "text-muted-foreground hover:text-primary hover:bg-primary/5"
                 }`}
               >
                 {link.label}
@@ -324,9 +338,9 @@ export default function Navigation() {
               target="_blank"
               rel="noopener noreferrer"
               onClick={closeMobileMenu}
-              className="block text-center py-2.5 px-4 text-sm font-semibold text-muted-foreground hover:text-primary hover:bg-primary/10 dark:hover:bg-white/5 rounded-full transition-all"
+              className="block text-center py-2 px-4 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-muted/60 rounded-xl transition-all"
             >
-              Cornac
+              Cornac ↗
             </a>
           </div>
 
@@ -379,13 +393,13 @@ export default function Navigation() {
           <Link
             href="/join"
             onClick={closeMobileMenu}
-            className={`mt-auto text-center py-3 rounded-full text-sm font-bold tracking-wider !text-white hover:!text-white transition-all shadow-md shadow-primary/10 ${
+            className={`mt-auto text-center py-2.5 rounded-full text-xs font-semibold tracking-wide text-white transition-all shadow-xs ${
               isActive("/join")
-                ? "bg-primary/85"
-                : "bg-primary hover:bg-primary/90"
+                ? "bg-primary ring-2 ring-primary/30"
+                : "bg-primary hover:bg-primary/95"
             }`}
           >
-            JOIN US
+            Join Us
           </Link>
         </nav>
       </div>

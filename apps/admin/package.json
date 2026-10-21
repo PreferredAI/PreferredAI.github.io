@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "node scripts/link-local-content.mjs && next dev",
+    "unlink": "node scripts/unlink-local-content.mjs",
     "build": "SKIP_OPENNEXT_DEV_INIT=true next build",
-    "build:worker": "opennextjs-cloudflare build",
+    "build:worker": "node scripts/unlink-local-content.mjs && opennextjs-cloudflare build",
     "preview": "pnpm build:worker && opennextjs-cloudflare preview",
     "deploy": "pnpm build:worker && opennextjs-cloudflare deploy -- --keep-vars",
     "typecheck": "node ../../scripts/clean-next-types.mjs && SKIP_OPENNEXT_DEV_INIT=true next typegen && tsc --noEmit"

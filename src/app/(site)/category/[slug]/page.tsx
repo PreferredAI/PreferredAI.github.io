@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Pagination from "@/components/Pagination";
 import { PostCard } from "@/components/PostCard";
 import { getAllCategories, getPostsByCategory } from "@/lib/markdown-posts";
 
@@ -37,30 +38,43 @@ export default async function CategoryPage({
     notFound();
   }
 
-  const { category, posts } = result;
+  const { category, posts, total, pages } = result;
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="mb-2 text-2xl font-bold uppercase tracking-wider text-foreground">
-          {category.name}
-        </h1>
-        {category.description && (
-          <p className="text-muted-foreground">{category.description}</p>
-        )}
+      <div className="mb-6 flex items-baseline justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
+            {category.name}
+          </h1>
+          {category.description && (
+            <p className="text-xs text-muted-foreground mt-1">
+              {category.description}
+            </p>
+          )}
+        </div>
+        <span className="text-xs font-mono text-muted-foreground">
+          {total} {total === 1 ? "post" : "posts"}
+        </span>
       </div>
 
-      <div className="space-y-12">
+      <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
         {posts.map((post) => (
           <PostCard key={post.slug} post={post} />
         ))}
       </div>
 
       {posts.length === 0 && (
-        <p className="text-center text-muted-foreground">
+        <p className="text-center text-muted-foreground py-12">
           No posts in this category yet.
         </p>
       )}
+
+      <Pagination
+        currentPage={1}
+        totalPages={pages}
+        basePath={`/category/${slug}`}
+      />
     </div>
   );
 }

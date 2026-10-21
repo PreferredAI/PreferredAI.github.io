@@ -337,20 +337,20 @@ export default function TeamPhotos() {
       </div>
 
       {/* Caption Metadata & Counter */}
-      <div className="relative h-10">
+      <div className="relative min-h-[42px] pt-1">
         {/* Outgoing Caption */}
         {prevIndex !== null && (
-          <div className="absolute inset-x-0 top-0 flex justify-between items-start pointer-events-none z-0">
-            <div>
-              <p className="text-[11px] font-bold text-foreground leading-tight">
+          <div className="absolute inset-x-0 top-1 flex justify-between items-start pointer-events-none z-0">
+            <div className="pr-2">
+              <p className="text-xs font-semibold text-foreground leading-tight">
                 {TEAM_PHOTOS[prevIndex].location}
               </p>
-              <p className="text-[10px] font-semibold text-muted-foreground mt-0.5">
+              <p className="text-[11px] font-mono text-muted-foreground mt-0.5">
                 {TEAM_PHOTOS[prevIndex].date}
               </p>
             </div>
-            <span className="text-[10px] font-bold text-muted-foreground/60 bg-muted/40 border border-border/20 px-1.5 py-0.5 rounded-md">
-              {prevIndex + 1} / {TEAM_PHOTOS.length}
+            <span className="shrink-0 text-[10px] font-mono text-muted-foreground bg-muted border border-border/50 px-1.5 py-0.5 rounded">
+              {prevIndex + 1}/{TEAM_PHOTOS.length}
             </span>
           </div>
         )}
@@ -358,18 +358,18 @@ export default function TeamPhotos() {
         {/* Incoming Caption */}
         <div
           key={`caption-${currentIndex}`}
-          className="absolute inset-x-0 top-0 flex justify-between items-start z-10 animate-fade-in"
+          className="absolute inset-x-0 top-1 flex justify-between items-start z-10 animate-fade-in"
         >
-          <div>
-            <p className="text-[11px] font-bold text-foreground leading-tight">
+          <div className="pr-2">
+            <p className="text-xs font-semibold text-foreground leading-tight">
               {currentPhoto.location}
             </p>
-            <p className="text-[10px] font-semibold text-muted-foreground mt-0.5">
+            <p className="text-[11px] font-mono text-muted-foreground mt-0.5">
               {currentPhoto.date}
             </p>
           </div>
-          <span className="text-[10px] font-bold text-muted-foreground/85 bg-muted/70 border border-border/40 px-1.5 py-0.5 rounded-md">
-            {currentIndex + 1} / {TEAM_PHOTOS.length}
+          <span className="shrink-0 text-[10px] font-mono text-muted-foreground bg-muted border border-border/50 px-1.5 py-0.5 rounded">
+            {currentIndex + 1}/{TEAM_PHOTOS.length}
           </span>
         </div>
       </div>

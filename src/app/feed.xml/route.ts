@@ -14,13 +14,11 @@ export async function GET() {
     id: baseUrl,
     link: baseUrl,
     language: "en",
-    image: `${baseUrl}/logo.png`,
+    image: `${baseUrl}/Brand.png`,
     favicon: `${baseUrl}/favicon.ico`,
     copyright: `All rights reserved ${new Date().getFullYear()}, Preferred.AI`,
     feedLinks: {
       rss2: `${baseUrl}/feed.xml`,
-      json: `${baseUrl}/feed.json`,
-      atom: `${baseUrl}/atom.xml`,
     },
     author: {
       name: "Preferred.AI",

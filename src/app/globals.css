@@ -4,72 +4,72 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
-  --background: 0 0% 98.5%;
-  --foreground: 220 15% 13%;
+  --background: 0 0% 99%;
+  --foreground: 220 20% 12%;
 
   --card: 0 0% 100%;
-  --card-foreground: 220 15% 13%;
+  --card-foreground: 220 20% 12%;
 
   --popover: 0 0% 100%;
-  --popover-foreground: 220 15% 13%;
+  --popover-foreground: 220 20% 12%;
 
-  --primary: 0 77% 42%;
-  /* Preferred.AI Brand Crimson: #bd1818 */
+  --primary: 0 77.5% 41.8%;
+  /* Preferred.AI Brand Crimson: #bd1818 (exact logo match) */
   --primary-foreground: 0 0% 100%;
 
-  --secondary: 220 10% 94%;
-  --secondary-foreground: 220 15% 13%;
+  --secondary: 220 14% 96%;
+  --secondary-foreground: 220 20% 12%;
 
-  --muted: 220 10% 94%;
-  --muted-foreground: 220 10% 45%;
+  --muted: 220 14% 96%;
+  --muted-foreground: 220 10% 44%;
 
-  --accent: 0 77% 96%;
-  --accent-foreground: 0 77% 32%;
+  --accent: 220 14% 96%;
+  --accent-foreground: 220 20% 12%;
 
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
 
-  --border: 220 15% 91%;
-  --input: 220 15% 91%;
-  --ring: 0 77% 42%;
+  --border: 220 13% 90%;
+  --input: 220 13% 90%;
+  --ring: 0 77.5% 41.8%;
 
-  /* Links: brand crimson at rest (~6.3:1 on the near-white bg), deeper on hover */
-  --link: 0 77% 42%;
-  --link-hover: 0 77% 32%;
+  /* Links: high-contrast ink at rest; Simpson Red accent on hover */
+  --link: 220 20% 14%;
+  --link-hover: 0 77.5% 41.8%;
 
   --radius: 0.75rem;
 }
 
 .dark {
-  --background: 222 47% 4.5%;
-  --foreground: 220 10% 90%;
+  --background: 222 24% 6%;
+  --foreground: 220 12% 92%;
 
-  --card: 222 40% 6.5%;
-  --card-foreground: 220 10% 90%;
+  --card: 222 22% 9%;
+  --card-foreground: 220 12% 92%;
 
-  --popover: 222 40% 6.5%;
-  --popover-foreground: 220 10% 90%;
+  --popover: 222 22% 9%;
+  --popover-foreground: 220 12% 92%;
 
-  --primary: 0 77% 42%;
-  /* Preferred.AI Brand Crimson: #bd1818 */
-  --primary-foreground: 222 47% 4.5%;
+  --primary: 0 77.5% 41.8%;
+  /* Preferred.AI Brand Crimson: #bd1818 (exact logo match in all modes) */
+  --primary-foreground: 0 0% 100%;
 
-  --secondary: 222 20% 12%;
-  --secondary-foreground: 220 10% 90%;
+  --secondary: 222 18% 14%;
+  --secondary-foreground: 220 12% 92%;
 
-  --muted: 222 20% 12%;
-  --muted-foreground: 220 10% 60%;
+  --muted: 222 18% 14%;
+  --muted-foreground: 220 10% 58%;
 
-  --accent: 0 77% 15%;
-  --accent-foreground: 0 77% 85%;
+  --accent: 222 18% 14%;
+  --accent-foreground: 220 12% 92%;
 
-  --border: 222 20% 14%;
-  --input: 222 20% 14%;
-  --ring: 0 77% 42%;
+  --border: 222 18% 16%;
+  --input: 222 18% 16%;
+  --ring: 0 77.5% 41.8%;
 
-  /* Unified links using Preferred.AI Brand Crimson */
-  --link: 0 77% 42%;
-  --link-hover: 0 77% 52%;
+  /* Links in dark mode */
+  --link: 220 12% 92%;
+  --link-hover: 0 77.5% 41.8%;
 }
 
 @theme {
@@ -159,11 +159,12 @@
   body {
     @apply bg-background text-foreground;
     font-family:
-      -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-      Arial, sans-serif;
-    font-size: 16px;
-    line-height: 1.7;
+      -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+      "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.65;
     -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   h1,
@@ -172,27 +173,27 @@
   h4,
   h5,
   h6 {
-    @apply font-extrabold tracking-tight text-foreground leading-snug mb-2;
+    @apply font-bold tracking-tight text-foreground leading-snug mb-2;
   }
 
   h1 {
-    @apply text-4xl md:text-5xl;
-  }
-
-  h2 {
     @apply text-3xl md:text-4xl;
   }
 
-  h3 {
+  h2 {
     @apply text-2xl md:text-3xl;
   }
 
-  h4 {
+  h3 {
     @apply text-xl md:text-2xl;
   }
 
+  h4 {
+    @apply text-lg md:text-xl;
+  }
+
   a {
-    @apply transition-colors duration-200;
+    @apply transition-colors duration-150;
     color: hsl(var(--link));
   }
 
@@ -266,15 +267,15 @@
 /* Custom modern technical coordinate grid backing */
 .tech-grid {
   background-image:
-    linear-gradient(to right, rgba(189, 24, 24, 0.015) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(189, 24, 24, 0.015) 1px, transparent 1px);
+    linear-gradient(to right, rgba(15, 23, 42, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(15, 23, 42, 0.025) 1px, transparent 1px);
   background-size: 32px 32px;
 }
 
 .dark .tech-grid {
   background-image:
-    linear-gradient(to right, rgba(189, 24, 24, 0.025) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(189, 24, 24, 0.025) 1px, transparent 1px);
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
 }
 
 /* Scrollbar customization */
@@ -309,11 +310,12 @@
   text-transform: uppercase;
   font-weight: 600;
   letter-spacing: 0.5px;
-  color: hsl(var(--primary));
+  color: hsl(var(--muted-foreground));
+  transition: color 150ms ease;
 }
 
 .category-link:hover {
-  color: hsl(var(--link-hover));
+  color: hsl(var(--primary));
 }
 
 .post-date {

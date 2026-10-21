@@ -58,17 +58,24 @@ export default function Pagination({
   };
 
   return (
-    <div className="mt-12 flex items-center justify-center gap-2">
+    <nav
+      aria-label="Pagination"
+      className="mt-10 flex flex-wrap items-center justify-center gap-1 sm:gap-1.5"
+    >
       {/* Previous Button */}
       {currentPage > 1 ? (
         <Link
           href={getPageUrl(currentPage - 1)}
-          className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground/80 hover:bg-muted dark:hover:bg-white/5 hover:text-primary transition-all"
+          className="rounded-lg border border-border/80 bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/70 transition-colors"
+          rel="prev"
         >
           Previous
         </Link>
       ) : (
-        <span className="cursor-not-allowed rounded-lg border border-border/40 px-4 py-2 text-sm font-medium text-muted-foreground/40">
+        <span
+          aria-disabled="true"
+          className="cursor-not-allowed rounded-lg border border-border/40 bg-card/40 px-3 py-1.5 text-xs font-medium text-muted-foreground/40 select-none"
+        >
           Previous
         </span>
       )}
@@ -78,7 +85,10 @@ export default function Pagination({
         {renderPageNumbers().map((item) => {
           if (item.value === "...") {
             return (
-              <span key={item.key} className="px-2 text-muted-foreground/60">
+              <span
+                key={item.key}
+                className="px-2 text-xs font-mono text-muted-foreground/60 select-none"
+              >
                 ...
               </span>
             );
@@ -91,10 +101,11 @@ export default function Pagination({
             <Link
               key={item.key}
               href={getPageUrl(pageNum)}
-              className={`rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+              aria-current={isActive ? "page" : undefined}
+              className={`rounded-lg px-3 py-1.5 text-xs font-mono font-medium transition-colors ${
                 isActive
-                  ? "bg-primary text-primary-foreground shadow-sm"
-                  : "border border-border text-foreground/80 hover:bg-muted dark:hover:bg-white/5 hover:text-primary"
+                  ? "bg-primary text-white shadow-xs"
+                  : "border border-border/80 bg-card text-muted-foreground hover:text-foreground hover:bg-muted/70"
               }`}
             >
               {pageNum}
@@ -107,15 +118,19 @@ export default function Pagination({
       {currentPage < totalPages ? (
         <Link
           href={getPageUrl(currentPage + 1)}
-          className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground/80 hover:bg-muted dark:hover:bg-white/5 hover:text-primary transition-all"
+          className="rounded-lg border border-border/80 bg-card px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted/70 transition-colors"
+          rel="next"
         >
           Next
         </Link>
       ) : (
-        <span className="cursor-not-allowed rounded-lg border border-border/40 px-4 py-2 text-sm font-medium text-muted-foreground/40">
+        <span
+          aria-disabled="true"
+          className="cursor-not-allowed rounded-lg border border-border/40 bg-card/40 px-3 py-1.5 text-xs font-medium text-muted-foreground/40 select-none"
+        >
           Next
         </span>
       )}
-    </div>
+    </nav>
   );
 }

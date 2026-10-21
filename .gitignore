@@ -48,6 +48,11 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# admin local linked content symlinks
+/apps/admin/content/
+/apps/admin/public/uploads/
+/apps/admin/public/team/
 cloudflare-env.d.ts
 
 /src/generated/prisma
