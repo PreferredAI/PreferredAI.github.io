@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { TEAM_PHOTOS } from "@/data/teamPhotos";
 
 // Helper to generate a shuffled array of indices from 1 to N-1
@@ -17,6 +18,7 @@ const generateShuffledPlaylist = (length: number): number[] => {
 };
 
 export default function TeamPhotos() {
+  const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,6 +65,7 @@ export default function TeamPhotos() {
   // Honor the OS "reduce motion" setting: default autoplay off and gate the
   // timer so content never swaps on its own for users who opted out of motion.
   useEffect(() => {
+    setMounted(true);
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const apply = (matches: boolean) => {
       setPrefersReducedMotion(matches);
@@ -191,6 +194,18 @@ export default function TeamPhotos() {
     closeButtonRef.current?.focus();
     return () => {
       trigger?.focus();
+    };
+  }, [isModalOpen]);
+
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
     };
   }, [isModalOpen]);
 
@@ -374,116 +389,124 @@ export default function TeamPhotos() {
         </div>
       </div>
 
-      {/* Lightbox Modal */}
-      {isModalOpen && (
-        <div
-          ref={modalRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Team photo, full screen: ${currentPhoto.location}, ${currentPhoto.date}`}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm transition-opacity duration-300"
-          onClick={() => setIsModalOpen(false)}
-        >
-          {/* Close Button */}
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50"
-            onClick={() => setIsModalOpen(false)}
-            aria-label="Close modal"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-
-          {/* Left Arrow Button in Modal */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePrev(e);
-            }}
-            className="absolute left-6 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50 hover:scale-105 flex items-center justify-center"
-            aria-label="Previous photo"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-
-          {/* Right Arrow Button in Modal */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNext(e);
-            }}
-            className="absolute right-6 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50 hover:scale-105 flex items-center justify-center"
-            aria-label="Next photo"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-
-          {/* Modal Content container */}
+      {/* Lightbox Modal (portaled directly to document.body to avoid parent stacking context traps) */}
+      {mounted &&
+        isModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
           <div
-            className="relative w-[90vw] max-w-4xl max-h-[85vh] aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-zinc-950 flex items-center justify-center p-1"
-            onClick={(e) => e.stopPropagation()}
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Team photo, full screen: ${currentPhoto.location}, ${currentPhoto.date}`}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md transition-opacity duration-300 p-4 sm:p-6"
+            onClick={() => setIsModalOpen(false)}
           >
-            <Image
-              src={currentPhoto.url}
-              alt={`${currentPhoto.date} - ${currentPhoto.location}`}
-              fill
-              className="object-contain"
-              unoptimized
-            />
-            {/* Modal Caption */}
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-white flex justify-between items-end">
-              <div>
-                <p className="text-sm font-bold">{currentPhoto.location}</p>
-                <p className="text-xs text-gray-300 mt-0.5">
-                  {currentPhoto.date}
-                </p>
+            {/* Close Button */}
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white transition-all cursor-pointer z-[110] hover:scale-110 active:scale-95 shadow-lg backdrop-blur-md"
+              onClick={() => setIsModalOpen(false)}
+              aria-label="Close modal"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            {/* Left Arrow Button in Modal */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrev(e);
+              }}
+              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white transition-all cursor-pointer z-[110] hover:scale-110 active:scale-95 flex items-center justify-center shadow-lg backdrop-blur-md"
+              aria-label="Previous photo"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            {/* Right Arrow Button in Modal */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext(e);
+              }}
+              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white transition-all cursor-pointer z-[110] hover:scale-110 active:scale-95 flex items-center justify-center shadow-lg backdrop-blur-md"
+              aria-label="Next photo"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+
+            {/* Modal Content container: immersive max-w-7xl (1280px matching native photo resolution) with smooth rounded corners, zero padding, and seamless photo fill */}
+            <div
+              className="relative w-[94vw] max-w-7xl aspect-video max-h-[86vh] rounded-2xl overflow-hidden border border-white/15 shadow-2xl shadow-black/80 bg-zinc-950 flex items-center justify-center select-none"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={currentPhoto.url}
+                alt={`${currentPhoto.date} - ${currentPhoto.location}`}
+                fill
+                className="object-cover"
+                unoptimized
+                sizes="(max-width: 1280px) 94vw, 1280px"
+                priority
+              />
+              {/* Modal Caption smoothly overlaid at the bottom of the photo */}
+              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-5 sm:p-6 text-white flex justify-between items-end pointer-events-none">
+                <div className="pr-4">
+                  <p className="text-sm sm:text-base md:text-lg font-bold text-white drop-shadow-sm leading-snug">
+                    {currentPhoto.location}
+                  </p>
+                  <p className="text-xs sm:text-sm text-white/75 font-mono mt-0.5">
+                    {currentPhoto.date}
+                  </p>
+                </div>
+                <span className="shrink-0 text-xs sm:text-sm font-mono font-medium text-white/90 bg-white/15 backdrop-blur-xs border border-white/20 px-3 py-1 rounded-full select-none shadow-xs">
+                  {currentIndex + 1} / {TEAM_PHOTOS.length}
+                </span>
               </div>
-              <span className="text-xs font-bold bg-white/10 border border-white/15 px-2 py-0.5 rounded-full select-none">
-                {currentIndex + 1} / {TEAM_PHOTOS.length}
-              </span>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }
