@@ -19,6 +19,12 @@ export const PUBLICATIONS_DATA: YearSection[] = [
     year: "2026",
     publications: [
       {
+        title: "Mining Utility-Maximizing Prices for Mixed Bundles",
+        authors: "Ezekiel Ong Young and Hady W. Lauw",
+        venue:
+          "ACM Transactions on Management Information Systems (TMIS), to appear",
+      },
+      {
         title:
           "Per-Starting-Point Plausibility and Diversity Bounds for Score-Based Diffusion Models",
         authors: "Nguyen Minh Quang and Hady W. Lauw",
