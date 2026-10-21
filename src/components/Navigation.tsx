@@ -182,21 +182,21 @@ export default function Navigation() {
 
               {/* Popover Dropdown */}
               <div
-                className={`absolute left-1/2 -translate-x-1/2 top-full pt-2 w-44 transition-all duration-200 origin-top ${
+                className={`absolute left-1/2 -translate-x-1/2 top-full pt-1.5 w-28 transition-all duration-200 origin-top ${
                   isAppsOpen
                     ? "opacity-100 translate-y-0 visible scale-100"
                     : "opacity-0 -translate-y-1 invisible scale-95"
                 }`}
               >
-                <div className="rounded-xl bg-card border border-border/80 p-1.5 shadow-lg overflow-hidden">
+                <div className="rounded-xl bg-card/95 backdrop-blur-md border border-border/70 p-1 shadow-md shadow-black/10 overflow-hidden">
                   <a
                     href="https://cornac.preferred.ai"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center justify-between py-2 px-3 text-xs font-semibold text-foreground/85 hover:text-primary hover:bg-muted/60 rounded-lg transition-all"
+                    className="group flex items-center justify-between py-2 px-3 text-sm font-medium text-foreground/85 hover:text-primary hover:bg-primary/5 dark:hover:bg-primary/10 rounded-lg transition-all whitespace-nowrap"
                   >
                     <span>Cornac</span>
-                    <span className="text-[10px] text-muted-foreground font-mono">
+                    <span className="text-xs text-muted-foreground/60 font-mono transition-transform duration-150 group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
                       ↗
                     </span>
                   </a>
