@@ -180,6 +180,22 @@ export default config({
           description:
             "Optional, including for alumni without a current title.",
         }),
+        role: fields.text({
+          label: "Group role & tenure / graduation date",
+          description:
+            'Optional. E.g. "PhD (May 2026)" or "Research Scientist (Oct 2022 – Aug 2025)".',
+        }),
+        alumniSort: fields.text({
+          label: "Alumni sort key (YYYY-MM)",
+          description:
+            "Optional. Used to sort Alumni in reverse chronological order (e.g. 2026-05).",
+        }),
+        employment: fields.array(fields.text({ label: "Employment entry" }), {
+          label: "Employment history",
+          description:
+            "Optional chronological list of current and past employment roles.",
+          itemLabel: (props) => props.value,
+        }),
         url: fields.url({
           label: "Personal or professional URL",
           description: "Optional. Include https:// or http://.",

@@ -13,6 +13,11 @@
     "placement": "research-staff",
     "photo": "/team/members/jaime-hieu/photo.jpg",
     "title": "Research Scientist (SMU)",
+    "role": "PhD (Jul 2025)",
+    "alumniSort": "2026-11",
+    "employment": [
+      "Research Scientist, Preferred.AI, SMU"
+    ],
     "url": "https://jaimehd.com"
   },
   {
@@ -30,14 +35,6 @@
     "photo": "/team/members/phuong/photo.jpeg",
     "title": "PhD Candidate (SMU)",
     "url": "https://www.linkedin.com/in/phuonglt26"
-  },
-  {
-    "slug": "jiapeng",
-    "name": "Lim Jia Peng",
-    "placement": "phd-candidate",
-    "photo": "/team/members/jiapeng/photo.png",
-    "title": "PhD Candidate (SMU)",
-    "url": "https://www.linkedin.com/in/jia-peng-lim"
   },
   {
     "slug": "khanh",
@@ -88,20 +85,40 @@
     "url": "https://hoangdv.me"
   },
   {
-    "slug": "ghiles",
-    "name": "Aghiles Salah",
+    "slug": "jiapeng",
+    "name": "Lim Jia Peng",
     "placement": "alumni",
-    "photo": "/team/members/ghiles/photo.png",
-    "title": "Senior Research Scientist (Rakuten)",
-    "url": "http://saghiles.github.io"
+    "photo": "/team/members/jiapeng/photo.png",
+    "title": "Research Scientist (Meta)",
+    "role": "PhD (May 2026)",
+    "alumniSort": "2026-05",
+    "employment": [
+      "Since Aug 2025: Research Scientist, Machine Learning, Meta USA"
+    ],
+    "url": "https://www.linkedin.com/in/jia-peng-lim"
   },
   {
-    "slug": "chongcher",
-    "name": "Chia Chong Cher",
+    "slug": "konstantinos",
+    "name": "Konstantinos Theocharidis",
     "placement": "alumni",
-    "photo": "/team/members/chongcher/photo.png",
-    "title": "Senior Manager (Singapore Institute of Legal Education)",
-    "url": "https://www.linkedin.com/in/chongcher"
+    "photo": "/team/members/konstantinos/photo.jpeg",
+    "title": "Former Research Scientist (SMU)",
+    "role": "Research Scientist (Oct 2022 – Aug 2025)",
+    "alumniSort": "2025-08",
+    "url": "https://www.linkedin.com/in/konstantinos-theocharidis-36299159"
+  },
+  {
+    "slug": "thuat",
+    "name": "Tran Nhu Thuat",
+    "placement": "alumni",
+    "photo": "/team/members/thuat/photo.jpg",
+    "title": "Senior Staff Engineer (Huawei)",
+    "role": "PhD (May 2025)",
+    "alumniSort": "2025-05",
+    "employment": [
+      "Since Nov 2025: Senior Staff Engineer, Huawei Singapore"
+    ],
+    "url": "https://trannhuthuat96.github.io"
   },
   {
     "slug": "darryl-ong",
@@ -109,47 +126,12 @@
     "placement": "alumni",
     "photo": "/team/members/darryl-ong/photo.jpg",
     "title": "Machine Learning Engineer (Hewlett Packard Enterprise)",
+    "role": "Senior Research Engineer & Entrepreneur Lead (2019 – 2024)",
+    "alumniSort": "2024-09",
+    "employment": [
+      "Since Sep 2024: Machine Learning Engineer, Hewlett Packard Enterprise"
+    ],
     "url": "https://www.linkedin.com/in/ongrongsheng"
-  },
-  {
-    "slug": "hongtuonie",
-    "name": "Hongtuo Nie",
-    "placement": "alumni",
-    "photo": "/team/members/hongtuonie/photo.jpeg",
-    "title": "",
-    "url": "https://felixnie.github.io"
-  },
-  {
-    "slug": "konstantinos",
-    "name": "Konstantinos Theocharidis",
-    "placement": "alumni",
-    "photo": "/team/members/konstantinos/photo.jpeg",
-    "title": "",
-    "url": "https://www.linkedin.com/in/konstantinos-theocharidis-36299159"
-  },
-  {
-    "slug": "trong-le",
-    "name": "Le Duc Trong, Tony",
-    "placement": "alumni",
-    "photo": "/team/members/trong-le/photo.jpg",
-    "title": "Lecturer (UET-VNU)",
-    "url": "https://sites.google.com/view/trongld"
-  },
-  {
-    "slug": "andrew-le",
-    "name": "Le Duy Dung, Andrew",
-    "placement": "alumni",
-    "photo": "/team/members/andrew-le/photo.jpg",
-    "title": "Assistant Professor (VinUni)",
-    "url": "https://andrew-dungle.github.io"
-  },
-  {
-    "slug": "hoang-le",
-    "name": "Le Trung Hoang",
-    "placement": "alumni",
-    "photo": "/team/members/hoang-le/photo.png",
-    "title": "Lecturer (HCMUS-VNU)",
-    "url": "https://lthoang.com"
   },
   {
     "slug": "ween-jiann",
@@ -157,31 +139,26 @@
     "placement": "alumni",
     "photo": "/team/members/ween-jiann/photo.jpg",
     "title": "Assistant Principal AI Scientist (ST Engineering)",
+    "role": "PhD (Jun 2024)",
+    "alumniSort": "2024-06",
+    "employment": [
+      "Since Jul 2024: Assistant Principal AI Scientist, ST Engineering"
+    ],
     "url": "https://www.linkedin.com/in/weenjiann"
   },
   {
-    "slug": "maksim",
-    "name": "Maksim Tkachenko",
+    "slug": "chongcher",
+    "name": "Chia Chong Cher",
     "placement": "alumni",
-    "photo": "/team/members/maksim/photo.png",
-    "title": "General Manager, AI Research (Rakuten)",
-    "url": "http://www.mtkachenko.info"
-  },
-  {
-    "slug": "thuat",
-    "name": "Tran Nhu Thuat",
-    "placement": "alumni",
-    "photo": "/team/members/thuat/photo.jpg",
-    "title": "",
-    "url": "https://www.linkedin.com/in/nhu-thuat-tran-84b549161"
-  },
-  {
-    "slug": "tuan-truong",
-    "name": "Truong Quoc Tuan",
-    "placement": "alumni",
-    "photo": "/team/members/tuan-truong/photo.jpg",
-    "title": "Senior ML Engineer (Pinterest)",
-    "url": "https://qtuantruong.github.io"
+    "photo": "/team/members/chongcher/photo.png",
+    "title": "Senior Manager (Singapore Institute of Legal Education)",
+    "role": "PhD (Nov 2023)",
+    "alumniSort": "2023-11",
+    "employment": [
+      "Now: Senior Manager, Singapore Institute of Legal Education",
+      "Since Jan 2024: Senior Research Associate, SMU Centre for Computational Law"
+    ],
+    "url": "https://www.chongcher.com"
   },
   {
     "slug": "ce-zhang",
@@ -189,6 +166,100 @@
     "placement": "alumni",
     "photo": "/team/members/ce-zhang/photo.png",
     "title": "Lecturer (University of Sheffield)",
+    "role": "PhD (May 2023)",
+    "alumniSort": "2023-05",
+    "employment": [
+      "Now: Lecturer, The University of Sheffield",
+      "Sep 2024: Postdoc, Pennsylvania State University",
+      "Sep 2023: Postdoc, Yale University"
+    ],
     "url": "https://sites.google.com/view/delvincezhang"
+  },
+  {
+    "slug": "hoang-le",
+    "name": "Le Trung Hoang",
+    "placement": "alumni",
+    "photo": "/team/members/hoang-le/photo.png",
+    "title": "Lecturer (HCMUS-VNU)",
+    "role": "PhD (Nov 2022), Research Scientist (2023 – 2024)",
+    "alumniSort": "2022-11",
+    "employment": [
+      "Now: Lecturer, University of Science, VNU-HCM",
+      "Sep 2024: Research Scientist, NTU Singapore",
+      "Mar 2023: Research Scientist, Preferred.AI, Singapore"
+    ],
+    "url": "https://lthoang.com"
+  },
+  {
+    "slug": "tuan-truong",
+    "name": "Truong Quoc Tuan",
+    "placement": "alumni",
+    "photo": "/team/members/tuan-truong/photo.jpg",
+    "title": "Senior ML Engineer (Pinterest)",
+    "role": "PhD (Feb 2022)",
+    "alumniSort": "2022-02",
+    "employment": [
+      "Now: Senior Machine Learning Engineer, Pinterest",
+      "Jul 2022: Applied Scientist at Amazon"
+    ],
+    "url": "https://www.qttruong.com"
+  },
+  {
+    "slug": "ghiles",
+    "name": "Aghiles Salah",
+    "placement": "alumni",
+    "photo": "/team/members/ghiles/photo.png",
+    "title": "Senior Research Scientist (Rakuten)",
+    "role": "Research Scientist (Jun 2017 – Jan 2021)",
+    "alumniSort": "2021-01",
+    "employment": [
+      "Jan 2021: Applied Research Scientist, Rakuten Institute of Technology, Paris, France"
+    ],
+    "url": "http://saghiles.github.io"
+  },
+  {
+    "slug": "andrew-le",
+    "name": "Le Duy Dung, Andrew",
+    "placement": "alumni",
+    "photo": "/team/members/andrew-le/photo.jpg",
+    "title": "Assistant Professor (VinUni)",
+    "role": "PhD (Sep 2019), Research Scientist (till Jan 2021)",
+    "alumniSort": "2019-09",
+    "employment": [
+      "Aug 2021: Assistant Professor in Computer Science, VinUniversity, Vietnam",
+      "Jun – Jul 2021: AI Scientist, FPT AI Lab in Hanoi, Vietnam",
+      "Jan – May 2021: Senior Data Scientist in Ads and Personalization Team, Grab Holdings Inc., Singapore"
+    ],
+    "url": "https://andrew-dungle.github.io"
+  },
+  {
+    "slug": "trong-le",
+    "name": "Le Duc Trong, Tony",
+    "placement": "alumni",
+    "photo": "/team/members/trong-le/photo.jpg",
+    "title": "Department Head & Lecturer (UET-VNU)",
+    "role": "PhD (Apr 2019)",
+    "alumniSort": "2019-04",
+    "employment": [
+      "Jul 2024: Department Head, Computer Science Department, Faculty of IT, VNU University of Engineering and Technology",
+      "Aug 2019: Lecturer, VNU University of Engineering and Technology, Hanoi, Vietnam"
+    ],
+    "url": "https://sites.google.com/view/trongld"
+  },
+  {
+    "slug": "maksim",
+    "name": "Maksim Tkachenko",
+    "placement": "alumni",
+    "photo": "/team/members/maksim/photo.png",
+    "title": "General Manager, AI Research (Rakuten)",
+    "role": "PhD (Nov 2018), Research Scientist (2018 – 2021)",
+    "alumniSort": "2018-11",
+    "employment": [
+      "Now: General Manager, Frontier Research Development, Rakuten Institute of Technology, Singapore",
+      "Sep 2022: Research Scientist at Rakuten Institute of Technology, Singapore",
+      "May 2021 – Aug 2022: Data Science & Operations Research Advisor at FedEx Asia Pacific, Singapore",
+      "Dec 2018 – May 2021: Research Scientist, Preferred.AI, Singapore"
+    ],
+    "url": "http://www.mtkachenko.info"
   }
 ]

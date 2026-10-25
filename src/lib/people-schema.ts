@@ -14,6 +14,9 @@ export interface Person {
   placement: PeoplePlacement;
   photo: string;
   title: string;
+  role?: string;
+  alumniSort?: string;
+  employment?: string[];
   url?: string;
 }
 
@@ -33,6 +36,14 @@ export function comparePeople(a: Person, b: Person): number {
     (placementOrder.get(a.placement) ?? Number.MAX_SAFE_INTEGER) -
     (placementOrder.get(b.placement) ?? Number.MAX_SAFE_INTEGER);
   if (placementDifference !== 0) return placementDifference;
+
+  if (a.placement === "alumni" && b.placement === "alumni") {
+    const sortA = a.alumniSort ?? "";
+    const sortB = b.alumniSort ?? "";
+    if (sortA !== sortB) {
+      return sortB.localeCompare(sortA, "en");
+    }
+  }
 
   return (
     a.name.localeCompare(b.name, "en", { sensitivity: "base" }) ||

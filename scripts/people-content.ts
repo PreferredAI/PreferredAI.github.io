@@ -10,12 +10,28 @@ import {
 const PEOPLE_DIRECTORY = path.join(process.cwd(), "content", "people");
 const PUBLIC_DIRECTORY = path.join(process.cwd(), "public");
 const SLUG_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const ALUMNI_SORT_PATTERN = /^\d{4}-(0[1-9]|1[0-2])$/;
 const SUPPORTED_EXTENSIONS = new Set([".jpeg", ".jpg", ".png", ".webp"]);
-const ALLOWED_KEYS = new Set(["name", "placement", "photo", "title", "url"]);
+const ALLOWED_KEYS = new Set([
+  "name",
+  "placement",
+  "photo",
+  "title",
+  "role",
+  "alumniSort",
+  "employment",
+  "url",
+]);
 const ALLOWED_URL_PROTOCOLS = new Set(["http:", "https:"]);
 
-type StoredPerson = Omit<Person, "slug" | "title" | "url"> & {
+type StoredPerson = Omit<
+  Person,
+  "slug" | "title" | "role" | "alumniSort" | "employment" | "url"
+> & {
   title?: string | null;
+  role?: string | null;
+  alumniSort?: string | null;
+  employment?: string[] | null;
   url?: string | null;
 };
 
@@ -45,7 +61,7 @@ function readRequiredString(
 
 function readOptionalString(
   record: Record<string, unknown>,
-  key: "title" | "url",
+  key: "title" | "role" | "alumniSort" | "url",
   filename: string,
 ): string | undefined {
   const value = record[key];
@@ -57,6 +73,31 @@ function readOptionalString(
     throw new Error(`${filename}: ${key} must not have surrounding whitespace`);
   }
   return value;
+}
+
+function readOptionalStringArray(
+  record: Record<string, unknown>,
+  key: "employment",
+  filename: string,
+): string[] | undefined {
+  const value = record[key];
+  if (value === undefined || value === null) return undefined;
+  if (!Array.isArray(value)) {
+    throw new Error(`${filename}: ${key} must be an array of strings`);
+  }
+  const items: string[] = [];
+  for (const item of value) {
+    if (typeof item !== "string" || item.trim().length === 0) {
+      throw new Error(`${filename}: ${key} items must be non-empty strings`);
+    }
+    if (item !== item.trim()) {
+      throw new Error(
+        `${filename}: ${key} items must not have surrounding whitespace`,
+      );
+    }
+    items.push(item);
+  }
+  return items.length > 0 ? items : undefined;
 }
 
 function validateUrl(url: string, filename: string): void {
@@ -163,6 +204,14 @@ function parsePerson(filename: string): Person {
   validatePhoto(photo, slug, filename);
 
   const title = readOptionalString(value, "title", filename) ?? "";
+  const role = readOptionalString(value, "role", filename);
+  const alumniSort = readOptionalString(value, "alumniSort", filename);
+  if (alumniSort && !ALUMNI_SORT_PATTERN.test(alumniSort)) {
+    throw new Error(
+      `${filename}: alumniSort must match YYYY-MM (e.g. 2026-05)`,
+    );
+  }
+  const employment = readOptionalStringArray(value, "employment", filename);
   const url = readOptionalString(value, "url", filename);
   if (url) validateUrl(url, filename);
 
@@ -172,6 +221,9 @@ function parsePerson(filename: string): Person {
     placement: placement as PeoplePlacement,
     photo,
     title,
+    ...(role ? { role } : {}),
+    ...(alumniSort ? { alumniSort } : {}),
+    ...(employment ? { employment } : {}),
     ...(url ? { url } : {}),
   };
 }

@@ -10,6 +10,9 @@ interface StoredPerson {
   placement: Person["placement"];
   photo: string;
   title?: string | null;
+  role?: string | null;
+  alumniSort?: string | null;
+  employment?: string[] | null;
   url?: string | null;
 }
 
@@ -35,6 +38,11 @@ function loadPeopleFromDisk(): Person[] | null {
           placement: stored.placement,
           photo: stored.photo,
           title: stored.title ?? "",
+          ...(stored.role ? { role: stored.role } : {}),
+          ...(stored.alumniSort ? { alumniSort: stored.alumniSort } : {}),
+          ...(stored.employment && stored.employment.length > 0
+            ? { employment: stored.employment }
+            : {}),
           ...(stored.url ? { url: stored.url } : {}),
         };
       })
