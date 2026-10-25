@@ -19,6 +19,9 @@ minimumReleaseAgeExclude:
   - source-map-js@1.2.2
   - proxy-addr@2.0.8
   - postcss-selector-parser@7.1.6
+  - next@16.4.1
+  - body-parser@2.4.0
+  - undici@7.30.1
 
 overrides:
   '@keystatic/core>js-yaml': 4.3.2
