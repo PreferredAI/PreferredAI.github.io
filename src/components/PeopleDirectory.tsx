@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { PeopleGroups, Person } from "@/lib/people-schema";
 
 function TeamMemberCard({
@@ -153,14 +154,65 @@ function AlumniDetailModal({
 }) {
   const titleId = useId();
   const closeButtonRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
+  const backdropRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    closeButtonRef.current?.focus();
+    setMounted(true);
+  }, []);
+
+  // Prevent background scrolling while modal is open without removing body scrollbar (avoids sideways layout shift)
+  useEffect(() => {
+    const backdrop = backdropRef.current;
+    if (!backdrop) return;
+
+    const handleWheel = (e: WheelEvent) => {
+      if (!dialogRef.current?.contains(e.target as Node)) {
+        e.preventDefault();
+      }
+    };
+
+    const handleTouchMove = (e: TouchEvent) => {
+      if (!dialogRef.current?.contains(e.target as Node)) {
+        e.preventDefault();
+      }
+    };
+
+    backdrop.addEventListener("wheel", handleWheel, { passive: false });
+    backdrop.addEventListener("touchmove", handleTouchMove, { passive: false });
+
+    return () => {
+      backdrop.removeEventListener("wheel", handleWheel);
+      backdrop.removeEventListener("touchmove", handleTouchMove);
+    };
+  }, []);
+
+  // Move focus into the modal on open, restore previous focus on close, and trap Tab navigation
+  useEffect(() => {
+    const trigger = document.activeElement as HTMLElement | null;
+    closeButtonRef.current?.focus({ preventScroll: true });
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
         onClose();
+      } else if (event.key === "Tab") {
+        const dialog = dialogRef.current;
+        if (!dialog) return;
+        const focusables = dialog.querySelectorAll<HTMLElement>(
+          'button:not([disabled]), a[href]:not([disabled]), [tabindex]:not([tabindex="-1"])',
+        );
+        if (focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
       }
     };
 
@@ -168,6 +220,7 @@ function AlumniDetailModal({
 
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
+      trigger?.focus({ preventScroll: true });
     };
   }, [onClose]);
 
@@ -178,38 +231,42 @@ function AlumniDetailModal({
         ? [member.title]
         : [];
 
-  return (
+  if (!mounted) return null;
+
+  return createPortal(
     <div
-      className="fixed inset-0 z-60 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs motion-safe:animate-fade-in"
+      ref={backdropRef}
+      className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6 bg-black/60 backdrop-blur-xs motion-safe:animate-fade-in touch-none"
       onClick={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
       role="presentation"
     >
       <div
+        ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby={titleId}
-        className="relative w-full max-w-md rounded-2xl bg-card border border-border shadow-xl p-5 sm:p-6 text-left motion-safe:animate-slide-up-fade"
+        className="relative w-[92vw] sm:w-[85vw] md:max-w-xl max-h-[88vh] overflow-y-auto overscroll-contain rounded-2xl bg-card border border-border shadow-2xl p-6 sm:p-7 text-left motion-safe:animate-slide-up-fade touch-auto"
       >
         <button
           ref={closeButtonRef}
           type="button"
           onClick={onClose}
           aria-label="Close alumni details"
-          className="absolute top-4 right-4 inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
+          className="absolute top-4 right-4 sm:top-5 sm:right-5 inline-flex h-8 w-8 items-center justify-center rounded-lg text-muted-foreground hover:text-foreground hover:bg-muted transition-colors cursor-pointer"
         >
           ✕
         </button>
 
-        <div className="flex items-center gap-4 pr-8">
-          <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-xl bg-muted border border-border/60">
+        <div className="flex items-center gap-4 sm:gap-5 pr-8">
+          <div className="relative h-16 w-16 sm:h-18 sm:w-18 shrink-0 overflow-hidden rounded-xl bg-muted border border-border/60">
             <Image
               src={member.photo}
               alt={member.name}
               fill
               className="object-cover"
-              sizes="64px"
+              sizes="(max-width: 640px) 64px, 72px"
             />
           </div>
           <div className="min-w-0">
@@ -220,12 +277,12 @@ function AlumniDetailModal({
               {member.name}
             </h3>
             {member.role && (
-              <p className="text-xs font-medium text-primary mt-0.5">
+              <p className="text-xs sm:text-sm font-medium text-primary mt-0.5">
                 {member.role}
               </p>
             )}
             {member.title && (
-              <p className="text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-0.5">
                 {member.title}
               </p>
             )}
@@ -233,13 +290,13 @@ function AlumniDetailModal({
         </div>
 
         {employmentList.length > 0 && (
-          <div className="mt-5 pt-4 border-t border-border/60">
-            <h4 className="text-[11px] font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-3">
+          <div className="mt-6 pt-4 border-t border-border/60">
+            <h4 className="text-[11px] sm:text-xs font-semibold uppercase tracking-[0.08em] text-muted-foreground mb-3.5">
               Career &amp; Employment History
             </h4>
-            <ol className="relative border-l border-border/80 ml-2 space-y-3">
+            <ol className="relative border-l border-border/80 ml-2 space-y-3.5">
               {employmentList.map((entry, idx) => (
-                <li key={entry} className="pl-4 relative">
+                <li key={entry} className="pl-4 sm:pl-5 relative">
                   <span
                     className={`absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full border-2 border-card ${
                       idx === 0 ? "bg-primary" : "bg-muted-foreground/50"
@@ -247,7 +304,7 @@ function AlumniDetailModal({
                     aria-hidden="true"
                   />
                   <p
-                    className={`text-xs leading-relaxed ${
+                    className={`text-xs sm:text-[13px] leading-relaxed ${
                       idx === 0
                         ? "font-medium text-foreground"
                         : "text-muted-foreground"
@@ -261,16 +318,16 @@ function AlumniDetailModal({
           </div>
         )}
 
-        <div className="mt-5 pt-3 border-t border-border/60 flex items-center justify-end gap-2">
+        <div className="mt-6 pt-3.5 border-t border-border/60 flex items-center justify-end gap-2.5">
           {member.url && (
             <a
               href={member.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-primary/10 text-primary hover:bg-primary/15 transition-colors"
+              className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-primary/10 text-primary hover:bg-primary/15 transition-colors"
             >
               <span>Visit Website</span>
-              <span className="text-[11px] font-mono" aria-hidden="true">
+              <span className="text-[11px] sm:text-xs font-mono" aria-hidden="true">
                 ↗
               </span>
             </a>
@@ -278,13 +335,14 @@ function AlumniDetailModal({
           <button
             type="button"
             onClick={onClose}
-            className="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium bg-muted text-foreground hover:bg-muted/80 transition-colors cursor-pointer"
+            className="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-muted text-foreground hover:bg-muted/80 transition-colors cursor-pointer"
           >
             Close
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 
