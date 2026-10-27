@@ -327,7 +327,10 @@ function AlumniDetailModal({
               className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-medium bg-primary/10 text-primary hover:bg-primary/15 transition-colors"
             >
               <span>Visit Website</span>
-              <span className="text-[11px] sm:text-xs font-mono" aria-hidden="true">
+              <span
+                className="text-[11px] sm:text-xs font-mono"
+                aria-hidden="true"
+              >
                 ↗
               </span>
             </a>
