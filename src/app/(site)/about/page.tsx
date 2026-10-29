@@ -35,7 +35,7 @@ export default async function AboutPage() {
   const content = await getAboutContent();
 
   return (
-    <div className="bg-card border border-border/80 rounded-2xl p-6 sm:p-10 shadow-xs">
+    <div className="max-w-5xl mx-auto bg-card border border-border/80 rounded-2xl p-6 sm:p-10 shadow-xs">
       <div
         className="prose dark:prose-invert prose-neutral max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-2xl sm:prose-h1:text-3xl prose-h2:text-xl sm:prose-h2:text-2xl prose-a:font-medium prose-a:text-primary prose-a:underline prose-a:underline-offset-4 prose-a:decoration-primary/30 hover:prose-a:text-primary/80 hover:prose-a:decoration-primary transition-colors"
         dangerouslySetInnerHTML={{ __html: content }}

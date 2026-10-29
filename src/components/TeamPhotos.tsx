@@ -1,64 +1,99 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { TEAM_PHOTOS } from "@/data/teamPhotos";
 
-// Helper to generate a shuffled array of indices from 1 to N-1
-const generateShuffledPlaylist = (length: number): number[] => {
-  if (length <= 1) return [];
-  const indices = Array.from({ length: length - 1 }, (_, i) => i + 1);
-  // Fisher-Yates Shuffle
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
-  }
-  return indices;
+interface TeamPhotosProps {
+  /**
+   * "compact": minimal footprint card with overlaid caption that stretches to match a sibling hero card (used on `/`).
+   * "feature": larger gallery showcase card with high-res sizing and full caption bar (used on `/people`).
+   */
+  variant?: "compact" | "feature";
+  /** Optional override for rotation interval in ms (defaults to 8000ms for compact, 5500ms for feature). */
+  intervalMs?: number;
+  headerLabel?: string;
+  headerHref?: string;
+  headerLinkLabel?: string;
+}
+
+const extractYear = (dateStr: string): number => {
+  const match = dateStr.match(/\b(19|20)\d{2}\b/);
+  return match ? Number.parseInt(match[0], 10) : 0;
 };
 
-export default function TeamPhotos() {
+const shuffleIndices = (indices: number[]): number[] => {
+  const copy = [...indices];
+  // Fisher-Yates Shuffle
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+};
+
+// Build a recency-tiered playlist excluding `excludeIndex` (defaults to 0, the initial latest photo):
+// Tier 1: Recent cohort photos within 2 years of the newest photo (e.g. 2024–2026), shuffled.
+// Tier 2: Older archive photos (e.g. 2013–2023), shuffled.
+const generateTieredPlaylist = (excludeIndex = 0): number[] => {
+  if (TEAM_PHOTOS.length <= 1) return [];
+
+  const latestYear = extractYear(TEAM_PHOTOS[0].date);
+  const recentCutoffYear = latestYear - 2;
+
+  const recentIndices: number[] = [];
+  const archiveIndices: number[] = [];
+
+  for (let i = 0; i < TEAM_PHOTOS.length; i++) {
+    if (i === excludeIndex) continue;
+    if (i === 0 || extractYear(TEAM_PHOTOS[i].date) >= recentCutoffYear) {
+      recentIndices.push(i);
+    } else {
+      archiveIndices.push(i);
+    }
+  }
+
+  return [...shuffleIndices(recentIndices), ...shuffleIndices(archiveIndices)];
+};
+
+export default function TeamPhotos({
+  variant = "feature",
+  intervalMs,
+  headerLabel,
+  headerHref,
+  headerLinkLabel,
+}: TeamPhotosProps = {}) {
   const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isInView, setIsInView] = useState(true);
+  const [isTabVisible, setIsTabVisible] = useState(true);
   const [autoplayOn, setAutoplayOn] = useState(true);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [playlist, setPlaylist] = useState<number[]>(() =>
-    generateShuffledPlaylist(TEAM_PHOTOS.length),
+    generateTieredPlaylist(0),
   );
-  const [_playlistIndex, setPlaylistIndex] = useState(-1);
+  const [playlistIndex, setPlaylistIndex] = useState(-1);
   // Tracks whether the current photo's image failed to load, so we can show a
   // text fallback in the frame instead of an empty box. Resets per-photo below.
   const [imageFailed, setImageFailed] = useState(false);
 
-  // Refs for lightbox focus management (move focus in on open, restore on close)
+  // Refs for visibility observation and lightbox focus management (move focus in on open, restore on close)
+  const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Regenerate and shuffle the remaining playlist starting from a manual photo index
+  const isCompact = variant === "compact";
+  const rotationIntervalMs = intervalMs ?? (isCompact ? 8000 : 5500);
+
+  // Regenerate and shuffle the remaining tiered playlist starting from a manual photo index
   const resetPlaylistForIndex = (index: number) => {
-    if (TEAM_PHOTOS.length <= 1) {
-      setPlaylist([]);
-      setPlaylistIndex(-1);
-      return;
-    }
-    // All indices except the current one
-    const remainingIndices = Array.from(
-      { length: TEAM_PHOTOS.length },
-      (_, i) => i,
-    ).filter((i) => i !== index);
-    // Shuffle remaining
-    for (let i = remainingIndices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [remainingIndices[i], remainingIndices[j]] = [
-        remainingIndices[j],
-        remainingIndices[i],
-      ];
-    }
-    setPlaylist(remainingIndices);
+    setPlaylist(generateTieredPlaylist(index));
     setPlaylistIndex(-1);
   };
 
@@ -77,29 +112,59 @@ export default function TeamPhotos() {
     return () => mq.removeEventListener("change", handleChange);
   }, []);
 
+  // Pause rotation when scrolled off-screen or when browser tab is hidden
   useEffect(() => {
-    if (!autoplayOn || isPaused || isModalOpen || prefersReducedMotion) return;
+    const handleVisibility = () => {
+      setIsTabVisible(document.visibilityState === "visible");
+    };
+    handleVisibility();
+    document.addEventListener("visibilitychange", handleVisibility);
 
-    // Random interval between 10-15 seconds (10000-15000ms)
-    const getRandomInterval = () => Math.floor(Math.random() * 5000) + 10000;
+    const el = containerRef.current;
+    let observer: IntersectionObserver | null = null;
+    if (el && typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsInView(entry.isIntersecting);
+        },
+        { threshold: 0.15 },
+      );
+      observer.observe(el);
+    }
 
-    const shufflePhoto = () => {
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      observer?.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      TEAM_PHOTOS.length <= 1 ||
+      !autoplayOn ||
+      isPaused ||
+      isModalOpen ||
+      prefersReducedMotion ||
+      !isInView ||
+      !isTabVisible
+    ) {
+      return;
+    }
+
+    const advancePhoto = () => {
       setPrevIndex(currentIndex);
       setImageFailed(false);
 
-      setPlaylistIndex((prevPlaylistIdx) => {
-        const nextPlaylistIdx = prevPlaylistIdx + 1;
-
-        if (nextPlaylistIdx >= playlist.length) {
-          // Playlist finished: Go back to the latest photo (index 0) and generate a new shuffle
-          setCurrentIndex(0);
-          setPlaylist(generateShuffledPlaylist(TEAM_PHOTOS.length));
-          return -1;
-        }
-        // Show the next shuffled photo
+      const nextPlaylistIdx = playlistIndex + 1;
+      if (nextPlaylistIdx >= playlist.length) {
+        // Playlist finished: Return to the latest photo (index 0) and generate a new tiered shuffle
+        setCurrentIndex(0);
+        setPlaylist(generateTieredPlaylist(0));
+        setPlaylistIndex(-1);
+      } else {
         setCurrentIndex(playlist[nextPlaylistIdx]);
-        return nextPlaylistIdx;
-      });
+        setPlaylistIndex(nextPlaylistIdx);
+      }
 
       // Clear the background image after transition completes to clean up the DOM
       setTimeout(() => {
@@ -107,16 +172,20 @@ export default function TeamPhotos() {
       }, 600); // matches the 0.6s fade-in duration
     };
 
-    const intervalId = setTimeout(shufflePhoto, getRandomInterval());
+    const intervalId = setTimeout(advancePhoto, rotationIntervalMs);
 
     return () => clearTimeout(intervalId);
   }, [
     currentIndex,
     isPaused,
     isModalOpen,
+    isInView,
+    isTabVisible,
     playlist,
+    playlistIndex,
     autoplayOn,
     prefersReducedMotion,
+    rotationIntervalMs,
   ]);
 
   const handleNext = (e?: React.MouseEvent) => {
@@ -210,15 +279,83 @@ export default function TeamPhotos() {
   }, [isModalOpen]);
 
   const currentPhoto = TEAM_PHOTOS[currentIndex];
+  const hasHeader = Boolean(headerLabel || (headerHref && headerLinkLabel));
+  const imageSizes = isCompact
+    ? "(max-width: 1024px) 100vw, 440px"
+    : "(max-width: 1024px) 100vw, 960px";
+
+  const nextPlaylistIdx = playlistIndex + 1;
+  const nextUpIndex =
+    TEAM_PHOTOS.length <= 1
+      ? null
+      : nextPlaylistIdx >= playlist.length
+        ? 0
+        : playlist[nextPlaylistIdx];
 
   return (
     <div
-      className="space-y-3"
+      ref={containerRef}
+      className={`w-full bg-card border border-border/80 rounded-2xl shadow-xs ${
+        isCompact
+          ? "h-full flex flex-col p-3 sm:p-3.5"
+          : "p-4 sm:p-5 space-y-3.5"
+      }`}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      {/* Card Header */}
+      {hasHeader && (
+        <div
+          className={`flex items-center justify-between gap-3 ${
+            isCompact ? "mb-2.5 px-0.5" : ""
+          }`}
+        >
+          {headerLabel && (
+            <h2 className="mb-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground/80 select-none">
+              {headerLabel}
+            </h2>
+          )}
+          {headerHref && headerLinkLabel && (
+            <Link
+              href={headerHref}
+              className="ml-auto text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors select-none"
+            >
+              {headerLinkLabel}
+            </Link>
+          )}
+        </div>
+      )}
+
       {/* Sleek rounded frame wrapper with thin border & slight shadow drop */}
-      <div className="group relative overflow-hidden rounded-xl border border-border shadow-sm aspect-video bg-muted flex items-center justify-center select-none hover:border-foreground/20 transition-colors">
+      <div
+        className={`group relative overflow-hidden rounded-xl border border-border shadow-sm bg-muted flex items-center justify-center select-none hover:border-foreground/20 transition-colors ${
+          isCompact
+            ? "flex-1 min-h-[210px] sm:min-h-[240px] lg:min-h-0 aspect-[16/10] lg:aspect-auto"
+            : "aspect-video"
+        }`}
+      >
+        {/* Preload next scheduled photo at matching responsive width so crossfades never flash */}
+        {mounted &&
+          autoplayOn &&
+          !prefersReducedMotion &&
+          isInView &&
+          nextUpIndex !== null &&
+          nextUpIndex !== currentIndex && (
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-0 pointer-events-none -z-10"
+            >
+              <Image
+                src={TEAM_PHOTOS[nextUpIndex].url}
+                alt=""
+                fill
+                sizes={imageSizes}
+                className="object-cover"
+                loading="eager"
+              />
+            </div>
+          )}
+
         {/* Background Layer (Outgoing/Static) */}
         {prevIndex !== null && (
           <div className="absolute inset-0 pointer-events-none z-0">
@@ -226,7 +363,7 @@ export default function TeamPhotos() {
               src={TEAM_PHOTOS[prevIndex].url}
               alt=""
               fill
-              sizes="(max-width: 1024px) 100vw, 320px"
+              sizes={imageSizes}
               className="object-cover"
               priority
             />
@@ -242,7 +379,7 @@ export default function TeamPhotos() {
             src={currentPhoto.url}
             alt=""
             fill
-            sizes="(max-width: 1024px) 100vw, 320px"
+            sizes={imageSizes}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             priority
             onError={() => setImageFailed(true)}
@@ -268,6 +405,29 @@ export default function TeamPhotos() {
           aria-label={`View team photo full screen: ${currentPhoto.location}, ${currentPhoto.date}`}
           className="absolute inset-0 z-10 cursor-pointer"
         />
+
+        {/* Compact variant: overlaid bottom gradient caption to save vertical space */}
+        {isCompact && (
+          <div className="absolute inset-x-0 bottom-0 z-[15] pointer-events-none bg-gradient-to-t from-black/85 via-black/45 to-transparent px-3.5 pt-10 pb-2.5 pr-12">
+            <div
+              key={`compact-caption-${currentIndex}`}
+              className="animate-fade-in"
+            >
+              <p className="text-xs font-semibold text-white leading-snug drop-shadow-xs line-clamp-1">
+                {currentPhoto.location}
+              </p>
+              <div className="mt-0.5 flex items-center gap-2 text-[11px] font-mono text-white/80">
+                <span>{currentPhoto.date}</span>
+                <span aria-hidden="true" className="text-white/40">
+                  &middot;
+                </span>
+                <span>
+                  {currentIndex + 1}/{TEAM_PHOTOS.length}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Left Arrow Button */}
         <button
@@ -351,43 +511,45 @@ export default function TeamPhotos() {
         </button>
       </div>
 
-      {/* Caption Metadata & Counter */}
-      <div className="relative min-h-[42px] pt-1">
-        {/* Outgoing Caption */}
-        {prevIndex !== null && (
-          <div className="absolute inset-x-0 top-1 flex justify-between items-start pointer-events-none z-0">
-            <div className="pr-2">
-              <p className="text-xs font-semibold text-foreground leading-tight">
-                {TEAM_PHOTOS[prevIndex].location}
+      {/* Caption Metadata & Counter (Feature variant) */}
+      {!isCompact && (
+        <div className="relative min-h-[42px] pt-0.5">
+          {/* Outgoing Caption */}
+          {prevIndex !== null && (
+            <div className="absolute inset-x-0 top-0.5 flex justify-between items-start pointer-events-none z-0">
+              <div className="pr-3">
+                <p className="text-sm font-semibold text-foreground leading-tight">
+                  {TEAM_PHOTOS[prevIndex].location}
+                </p>
+                <p className="text-xs font-mono text-muted-foreground mt-0.5">
+                  {TEAM_PHOTOS[prevIndex].date}
+                </p>
+              </div>
+              <span className="shrink-0 text-[11px] font-mono text-muted-foreground bg-muted border border-border/50 px-2 py-0.5 rounded-md">
+                {prevIndex + 1} / {TEAM_PHOTOS.length}
+              </span>
+            </div>
+          )}
+
+          {/* Incoming Caption */}
+          <div
+            key={`caption-${currentIndex}`}
+            className="absolute inset-x-0 top-0.5 flex justify-between items-start z-10 animate-fade-in"
+          >
+            <div className="pr-3">
+              <p className="text-sm font-semibold text-foreground leading-tight">
+                {currentPhoto.location}
               </p>
-              <p className="text-[11px] font-mono text-muted-foreground mt-0.5">
-                {TEAM_PHOTOS[prevIndex].date}
+              <p className="text-xs font-mono text-muted-foreground mt-0.5">
+                {currentPhoto.date}
               </p>
             </div>
-            <span className="shrink-0 text-[10px] font-mono text-muted-foreground bg-muted border border-border/50 px-1.5 py-0.5 rounded">
-              {prevIndex + 1}/{TEAM_PHOTOS.length}
+            <span className="shrink-0 text-[11px] font-mono text-muted-foreground bg-muted border border-border/50 px-2 py-0.5 rounded-md">
+              {currentIndex + 1} / {TEAM_PHOTOS.length}
             </span>
           </div>
-        )}
-
-        {/* Incoming Caption */}
-        <div
-          key={`caption-${currentIndex}`}
-          className="absolute inset-x-0 top-1 flex justify-between items-start z-10 animate-fade-in"
-        >
-          <div className="pr-2">
-            <p className="text-xs font-semibold text-foreground leading-tight">
-              {currentPhoto.location}
-            </p>
-            <p className="text-[11px] font-mono text-muted-foreground mt-0.5">
-              {currentPhoto.date}
-            </p>
-          </div>
-          <span className="shrink-0 text-[10px] font-mono text-muted-foreground bg-muted border border-border/50 px-1.5 py-0.5 rounded">
-            {currentIndex + 1}/{TEAM_PHOTOS.length}
-          </span>
         </div>
-      </div>
+      )}
 
       {/* Lightbox Modal (portaled directly to document.body to avoid parent stacking context traps) */}
       {mounted &&

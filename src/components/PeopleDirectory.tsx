@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useEffect, useId, useRef, useState } from "react";
 import { createPortal } from "react-dom";
+import TeamPhotos from "@/components/TeamPhotos";
 import type { PeopleGroups, Person } from "@/lib/people-schema";
 
 function TeamMemberCard({
@@ -132,7 +133,9 @@ function TeamSection({
       {members.map((member, idx) => (
         <div
           key={member.slug}
-          className="w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-14px)] sm:max-w-[280px]"
+          className={`w-full sm:w-[calc(50%-10px)] md:w-[calc(33.333%-14px)] ${
+            members.length >= 4 ? "lg:w-[calc(25%-15px)]" : ""
+          } sm:max-w-[290px]`.trim()}
         >
           <TeamMemberCard
             member={member}
@@ -355,13 +358,12 @@ export default function PeopleDirectory({ groups }: { groups: PeopleGroups }) {
 
   return (
     <div>
-      <div className="mb-8">
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-          Meet the Team
-        </h1>
-        <p className="text-xs text-muted-foreground mt-1">
-          Faculty, researchers, students, and alumni at Preferred.AI
-        </p>
+      <h1 className="mb-5 text-xs font-semibold uppercase tracking-[0.08em] text-primary select-none">
+        Meet the Team
+      </h1>
+
+      <div className="max-w-4xl mx-auto mb-12">
+        <TeamPhotos variant="feature" />
       </div>
 
       {/* Faculty */}

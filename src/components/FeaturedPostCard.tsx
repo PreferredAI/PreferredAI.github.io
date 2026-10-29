@@ -21,11 +21,11 @@ function formatDate(dateString: string): string {
 
 export function FeaturedPostCard({ post }: FeaturedPostCardProps) {
   return (
-    <article className="group relative flex flex-col md:grid md:grid-cols-12 md:gap-7 bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-foreground/20 hover:shadow-sm transition-all duration-200 overflow-hidden mb-8">
+    <article className="group relative flex flex-col md:grid md:grid-cols-12 md:gap-6 bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs hover:border-foreground/20 hover:shadow-sm transition-all duration-200 overflow-hidden w-full h-full">
       {/* Featured Image Link (7 columns on desktop) */}
       <Link
         href={`/blog/${post.slug}`}
-        className="md:col-span-7 overflow-hidden rounded-xl relative select-none block aspect-video md:aspect-[16/10] w-full bg-muted"
+        className="md:col-span-7 overflow-hidden rounded-xl relative select-none block aspect-video md:aspect-auto md:min-h-[260px] md:h-full w-full bg-muted"
       >
         {post.featuredImage ? (
           <Image

@@ -101,7 +101,7 @@ export default async function PostPage({
   };
 
   return (
-    <article className="max-w-4xl">
+    <article className="mx-auto max-w-4xl">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{

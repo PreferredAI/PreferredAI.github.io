@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import CategoryFilterBar from "@/components/CategoryFilterBar";
 import Pagination from "@/components/Pagination";
 import { PostCard } from "@/components/PostCard";
 import { getAllPosts } from "@/lib/markdown-posts";
@@ -38,7 +39,7 @@ export default async function PaginatedBlogPage({ params }: PageProps) {
 
   return (
     <div>
-      <div className="mb-6 flex items-baseline justify-between gap-4">
+      <div className="mb-5 flex items-baseline justify-between gap-4">
         <h1 className="text-xs font-semibold uppercase tracking-[0.08em] text-primary select-none">
           Blog Posts
         </h1>
@@ -47,7 +48,9 @@ export default async function PaginatedBlogPage({ params }: PageProps) {
         </span>
       </div>
 
-      <div className="grid gap-5 sm:gap-6 md:grid-cols-2">
+      <CategoryFilterBar allHref="/blog" className="mb-6" />
+
+      <div className="grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
           <PostCard key={post.slug} post={post} />
         ))}

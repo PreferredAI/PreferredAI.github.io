@@ -7,240 +7,269 @@ export const metadata: Metadata = {
     "Join Preferred.AI - We are growing, and always on the lookout for bright, dedicated, and nice individuals to become a part of us.",
 };
 
-const reasons = [
-  {
-    num: "01",
-    title: "We publish",
-    text: (
-      <>
-        We hold ourselves to a high standard. Our{" "}
-        <Link
-          href="/publications"
-          className="font-medium text-foreground underline underline-offset-4 decoration-border/80 hover:text-primary hover:decoration-primary transition-colors"
-        >
-          publications
-        </Link>{" "}
-        appear in top-tier venues (including IJCAI-PRICAI 2020 Distinguished
-        Paper and AAAI 2014 Honorable Mention). You will aim high.
-      </>
-    ),
-  },
-  {
-    num: "02",
-    title: "We achieve",
-    text: (
-      <>
-        Our PhD candidates have been winning{" "}
-        <a
-          href="https://graduatestudies.smu.edu.sg/phd/research-achievements/presidential-doctoral-fellowship"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-foreground underline underline-offset-4 decoration-border/80 hover:text-primary hover:decoration-primary transition-colors"
-        >
-          SMU Presidential Doctoral Fellowships
-        </a>{" "}
-        for nine years running. You will get things done.
-      </>
-    ),
-  },
-  {
-    num: "03",
-    title: "We seek impact",
-    text: (
-      <>
-        We develop open-source frameworks like{" "}
-        <a
-          href="https://github.com/PreferredAI/cornac"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-foreground underline underline-offset-4 decoration-border/80 hover:text-primary hover:decoration-primary transition-colors"
-        >
-          Cornac
-        </a>
-        , teach tutorials, and present at premier international conferences. You
-        will matter.
-      </>
-    ),
-  },
-  {
-    num: "04",
-    title: "We are equipped",
-    text: "We have dedicated GPU compute servers, large-scale benchmarks, and rich datasets. You will have what you need to pursue high-quality research.",
-  },
-  {
-    num: "05",
-    title: "We are diverse",
-    text: "Our members come from across the globe: Singapore, Indonesia, Vietnam, China, Russia, France, Algeria, Greece, Philippines, Sri Lanka, and beyond. You will fit in.",
-  },
-  {
-    num: "06",
-    title: "We are up-and-coming",
-    text: (
-      <>
-        <a
-          href="https://csrankings.org/#/index?ai&vision&mlmining&nlp&inforet&world"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-foreground underline underline-offset-4 decoration-border/80 hover:text-primary hover:decoration-primary transition-colors"
-        >
-          CSRankings.org
-        </a>{" "}
-        places SMU among the top 30 institutions worldwide for AI/Data Mining
-        (including KDD). You will grow along with us.
-      </>
-    ),
-  },
-  {
-    num: "07",
-    title: "We plan ahead",
-    text: (
-      <>
-        Our graduates go on to academic and industry roles in top global
-        institutions in the US, Europe, China, Australia, Vietnam, and
-        Singapore. You will dream big.
-      </>
-    ),
-  },
-  {
-    num: "08",
-    title: "We pay competitively",
-    text: (
-      <>
-        PhD candidates receive full{" "}
-        <a
-          href="https://graduatestudies.smu.edu.sg/phd/awards-funding/scholarships"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="font-medium text-foreground underline underline-offset-4 decoration-border/80 hover:text-primary hover:decoration-primary transition-colors"
-        >
-          scholarships
-        </a>
-        . Most other research roles are paid competitive research salaries.
-      </>
-    ),
-  },
-  {
-    num: "09",
-    title: "We play",
-    text: "We are a dynamic, close-knit group who celebrate milestones, run outdoor retreats, and enjoy good food together. You will have fun.",
-  },
-  {
-    num: "10",
-    title: "We do what's right",
-    text: "We do the right things and get them right. We get the right people and do right by them. You will make the right choice.",
-  },
-];
-
-const openPositions = [
-  {
-    title: "Postdoctoral Research Fellow",
-    description:
-      "PhD degree in Computer Science or related field with a strong publication record in top AI/ML venues.",
-    topics:
-      "Probabilistic graphical modeling, deep learning, topic modeling, recommender systems, dimensionality reduction, similarity search, text mining, and information extraction.",
-  },
-  {
-    title: "PhD Candidate / Research Engineer",
-    description:
-      "Bachelor's and/or Master's degree in Computer Science or closely related discipline with high academic standing.",
-    topics:
-      "Competent in systems programming and data management, with foundations in data mining and machine learning. Research experience is a strong plus.",
-  },
-  {
-    title: "Research Intern / Visiting Student",
-    description:
-      "Currently enrolled undergraduate or Master's student in Computer Science or related quantitative field.",
-    topics:
-      "Competent programming skills, strong self-motivation, and genuine curiosity in recommendation systems or machine learning research.",
-  },
-];
-
 export default function JoinPage() {
   return (
-    <div className="space-y-10">
-      <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground">
-          Join Preferred.AI
-        </h1>
-        <p className="text-xs text-muted-foreground mt-1 max-w-2xl leading-relaxed">
-          We are growing, and always on the lookout for bright, dedicated, and
-          curious individuals to become part of our research team.
-        </p>
-      </div>
+    <div className="max-w-5xl mx-auto">
+      <h1 className="text-3xl font-bold mb-8">
+        Ten Reasons Why You Should Join Preferred.AI
+      </h1>
 
-      {/* Ten Reasons Section */}
-      <div>
-        <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-foreground/80 mb-4 select-none">
-          Why Preferred.AI
-        </h2>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {reasons.map((reason) => (
-            <div
-              key={reason.num}
-              className="p-4 sm:p-5 rounded-2xl bg-card border border-border/80 shadow-xs hover:border-primary/40 transition-all flex flex-col group"
+      {/* 3x3 Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-px mb-8 bg-border border border-border rounded-2xl overflow-hidden shadow-sm shadow-black/[0.01]">
+        {/* Row 1 */}
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">📰</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We <em>publish</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            We hold ourselves to a high standard. Our{" "}
+            <Link
+              href="/publications"
+              className="text-primary hover:underline font-semibold"
             >
-              <div className="flex items-baseline justify-between mb-2">
-                <span className="text-[11px] font-mono font-semibold text-primary/80">
-                  {reason.num}
-                </span>
-              </div>
-              <h3 className="text-sm font-bold text-foreground mb-1.5 group-hover:text-primary transition-colors">
-                {reason.title}
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed flex-1">
-                {reason.text}
-              </p>
-            </div>
-          ))}
+              publications
+            </Link>{" "}
+            appear in top-tier venues. A couple have won awards:{" "}
+            <a
+              href="https://ijcai20.org/distinguished-papers/"
+              className="text-primary hover:underline font-semibold"
+            >
+              IJCAI-PRICAI 2020 Distinguished Paper
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://aaai.org/about-aaai/aaai-awards/aaai-conference-paper-awards-and-recognition/"
+              className="text-primary hover:underline font-semibold"
+            >
+              AAAI 2014 Honorable Mention
+            </a>
+            . You will aim high.
+          </p>
+        </div>
+
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">⭐</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We <em>achieve</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            Our PhD candidates have been winning{" "}
+            <a
+              href="https://graduatestudies.smu.edu.sg/phd/research-achievements/presidential-doctoral-fellowship"
+              className="text-primary hover:underline font-semibold"
+            >
+              SMU Presidential Doctoral Fellowships
+            </a>{" "}
+            for nine years running. You will get things done.
+          </p>
+        </div>
+
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">⚡</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We seek <em>impact</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            We{" "}
+            <a
+              href="https://github.com/PreferredAI/cornac"
+              className="text-primary hover:underline font-semibold"
+            >
+              develop
+            </a>{" "}
+            useful libraries and learning materials,{" "}
+            <Link
+              href="/category/education"
+              className="text-primary hover:underline font-semibold"
+            >
+              teach
+            </Link>{" "}
+            others, and{" "}
+            <Link
+              href="/category/presentation"
+              className="text-primary hover:underline font-semibold"
+            >
+              present
+            </Link>{" "}
+            our work. You will matter.
+          </p>
+        </div>
+
+        {/* Row 2 */}
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">🖥️</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We are <em>equipped</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            We have resources: CPU servers, GPU servers, interesting datasets,
+            &lt;insert what you need&gt;. You will have what you need to pursue
+            high-quality research.
+          </p>
+        </div>
+
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">🌍</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We are <em>diverse</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            Our members come from all over the world: Singapore, Indonesia,
+            Vietnam, China, Russia, France, Algeria, Greece, Philippines, Sri
+            Lanka, &lt;insert your country here&gt;. You will fit in.
+          </p>
+        </div>
+
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">🚀</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We are <em>up-and-coming</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            <a
+              href="https://csrankings.org/#/index?ai&vision&mlmining&nlp&inforet&world"
+              className="text-primary hover:underline font-semibold"
+            >
+              CSRankings.org
+            </a>{" "}
+            places SMU at #30 worldwide (Dec&apos;25) for AI areas (incl. KDD).
+            No mean feat for a young school. You will grow along with us.
+          </p>
+        </div>
+
+        {/* Row 3 */}
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">🎓</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We plan <em>ahead</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            Our{" "}
+            <a
+              href="https://www.hadylauw.com/group/alumni"
+              className="text-primary hover:underline font-semibold"
+            >
+              graduates
+            </a>{" "}
+            go on to academic and industrial positions in well-known
+            institutions in USA, Europe, China, Australia, Vietnam, Singapore.
+            You will dream big, and we will work hard together towards it.
+          </p>
+        </div>
+
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">💰</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We <em>pay</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            PhD candidates receive{" "}
+            <a
+              href="https://graduatestudies.smu.edu.sg/phd/awards-funding/scholarships"
+              className="text-primary hover:underline font-semibold"
+            >
+              scholarships
+            </a>
+            . Most other positions are paid{" "}
+            <span className="text-primary hover:underline font-semibold">
+              competitive salaries
+            </span>
+            . You will have enough.
+          </p>
+        </div>
+
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col">
+          <div className="text-center mb-4">
+            <span className="text-4xl">🎉</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We <em>play</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            We are a dynamic, close-knit{" "}
+            <a
+              href="https://www.hadylauw.com/group"
+              className="text-primary hover:underline font-semibold"
+            >
+              group
+            </a>
+            , who work and play together. You will have fun.
+          </p>
+        </div>
+
+        {/* Row 4 (Merged full-width final row on 3-col layout; pairs cleanly as 10th cell on 2-col layout) */}
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col md:col-span-3 md:text-center">
+          <div className="text-center mb-4">
+            <span className="text-4xl">👍</span>
+          </div>
+          <h3 className="text-center font-bold mb-4 text-foreground">
+            We do what&apos;s <em>right</em>
+          </h3>
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
+            We do the right things and get them right. We get the right people
+            and do right by them. You will make the right choice.
+          </p>
         </div>
       </div>
 
-      {/* Open Roles Section */}
-      <div>
-        <h2 className="text-xs font-semibold uppercase tracking-[0.08em] text-foreground/80 mb-4 select-none">
-          Candidate Profiles
-        </h2>
-
-        <div className="space-y-4">
-          {openPositions.map((pos) => (
-            <div
-              key={pos.title}
-              className="p-5 rounded-2xl bg-card border border-border/80 shadow-xs hover:border-primary/40 transition-all group"
-            >
-              <h3 className="text-sm font-bold text-foreground mb-1 group-hover:text-primary transition-colors">
-                {pos.title}
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed mb-2">
-                {pos.description}
-              </p>
-              <p className="text-xs text-muted-foreground/80 leading-relaxed font-medium">
-                <strong className="text-foreground font-semibold">
-                  Focus areas:{" "}
-                </strong>
-                {pos.topics}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Contact Banner */}
-      <div className="p-6 sm:p-8 rounded-2xl bg-muted/40 border border-border/80 text-center flex flex-col items-center">
-        <h2 className="text-lg sm:text-xl font-bold text-foreground mb-2">
-          Ready to apply?
-        </h2>
-        <p className="text-xs text-muted-foreground max-w-lg mb-5 leading-relaxed">
-          Send your CV, transcripts, and brief research interests to Associate
-          Professor Hady W. Lauw.
-        </p>
+      <h3 className="text-2xl font-bold mb-4 text-center">
         <a
           href="mailto:hadywlauw@smu.edu.sg"
-          className="inline-flex items-center justify-center px-5 py-2 rounded-full text-xs font-semibold tracking-wide text-white bg-primary hover:bg-primary/90 transition-all shadow-xs hover:scale-105 active:scale-95"
+          className="text-primary hover:underline"
         >
-          Email hadywlauw@smu.edu.sg
-        </a>
-      </div>
+          Email
+        </a>{" "}
+        us your latest CV now.
+      </h3>
+
+      <p className="mb-6 text-center">
+        We are growing, and always on the lookout for bright, dedicated, and
+        nice individuals to become a part of us.
+      </p>
+
+      <ul className="space-y-4 list-none pl-0">
+        <li>
+          <strong>■ Postdoc candidate</strong> has a PhD degree with a promising
+          academic record. Topics considered particularly relevant include:
+          probabilistic graphical modeling, deep learning, topic modeling,
+          recommender systems, dimensionality reduction, similarity search, text
+          mining, and information extraction. A strong background in other data
+          mining and machine learning topics will also be considered.
+        </li>
+        <li>
+          <strong>■ PhD Student or Research Engineer candidate</strong> has a
+          Bachelor&apos;s and/or Master&apos;s degree in Computer Science or a
+          closely-related discipline with high academic standing. He or she is
+          competent in programming and data management, with knowledge of data
+          mining and machine learning concepts. Past experience, as well as
+          future interest, in research is a plus.
+        </li>
+        <li>
+          <strong>■ Intern or Research Student candidate</strong> is someone
+          currently still enrolled in a Bachelor&apos;s and/or Master&apos;s
+          degree in Computer Science or a closely-related discipline with high
+          academic standing. He or she is competent in programming, with
+          interest and/or experience in data mining or machine learning
+          research.
+        </li>
+      </ul>
     </div>
   );
 }

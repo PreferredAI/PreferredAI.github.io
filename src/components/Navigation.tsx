@@ -64,7 +64,12 @@ export default function Navigation() {
 
   const isActive = (path: string) => {
     if (path === "/blog") {
-      return pathname.startsWith("/blog") || pathname === "/";
+      return (
+        pathname.startsWith("/blog") ||
+        pathname === "/" ||
+        pathname.startsWith("/page/") ||
+        pathname.startsWith("/category/")
+      );
     }
     return pathname === path;
   };
