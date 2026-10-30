@@ -22,6 +22,7 @@ minimumReleaseAgeExclude:
   - next@16.4.1
   - body-parser@2.4.0
   - undici@7.30.1
+  - qs@6.16.1
 
 overrides:
   '@keystatic/core>js-yaml': 4.3.2
