@@ -1,7 +1,9 @@
+import type { Metadata } from "next";
+import { notFound } from "next/navigation";
+import CategoryFilterBar from "@/components/CategoryFilterBar";
 import Pagination from "@/components/Pagination";
 import { PostCard } from "@/components/PostCard";
 import { getAllPosts } from "@/lib/markdown-posts";
-import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{
@@ -9,11 +11,23 @@ interface PageProps {
   }>;
 }
 
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
+  const { page } = await params;
+  return {
+    title: `Blog · Page ${page}`,
+    alternates: {
+      canonical: `/blog/page/${page}`,
+    },
+  };
+}
+
 export default async function PaginatedBlogPage({ params }: PageProps) {
   const { page: pageParam } = await params;
   const currentPage = Number.parseInt(pageParam, 10);
 
-  if (Number.isNaN(currentPage) || currentPage < 1) {
+  if (Number.isNaN(currentPage) || currentPage < 2) {
     notFound();
   }
 
@@ -25,18 +39,27 @@ export default async function PaginatedBlogPage({ params }: PageProps) {
 
   return (
     <div>
-      <h1 className="mb-8 text-2xl font-bold uppercase tracking-wider text-foreground">
-        Blog
-      </h1>
+      <div className="mb-5 flex items-baseline justify-between gap-4">
+        <h1 className="text-xs font-semibold uppercase tracking-[0.08em] text-primary select-none">
+          Blog Posts
+        </h1>
+        <span className="text-xs font-mono text-muted-foreground">
+          Page {currentPage} of {pages}
+        </span>
+      </div>
 
-      <div className="space-y-12">
+      <CategoryFilterBar allHref="/blog" className="mb-6" />
+
+      <div className="grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
           <PostCard key={post.slug} post={post} />
         ))}
       </div>
 
       {posts.length === 0 && (
-        <p className="text-center text-muted-foreground">No posts found.</p>
+        <p className="text-center text-muted-foreground py-12">
+          No posts found.
+        </p>
       )}
 
       <Pagination
@@ -50,8 +73,9 @@ export default async function PaginatedBlogPage({ params }: PageProps) {
 
 export async function generateStaticParams() {
   const { pages } = await getAllPosts(1, 12);
+  if (pages <= 1) return [];
 
-  return Array.from({ length: pages }, (_, i) => ({
-    page: (i + 1).toString(),
+  return Array.from({ length: pages - 1 }, (_, i) => ({
+    page: (i + 2).toString(),
   }));
 }

@@ -56,7 +56,7 @@ export default config({
       format: { contentField: "content" },
       entryLayout: "content",
       columns: ["title", "date", "author"],
-      previewUrl: "/blog/{slug}",
+      previewUrl: "https://preferred.ai/blog/{slug}",
       schema: {
         title: fields.slug({
           name: {
@@ -86,7 +86,7 @@ export default config({
           description:
             "Choose or drop an image. Keystatic stores it in public/uploads/<post-slug>/cover.<ext>.",
           directory: "public/uploads",
-          publicPath: "/uploads",
+          publicPath: "/uploads/",
         }),
         featuredImage: fields.text({
           label: "Existing featured image path (legacy)",
@@ -121,7 +121,7 @@ export default config({
           options: {
             image: {
               directory: "public/uploads",
-              publicPath: "/uploads",
+              publicPath: "/uploads/",
               transformFilename: sanitizeAssetFilename,
             },
           },
@@ -135,7 +135,7 @@ export default config({
       format: "json",
       entryLayout: "form",
       columns: ["name", "placement", "title"],
-      previewUrl: "/people",
+      previewUrl: "https://preferred.ai/people",
       schema: {
         name: fields.slug({
           name: {
@@ -179,6 +179,22 @@ export default config({
           label: "Position or title",
           description:
             "Optional, including for alumni without a current title.",
+        }),
+        role: fields.text({
+          label: "Group role & tenure / graduation date",
+          description:
+            'Optional. E.g. "PhD (May 2026)" or "Research Scientist (Oct 2022 – Aug 2025)".',
+        }),
+        alumniSort: fields.text({
+          label: "Alumni sort key (YYYY-MM)",
+          description:
+            "Optional. Used to sort Alumni in reverse chronological order (e.g. 2026-05).",
+        }),
+        employment: fields.array(fields.text({ label: "Employment entry" }), {
+          label: "Employment history",
+          description:
+            "Optional chronological list of current and past employment roles.",
+          itemLabel: (props) => props.value,
         }),
         url: fields.url({
           label: "Personal or professional URL",

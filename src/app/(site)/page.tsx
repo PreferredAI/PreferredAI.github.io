@@ -1,31 +1,45 @@
+import Link from "next/link";
+import CategoryFilterBar from "@/components/CategoryFilterBar";
 import { FeaturedPostCard } from "@/components/FeaturedPostCard";
 import Pagination from "@/components/Pagination";
 import { PostCard } from "@/components/PostCard";
+import TeamPhotos from "@/components/TeamPhotos";
 import { getAllPosts } from "@/lib/markdown-posts";
-import Link from "next/link";
 
 export default async function Home() {
-  const { posts, pages } = await getAllPosts(1, 10, { firstPageLimit: 9 });
+  const { posts, pages } = await getAllPosts(1, 12, { firstPageLimit: 10 });
 
   const featuredPost = posts[0];
   const remainingPosts = posts.slice(1);
 
   return (
     <div>
-      <h1 className="mb-8 text-3xl md:text-4xl font-extrabold tracking-tight text-balance text-foreground">
-        Recent posts
+      <h1 className="mb-5 text-xs font-semibold uppercase tracking-[0.08em] text-primary select-none">
+        Featured &amp; Recent Posts
       </h1>
 
       {featuredPost && (
-        <div className="feed-feature">
-          <FeaturedPostCard post={featuredPost} />
+        <div className="feed-feature mb-7 grid grid-cols-1 lg:grid-cols-12 gap-5 sm:gap-6 items-stretch">
+          <div className="lg:col-span-8 flex">
+            <FeaturedPostCard post={featuredPost} />
+          </div>
+          <div className="lg:col-span-4 flex">
+            <TeamPhotos
+              variant="compact"
+              headerLabel="The Team"
+              headerHref="/people"
+              headerLinkLabel="Meet us →"
+            />
+          </div>
         </div>
       )}
 
+      {posts.length > 0 && <CategoryFilterBar allHref="/" className="mb-6" />}
+
       {remainingPosts.length > 0 && (
-        <div className="feed-grid grid gap-8 md:grid-cols-2">
+        <div className="feed-grid grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
           {remainingPosts.map((post, index) => (
-            <PostCard key={post.slug} post={post} priority={index < 2} />
+            <PostCard key={post.slug} post={post} priority={index < 3} />
           ))}
         </div>
       )}

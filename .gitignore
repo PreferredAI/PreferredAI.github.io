@@ -2,6 +2,7 @@
 
 # dependencies
 /node_modules
+/apps/*/node_modules/
 /.pnpm-store/
 /.pnp
 .pnp.*
@@ -19,6 +20,9 @@
 /out/
 /.open-next/
 /.wrangler/
+/apps/admin/.next/
+/apps/admin/.open-next/
+/apps/admin/.wrangler/
 
 # production
 /build
@@ -44,7 +48,22 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# admin local linked content symlinks
+/apps/admin/content/
+/apps/admin/public/uploads/
+/apps/admin/public/team/
 cloudflare-env.d.ts
 
 /src/generated/prisma
 /public/optimized/
+
+# Build-time indexes are derived from committed editorial content.
+/src/data/generated-posts.json
+/src/data/generated-people.json
+/src/data/generated-image-manifest.json
+/.cache/
+
+# Local Keystatic storage links point at the workspace content directories.
+/apps/admin/content/
+/apps/admin/public/

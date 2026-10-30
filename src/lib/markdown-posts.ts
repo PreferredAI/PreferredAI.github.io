@@ -1,6 +1,6 @@
 import fs from "fs";
-import path from "path";
 import matter from "gray-matter";
+import path from "path";
 import rehypeKatex from "rehype-katex";
 import rehypeRaw from "rehype-raw";
 import rehypeSanitize from "rehype-sanitize";
@@ -10,12 +10,11 @@ import remarkMath from "remark-math";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
+import generatedPostsData from "@/data/generated-posts.json";
 import { markdownSanitizeSchema } from "./markdown-sanitize-schema";
 import rehypeFigure from "./rehype-figure";
 import rehypeResponsiveImages from "./rehype-responsive-images";
 import rehypeSafeEmbeds from "./rehype-safe-embeds";
-
-import generatedPostsData from "@/data/generated-posts.json";
 
 const postsDirectory = path.join(process.cwd(), "content", "posts");
 
@@ -99,7 +98,7 @@ export function loadAllPosts(): MarkdownPost[] {
       }
     }
   } catch {
-    // Edge / Worker runtimes do not have process.cwd()/content/posts on disk
+    // Next.js may evaluate the module from a bundle without direct source files.
   }
 
   const posts =

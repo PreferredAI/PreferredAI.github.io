@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import generatedPeople from "@/data/generated-people.json";
-import { type Person, comparePeople } from "./people-schema";
+import { comparePeople, type Person } from "./people-schema";
 
 const peopleDirectory = path.join(process.cwd(), "content", "people");
 
@@ -10,6 +10,9 @@ interface StoredPerson {
   placement: Person["placement"];
   photo: string;
   title?: string | null;
+  role?: string | null;
+  alumniSort?: string | null;
+  employment?: string[] | null;
   url?: string | null;
 }
 
@@ -35,12 +38,17 @@ function loadPeopleFromDisk(): Person[] | null {
           placement: stored.placement,
           photo: stored.photo,
           title: stored.title ?? "",
+          ...(stored.role ? { role: stored.role } : {}),
+          ...(stored.alumniSort ? { alumniSort: stored.alumniSort } : {}),
+          ...(stored.employment && stored.employment.length > 0
+            ? { employment: stored.employment }
+            : {}),
           ...(stored.url ? { url: stored.url } : {}),
         };
       })
       .sort(comparePeople);
   } catch {
-    // Cloudflare Workers do not have the repository content directory on disk.
+    // Next.js may evaluate the module from a bundle without direct source files.
     return null;
   }
 }

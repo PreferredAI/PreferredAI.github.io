@@ -153,6 +153,10 @@
       "sourceWidth": 1280,
       "sourceHeight": 719
     },
+    "/team/activities/2026-10.jpg": {
+      "sourceWidth": 1280,
+      "sourceHeight": 719
+    },
     "/team/members/andrew-le/photo.jpg": {
       "sourceWidth": 400,
       "sourceHeight": 400
@@ -196,10 +200,6 @@
     "/team/members/hoang/photo.jpg": {
       "sourceWidth": 1053,
       "sourceHeight": 1054
-    },
-    "/team/members/hongtuonie/photo.jpeg": {
-      "sourceWidth": 1280,
-      "sourceHeight": 1838
     },
     "/team/members/jaime-hieu/photo.jpg": {
       "sourceWidth": 3004,
@@ -1652,6 +1652,10 @@
     "/uploads/2026/04/phuong.jpeg": {
       "sourceWidth": 450,
       "sourceHeight": 450
+    },
+    "/uploads/reproducibility-in-recommender-systems/cover.jpg": {
+      "sourceWidth": 2783,
+      "sourceHeight": 1878
     }
   }
 }

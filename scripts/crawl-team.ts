@@ -1,6 +1,6 @@
 import fs from "fs";
-import path from "path";
 import { JSDOM } from "jsdom";
+import path from "path";
 import { TEAM_PHOTOS, type TeamPhoto } from "../src/data/teamPhotos";
 
 // =============================================================================

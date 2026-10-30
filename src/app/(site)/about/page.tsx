@@ -1,9 +1,8 @@
 import fs from "fs";
-import path from "path";
-import { markdownToHtml } from "@/lib/markdown-posts";
 import type { Metadata } from "next";
-
+import path from "path";
 import generatedPostsData from "@/data/generated-posts.json";
+import { markdownToHtml } from "@/lib/markdown-posts";
 
 export const metadata: Metadata = {
   title: "About",
@@ -20,7 +19,7 @@ async function getAboutContent() {
       return await markdownToHtml(fileContents);
     }
   } catch {
-    // Edge / Worker runtimes
+    // Next.js may evaluate the module from a bundle without direct source files.
   }
 
   const aboutMd =
@@ -36,8 +35,11 @@ export default async function AboutPage() {
   const content = await getAboutContent();
 
   return (
-    <div className="prose dark:prose-invert prose-lg max-w-none">
-      <div dangerouslySetInnerHTML={{ __html: content }} />
+    <div className="max-w-5xl mx-auto bg-card border border-border/80 rounded-2xl p-6 sm:p-10 shadow-xs">
+      <div
+        className="prose dark:prose-invert prose-neutral max-w-none prose-headings:font-bold prose-headings:tracking-tight prose-h1:text-2xl sm:prose-h1:text-3xl prose-h2:text-xl sm:prose-h2:text-2xl prose-a:font-medium prose-a:text-primary prose-a:underline prose-a:underline-offset-4 prose-a:decoration-primary/30 hover:prose-a:text-primary/80 hover:prose-a:decoration-primary transition-colors"
+        dangerouslySetInnerHTML={{ __html: content }}
+      />
     </div>
   );
 }

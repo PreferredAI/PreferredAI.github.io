@@ -19,6 +19,39 @@ export const PUBLICATIONS_DATA: YearSection[] = [
     year: "2026",
     publications: [
       {
+        title: "Mining Utility-Maximizing Prices for Mixed Bundles",
+        authors: "Ezekiel Ong Young and Hady W. Lauw",
+        venue:
+          "ACM Transactions on Management Information Systems (TMIS), to appear",
+      },
+      {
+        title:
+          "Per-Starting-Point Plausibility and Diversity Bounds for Score-Based Diffusion Models",
+        authors: "Nguyen Minh Quang and Hady W. Lauw",
+        venue: "Neural Information Processing Systems (NeurIPS'26), Dec 2026",
+      },
+      {
+        title: "Learning Evidence Distributions for Recommendation Explanation",
+        authors:
+          "Hanh Tran, Uyen Nguyen, Ha-Minh-Hien Nguyen, Trung-Hoang Le, and Hady W. Lauw",
+        venue:
+          "International ACM SIGIR Conference on Information Retrieval in the Asia Pacific (SIGIR-AP'26), Dec 2026",
+      },
+      {
+        title:
+          "GuidedRec: Behaviourally Constrained Portfolio Recommendation with Certified Slate Optimisation",
+        authors: "Ezekiel Ong Young and Hady W. Lauw",
+        venue:
+          "ACM International Conference on AI in Finance (ICAIF'26), Nov 2026",
+      },
+      {
+        title:
+          "CLASP: Collaborative Latent Alignment from Semantic Preference Descriptions for Natural Language based Recommendation",
+        authors: "Dilan Dinushka, Antoine Ledent, and Hady W. Lauw",
+        venue:
+          "Conference on Empirical Methods in Natural Language Processing (EMNLP'26), Oct 2026",
+      },
+      {
         title:
           "Enhancing Review-Augmented Contrastive Recommendation with LLM-based Generation",
         authors: "Hoang Dong, Yuan Fang, and Hady W. Lauw",

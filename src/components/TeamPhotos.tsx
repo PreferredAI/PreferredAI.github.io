@@ -1,68 +1,106 @@
 "use client";
 
-import { TEAM_PHOTOS } from "@/data/teamPhotos";
 import Image from "next/image";
+import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import { TEAM_PHOTOS } from "@/data/teamPhotos";
 
-// Helper to generate a shuffled array of indices from 1 to N-1
-const generateShuffledPlaylist = (length: number): number[] => {
-  if (length <= 1) return [];
-  const indices = Array.from({ length: length - 1 }, (_, i) => i + 1);
-  // Fisher-Yates Shuffle
-  for (let i = indices.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [indices[i], indices[j]] = [indices[j], indices[i]];
-  }
-  return indices;
+interface TeamPhotosProps {
+  /**
+   * "compact": minimal footprint card with overlaid caption that stretches to match a sibling hero card (used on `/`).
+   * "feature": larger gallery showcase card with high-res sizing and full caption bar (used on `/people`).
+   */
+  variant?: "compact" | "feature";
+  /** Optional override for rotation interval in ms (defaults to 8000ms for compact, 5500ms for feature). */
+  intervalMs?: number;
+  headerLabel?: string;
+  headerHref?: string;
+  headerLinkLabel?: string;
+}
+
+const extractYear = (dateStr: string): number => {
+  const match = dateStr.match(/\b(19|20)\d{2}\b/);
+  return match ? Number.parseInt(match[0], 10) : 0;
 };
 
-export default function TeamPhotos() {
+const shuffleIndices = (indices: number[]): number[] => {
+  const copy = [...indices];
+  // Fisher-Yates Shuffle
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+};
+
+// Build a recency-tiered playlist excluding `excludeIndex` (defaults to 0, the initial latest photo):
+// Tier 1: Recent cohort photos within 2 years of the newest photo (e.g. 2024–2026), shuffled.
+// Tier 2: Older archive photos (e.g. 2013–2023), shuffled.
+const generateTieredPlaylist = (excludeIndex = 0): number[] => {
+  if (TEAM_PHOTOS.length <= 1) return [];
+
+  const latestYear = extractYear(TEAM_PHOTOS[0].date);
+  const recentCutoffYear = latestYear - 2;
+
+  const recentIndices: number[] = [];
+  const archiveIndices: number[] = [];
+
+  for (let i = 0; i < TEAM_PHOTOS.length; i++) {
+    if (i === excludeIndex) continue;
+    if (i === 0 || extractYear(TEAM_PHOTOS[i].date) >= recentCutoffYear) {
+      recentIndices.push(i);
+    } else {
+      archiveIndices.push(i);
+    }
+  }
+
+  return [...shuffleIndices(recentIndices), ...shuffleIndices(archiveIndices)];
+};
+
+export default function TeamPhotos({
+  variant = "feature",
+  intervalMs,
+  headerLabel,
+  headerHref,
+  headerLinkLabel,
+}: TeamPhotosProps = {}) {
+  const [mounted, setMounted] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [prevIndex, setPrevIndex] = useState<number | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
+  const [isInView, setIsInView] = useState(true);
+  const [isTabVisible, setIsTabVisible] = useState(true);
   const [autoplayOn, setAutoplayOn] = useState(true);
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
   const [playlist, setPlaylist] = useState<number[]>(() =>
-    generateShuffledPlaylist(TEAM_PHOTOS.length),
+    generateTieredPlaylist(0),
   );
-  const [_playlistIndex, setPlaylistIndex] = useState(-1);
+  const [playlistIndex, setPlaylistIndex] = useState(-1);
   // Tracks whether the current photo's image failed to load, so we can show a
   // text fallback in the frame instead of an empty box. Resets per-photo below.
   const [imageFailed, setImageFailed] = useState(false);
 
-  // Refs for lightbox focus management (move focus in on open, restore on close)
+  // Refs for visibility observation and lightbox focus management (move focus in on open, restore on close)
+  const containerRef = useRef<HTMLDivElement>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Regenerate and shuffle the remaining playlist starting from a manual photo index
+  const isCompact = variant === "compact";
+  const rotationIntervalMs = intervalMs ?? (isCompact ? 8000 : 5500);
+
+  // Regenerate and shuffle the remaining tiered playlist starting from a manual photo index
   const resetPlaylistForIndex = (index: number) => {
-    if (TEAM_PHOTOS.length <= 1) {
-      setPlaylist([]);
-      setPlaylistIndex(-1);
-      return;
-    }
-    // All indices except the current one
-    const remainingIndices = Array.from(
-      { length: TEAM_PHOTOS.length },
-      (_, i) => i,
-    ).filter((i) => i !== index);
-    // Shuffle remaining
-    for (let i = remainingIndices.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [remainingIndices[i], remainingIndices[j]] = [
-        remainingIndices[j],
-        remainingIndices[i],
-      ];
-    }
-    setPlaylist(remainingIndices);
+    setPlaylist(generateTieredPlaylist(index));
     setPlaylistIndex(-1);
   };
 
   // Honor the OS "reduce motion" setting: default autoplay off and gate the
   // timer so content never swaps on its own for users who opted out of motion.
   useEffect(() => {
+    setMounted(true);
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
     const apply = (matches: boolean) => {
       setPrefersReducedMotion(matches);
@@ -74,29 +112,59 @@ export default function TeamPhotos() {
     return () => mq.removeEventListener("change", handleChange);
   }, []);
 
+  // Pause rotation when scrolled off-screen or when browser tab is hidden
   useEffect(() => {
-    if (!autoplayOn || isPaused || isModalOpen || prefersReducedMotion) return;
+    const handleVisibility = () => {
+      setIsTabVisible(document.visibilityState === "visible");
+    };
+    handleVisibility();
+    document.addEventListener("visibilitychange", handleVisibility);
 
-    // Random interval between 10-15 seconds (10000-15000ms)
-    const getRandomInterval = () => Math.floor(Math.random() * 5000) + 10000;
+    const el = containerRef.current;
+    let observer: IntersectionObserver | null = null;
+    if (el && typeof IntersectionObserver !== "undefined") {
+      observer = new IntersectionObserver(
+        ([entry]) => {
+          setIsInView(entry.isIntersecting);
+        },
+        { threshold: 0.15 },
+      );
+      observer.observe(el);
+    }
 
-    const shufflePhoto = () => {
+    return () => {
+      document.removeEventListener("visibilitychange", handleVisibility);
+      observer?.disconnect();
+    };
+  }, []);
+
+  useEffect(() => {
+    if (
+      TEAM_PHOTOS.length <= 1 ||
+      !autoplayOn ||
+      isPaused ||
+      isModalOpen ||
+      prefersReducedMotion ||
+      !isInView ||
+      !isTabVisible
+    ) {
+      return;
+    }
+
+    const advancePhoto = () => {
       setPrevIndex(currentIndex);
       setImageFailed(false);
 
-      setPlaylistIndex((prevPlaylistIdx) => {
-        const nextPlaylistIdx = prevPlaylistIdx + 1;
-
-        if (nextPlaylistIdx >= playlist.length) {
-          // Playlist finished: Go back to the latest photo (index 0) and generate a new shuffle
-          setCurrentIndex(0);
-          setPlaylist(generateShuffledPlaylist(TEAM_PHOTOS.length));
-          return -1;
-        }
-        // Show the next shuffled photo
+      const nextPlaylistIdx = playlistIndex + 1;
+      if (nextPlaylistIdx >= playlist.length) {
+        // Playlist finished: Return to the latest photo (index 0) and generate a new tiered shuffle
+        setCurrentIndex(0);
+        setPlaylist(generateTieredPlaylist(0));
+        setPlaylistIndex(-1);
+      } else {
         setCurrentIndex(playlist[nextPlaylistIdx]);
-        return nextPlaylistIdx;
-      });
+        setPlaylistIndex(nextPlaylistIdx);
+      }
 
       // Clear the background image after transition completes to clean up the DOM
       setTimeout(() => {
@@ -104,16 +172,20 @@ export default function TeamPhotos() {
       }, 600); // matches the 0.6s fade-in duration
     };
 
-    const intervalId = setTimeout(shufflePhoto, getRandomInterval());
+    const intervalId = setTimeout(advancePhoto, rotationIntervalMs);
 
     return () => clearTimeout(intervalId);
   }, [
     currentIndex,
     isPaused,
     isModalOpen,
+    isInView,
+    isTabVisible,
     playlist,
+    playlistIndex,
     autoplayOn,
     prefersReducedMotion,
+    rotationIntervalMs,
   ]);
 
   const handleNext = (e?: React.MouseEvent) => {
@@ -194,16 +266,96 @@ export default function TeamPhotos() {
     };
   }, [isModalOpen]);
 
+  // Lock body scroll when modal is open
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
+
   const currentPhoto = TEAM_PHOTOS[currentIndex];
+  const hasHeader = Boolean(headerLabel || (headerHref && headerLinkLabel));
+  const imageSizes = isCompact
+    ? "(max-width: 1024px) 100vw, 440px"
+    : "(max-width: 1024px) 100vw, 960px";
+
+  const nextPlaylistIdx = playlistIndex + 1;
+  const nextUpIndex =
+    TEAM_PHOTOS.length <= 1
+      ? null
+      : nextPlaylistIdx >= playlist.length
+        ? 0
+        : playlist[nextPlaylistIdx];
 
   return (
     <div
-      className="space-y-3"
+      ref={containerRef}
+      className={`w-full bg-card border border-border/80 rounded-2xl shadow-xs ${
+        isCompact
+          ? "h-full flex flex-col p-3 sm:p-3.5"
+          : "p-4 sm:p-5 space-y-3.5"
+      }`}
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
+      {/* Card Header */}
+      {hasHeader && (
+        <div
+          className={`flex items-center justify-between gap-3 ${
+            isCompact ? "mb-2.5 px-0.5" : ""
+          }`}
+        >
+          {headerLabel && (
+            <h2 className="mb-0 text-[11px] font-semibold uppercase tracking-[0.08em] text-foreground/80 select-none">
+              {headerLabel}
+            </h2>
+          )}
+          {headerHref && headerLinkLabel && (
+            <Link
+              href={headerHref}
+              className="ml-auto text-[11px] font-medium text-muted-foreground hover:text-primary transition-colors select-none"
+            >
+              {headerLinkLabel}
+            </Link>
+          )}
+        </div>
+      )}
+
       {/* Sleek rounded frame wrapper with thin border & slight shadow drop */}
-      <div className="group relative overflow-hidden rounded-xl border border-border shadow-sm aspect-video bg-muted flex items-center justify-center select-none hover:border-foreground/20 transition-colors">
+      <div
+        className={`group relative overflow-hidden rounded-xl border border-border shadow-sm bg-muted flex items-center justify-center select-none hover:border-foreground/20 transition-colors ${
+          isCompact
+            ? "flex-1 min-h-[210px] sm:min-h-[240px] lg:min-h-0 aspect-[16/10] lg:aspect-auto"
+            : "aspect-video"
+        }`}
+      >
+        {/* Preload next scheduled photo at matching responsive width so crossfades never flash */}
+        {mounted &&
+          autoplayOn &&
+          !prefersReducedMotion &&
+          isInView &&
+          nextUpIndex !== null &&
+          nextUpIndex !== currentIndex && (
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 opacity-0 pointer-events-none -z-10"
+            >
+              <Image
+                src={TEAM_PHOTOS[nextUpIndex].url}
+                alt=""
+                fill
+                sizes={imageSizes}
+                className="object-cover"
+                loading="eager"
+              />
+            </div>
+          )}
+
         {/* Background Layer (Outgoing/Static) */}
         {prevIndex !== null && (
           <div className="absolute inset-0 pointer-events-none z-0">
@@ -211,7 +363,7 @@ export default function TeamPhotos() {
               src={TEAM_PHOTOS[prevIndex].url}
               alt=""
               fill
-              sizes="(max-width: 1024px) 100vw, 320px"
+              sizes={imageSizes}
               className="object-cover"
               priority
             />
@@ -227,7 +379,7 @@ export default function TeamPhotos() {
             src={currentPhoto.url}
             alt=""
             fill
-            sizes="(max-width: 1024px) 100vw, 320px"
+            sizes={imageSizes}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
             priority
             onError={() => setImageFailed(true)}
@@ -253,6 +405,29 @@ export default function TeamPhotos() {
           aria-label={`View team photo full screen: ${currentPhoto.location}, ${currentPhoto.date}`}
           className="absolute inset-0 z-10 cursor-pointer"
         />
+
+        {/* Compact variant: overlaid bottom gradient caption to save vertical space */}
+        {isCompact && (
+          <div className="absolute inset-x-0 bottom-0 z-[15] pointer-events-none bg-gradient-to-t from-black/85 via-black/45 to-transparent px-3.5 pt-10 pb-2.5 pr-12">
+            <div
+              key={`compact-caption-${currentIndex}`}
+              className="animate-fade-in"
+            >
+              <p className="text-xs font-semibold text-white leading-snug drop-shadow-xs line-clamp-1">
+                {currentPhoto.location}
+              </p>
+              <div className="mt-0.5 flex items-center gap-2 text-[11px] font-mono text-white/80">
+                <span>{currentPhoto.date}</span>
+                <span aria-hidden="true" className="text-white/40">
+                  &middot;
+                </span>
+                <span>
+                  {currentIndex + 1}/{TEAM_PHOTOS.length}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Left Arrow Button */}
         <button
@@ -336,154 +511,164 @@ export default function TeamPhotos() {
         </button>
       </div>
 
-      {/* Caption Metadata & Counter */}
-      <div className="relative h-10">
-        {/* Outgoing Caption */}
-        {prevIndex !== null && (
-          <div className="absolute inset-x-0 top-0 flex justify-between items-start pointer-events-none z-0">
-            <div>
-              <p className="text-[11px] font-bold text-foreground leading-tight">
-                {TEAM_PHOTOS[prevIndex].location}
-              </p>
-              <p className="text-[10px] font-semibold text-muted-foreground mt-0.5">
-                {TEAM_PHOTOS[prevIndex].date}
-              </p>
-            </div>
-            <span className="text-[10px] font-bold text-muted-foreground/60 bg-muted/40 border border-border/20 px-1.5 py-0.5 rounded-md">
-              {prevIndex + 1} / {TEAM_PHOTOS.length}
-            </span>
-          </div>
-        )}
-
-        {/* Incoming Caption */}
-        <div
-          key={`caption-${currentIndex}`}
-          className="absolute inset-x-0 top-0 flex justify-between items-start z-10 animate-fade-in"
-        >
-          <div>
-            <p className="text-[11px] font-bold text-foreground leading-tight">
-              {currentPhoto.location}
-            </p>
-            <p className="text-[10px] font-semibold text-muted-foreground mt-0.5">
-              {currentPhoto.date}
-            </p>
-          </div>
-          <span className="text-[10px] font-bold text-muted-foreground/85 bg-muted/70 border border-border/40 px-1.5 py-0.5 rounded-md">
-            {currentIndex + 1} / {TEAM_PHOTOS.length}
-          </span>
-        </div>
-      </div>
-
-      {/* Lightbox Modal */}
-      {isModalOpen && (
-        <div
-          ref={modalRef}
-          role="dialog"
-          aria-modal="true"
-          aria-label={`Team photo, full screen: ${currentPhoto.location}, ${currentPhoto.date}`}
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-sm transition-opacity duration-300"
-          onClick={() => setIsModalOpen(false)}
-        >
-          {/* Close Button */}
-          <button
-            ref={closeButtonRef}
-            type="button"
-            className="absolute top-4 right-4 p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50"
-            onClick={() => setIsModalOpen(false)}
-            aria-label="Close modal"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M6 18L18 6M6 6l12 12"
-              />
-            </svg>
-          </button>
-
-          {/* Left Arrow Button in Modal */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handlePrev(e);
-            }}
-            className="absolute left-6 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50 hover:scale-105 flex items-center justify-center"
-            aria-label="Previous photo"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-          </button>
-
-          {/* Right Arrow Button in Modal */}
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              handleNext(e);
-            }}
-            className="absolute right-6 p-3 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer z-50 hover:scale-105 flex items-center justify-center"
-            aria-label="Next photo"
-          >
-            <svg
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-              strokeWidth={2}
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
-          </button>
-
-          {/* Modal Content container */}
-          <div
-            className="relative w-[90vw] max-w-4xl max-h-[85vh] aspect-video rounded-2xl overflow-hidden border border-white/10 shadow-2xl bg-zinc-950 flex items-center justify-center p-1"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <Image
-              src={currentPhoto.url}
-              alt={`${currentPhoto.date} - ${currentPhoto.location}`}
-              fill
-              className="object-contain"
-              unoptimized
-            />
-            {/* Modal Caption */}
-            <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-4 text-white flex justify-between items-end">
-              <div>
-                <p className="text-sm font-bold">{currentPhoto.location}</p>
-                <p className="text-xs text-gray-300 mt-0.5">
-                  {currentPhoto.date}
+      {/* Caption Metadata & Counter (Feature variant) */}
+      {!isCompact && (
+        <div className="relative min-h-[42px] pt-0.5">
+          {/* Outgoing Caption */}
+          {prevIndex !== null && (
+            <div className="absolute inset-x-0 top-0.5 flex justify-between items-start pointer-events-none z-0">
+              <div className="pr-3">
+                <p className="text-sm font-semibold text-foreground leading-tight">
+                  {TEAM_PHOTOS[prevIndex].location}
+                </p>
+                <p className="text-xs font-mono text-muted-foreground mt-0.5">
+                  {TEAM_PHOTOS[prevIndex].date}
                 </p>
               </div>
-              <span className="text-xs font-bold bg-white/10 border border-white/15 px-2 py-0.5 rounded-full select-none">
-                {currentIndex + 1} / {TEAM_PHOTOS.length}
+              <span className="shrink-0 text-[11px] font-mono text-muted-foreground bg-muted border border-border/50 px-2 py-0.5 rounded-md">
+                {prevIndex + 1} / {TEAM_PHOTOS.length}
               </span>
             </div>
+          )}
+
+          {/* Incoming Caption */}
+          <div
+            key={`caption-${currentIndex}`}
+            className="absolute inset-x-0 top-0.5 flex justify-between items-start z-10 animate-fade-in"
+          >
+            <div className="pr-3">
+              <p className="text-sm font-semibold text-foreground leading-tight">
+                {currentPhoto.location}
+              </p>
+              <p className="text-xs font-mono text-muted-foreground mt-0.5">
+                {currentPhoto.date}
+              </p>
+            </div>
+            <span className="shrink-0 text-[11px] font-mono text-muted-foreground bg-muted border border-border/50 px-2 py-0.5 rounded-md">
+              {currentIndex + 1} / {TEAM_PHOTOS.length}
+            </span>
           </div>
         </div>
       )}
+
+      {/* Lightbox Modal (portaled directly to document.body to avoid parent stacking context traps) */}
+      {mounted &&
+        isModalOpen &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={modalRef}
+            role="dialog"
+            aria-modal="true"
+            aria-label={`Team photo, full screen: ${currentPhoto.location}, ${currentPhoto.date}`}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 backdrop-blur-md transition-opacity duration-300 p-4 sm:p-6"
+            onClick={() => setIsModalOpen(false)}
+          >
+            {/* Close Button */}
+            <button
+              ref={closeButtonRef}
+              type="button"
+              className="absolute top-4 right-4 sm:top-6 sm:right-6 p-2.5 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white transition-all cursor-pointer z-[110] hover:scale-110 active:scale-95 shadow-lg backdrop-blur-md"
+              onClick={() => setIsModalOpen(false)}
+              aria-label="Close modal"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+
+            {/* Left Arrow Button in Modal */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handlePrev(e);
+              }}
+              className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white transition-all cursor-pointer z-[110] hover:scale-110 active:scale-95 flex items-center justify-center shadow-lg backdrop-blur-md"
+              aria-label="Previous photo"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M15 19l-7-7 7-7"
+                />
+              </svg>
+            </button>
+
+            {/* Right Arrow Button in Modal */}
+            <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                handleNext(e);
+              }}
+              className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/15 hover:bg-white/25 border border-white/20 text-white transition-all cursor-pointer z-[110] hover:scale-110 active:scale-95 flex items-center justify-center shadow-lg backdrop-blur-md"
+              aria-label="Next photo"
+            >
+              <svg
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 5l7 7-7 7"
+                />
+              </svg>
+            </button>
+
+            {/* Modal Content container: immersive max-w-7xl (1280px matching native photo resolution) with smooth rounded corners, zero padding, and seamless photo fill */}
+            <div
+              className="relative w-[94vw] max-w-7xl aspect-video max-h-[86vh] rounded-2xl overflow-hidden border border-white/15 shadow-2xl shadow-black/80 bg-zinc-950 flex items-center justify-center select-none"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Image
+                src={currentPhoto.url}
+                alt={`${currentPhoto.date} - ${currentPhoto.location}`}
+                fill
+                className="object-cover"
+                unoptimized
+                sizes="(max-width: 1280px) 94vw, 1280px"
+                priority
+              />
+              {/* Modal Caption smoothly overlaid at the bottom of the photo */}
+              <div className="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent p-5 sm:p-6 text-white flex justify-between items-end pointer-events-none">
+                <div className="pr-4">
+                  <p className="text-sm sm:text-base md:text-lg font-bold text-white drop-shadow-sm leading-snug">
+                    {currentPhoto.location}
+                  </p>
+                  <p className="text-xs sm:text-sm text-white/75 font-mono mt-0.5">
+                    {currentPhoto.date}
+                  </p>
+                </div>
+                <span className="shrink-0 text-xs sm:text-sm font-mono font-medium text-white/90 bg-white/15 backdrop-blur-xs border border-white/20 px-3 py-1 rounded-full select-none shadow-xs">
+                  {currentIndex + 1} / {TEAM_PHOTOS.length}
+                </span>
+              </div>
+            </div>
+          </div>,
+          document.body,
+        )}
     </div>
   );
 }

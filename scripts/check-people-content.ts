@@ -17,4 +17,15 @@ if (firstCoSupervisee !== -1) {
   );
 }
 
+const alumniSortKeys = people
+  .filter((person) => person.placement === "alumni" && person.alumniSort)
+  .map((person) => person.alumniSort as string);
+
+for (let i = 1; i < alumniSortKeys.length; i++) {
+  assert.ok(
+    alumniSortKeys[i - 1] >= alumniSortKeys[i],
+    `Alumni must sort in reverse chronological order (${alumniSortKeys[i - 1]} before ${alumniSortKeys[i]})`,
+  );
+}
+
 console.log(`People content check passed (${people.length} valid profiles).`);

@@ -1,7 +1,12 @@
 {
   "name": "Lim Jia Peng",
-  "placement": "phd-candidate",
+  "placement": "alumni",
   "photo": "/team/members/jiapeng/photo.png",
-  "title": "PhD Candidate (SMU)",
+  "title": "Research Scientist (Meta)",
+  "role": "PhD (May 2026)",
+  "alumniSort": "2026-05",
+  "employment": [
+    "Since Aug 2025: Research Scientist, Machine Learning, Meta USA"
+  ],
   "url": "https://www.linkedin.com/in/jia-peng-lim"
 }

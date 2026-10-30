@@ -1,4 +1,4 @@
-name: Test Build
+name: Test website build
 
 on:
   pull_request:
@@ -8,46 +8,93 @@ on:
 permissions:
   contents: read
 
-# Cancel in-progress runs for the same PR
 concurrency:
-  group: ${{ github.workflow }}-${{ github.ref }}
+  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
   cancel-in-progress: true
 
 jobs:
-  build:
+  audit:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Check out proposed revision
         uses: actions/checkout@v7
+        with:
+          persist-credentials: false
 
-      - name: Setup pnpm
+      - name: Set up pnpm
         uses: pnpm/action-setup@v6
 
-      - name: Setup Node
+      - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
           node-version: "22"
-          cache: "pnpm"
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Cache optimized images
+      - name: Audit dependencies
+        run: pnpm audit:dependencies
+
+  build:
+    runs-on: ubuntu-latest
+    env:
+      PREFERREDAI_NOINDEX: ${{ startsWith(github.head_ref || github.ref_name, 'keystatic/') && 'true' || 'false' }}
+    steps:
+      - name: Check out proposed revision
+        uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Restore generated-image cache
         uses: actions/cache@v6
         with:
           path: |
             public/optimized
             .cache/image-optimizer.json
-            src/data/generated-image-manifest.json
-          key: ${{ runner.os }}-images-v2-${{ hashFiles('public/team/**', 'public/uploads/**', 'scripts/optimize-all-images.ts', 'src/lib/image-widths.ts') }}
+          key: ${{ runner.os }}-images-v4-${{ hashFiles('public/uploads/**', 'public/team/members/**', 'public/team/activities/**', 'scripts/optimize-all-images.ts', 'src/lib/image-widths.ts') }}
           restore-keys: |
-            ${{ runner.os }}-images-v2-
+            ${{ runner.os }}-images-v4-
 
-      - name: Validate (read-only)
+      - name: Validate website and editorial content
         run: pnpm check
 
-      - name: Audit all dependencies
-        run: pnpm audit:dependencies
+      - name: Build static website
+        run: pnpm build:prepared
 
-      - name: Build for Cloudflare Workers
-        run: pnpm build:worker
+      - name: Add preview-only robots header
+        if: env.PREFERREDAI_NOINDEX == 'true'
+        run: |
+          printf '\n/*\n  X-Robots-Tag: noindex, nofollow\n' >> out/_headers
+
+      - name: Type-check admin application
+        run: pnpm --filter @preferredai/admin typecheck
+
+      - name: Build admin Worker without deployment secrets
+        env:
+          KEYSTATIC_GITHUB_CLIENT_ID: build-placeholder
+          KEYSTATIC_GITHUB_CLIENT_SECRET: build-placeholder
+          KEYSTATIC_SECRET: 0000000000000000000000000000000000000000000000000000000000000000
+          NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND: github
+          NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: preferredai-keystatic
+        run: pnpm --filter @preferredai/admin build:worker
+
+      - name: Upload static export
+        uses: actions/upload-artifact@v7
+        with:
+          name: test-static-export
+          path: out
+          if-no-files-found: error
+          retention-days: 3

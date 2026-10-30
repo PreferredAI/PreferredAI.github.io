@@ -10,7 +10,7 @@ const outputPath = path.join(
 );
 
 function main() {
-  console.log("Generating People index for server/worker runtime...");
+  console.log("Generating People index for the static build...");
   const people = buildPeopleIndex();
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(outputPath, `${JSON.stringify(people, null, 2)}\n`, "utf8");

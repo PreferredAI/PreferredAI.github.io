@@ -3,5 +3,12 @@
   "placement": "alumni",
   "photo": "/team/members/andrew-le/photo.jpg",
   "title": "Assistant Professor (VinUni)",
+  "role": "PhD (Sep 2019), Research Scientist (till Jan 2021)",
+  "alumniSort": "2019-09",
+  "employment": [
+    "Aug 2021: Assistant Professor in Computer Science, VinUniversity, Vietnam",
+    "Jun – Jul 2021: AI Scientist, FPT AI Lab in Hanoi, Vietnam",
+    "Jan – May 2021: Senior Data Scientist in Ads and Personalization Team, Grab Holdings Inc., Singapore"
+  ],
   "url": "https://andrew-dungle.github.io"
 }

@@ -10,11 +10,9 @@ export const metadata: Metadata = {
 export default function JoinPage() {
   return (
     <div className="max-w-5xl mx-auto">
-      <h1 className="text-4xl font-bold mb-8">Join Us</h1>
-
-      <h2 className="text-3xl font-bold mb-8">
+      <h1 className="text-3xl font-bold mb-8">
         Ten Reasons Why You Should Join Preferred.AI
-      </h2>
+      </h1>
 
       {/* 3x3 Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-px mb-8 bg-border border border-border rounded-2xl overflow-hidden shadow-sm shadow-black/[0.01]">
@@ -28,12 +26,12 @@ export default function JoinPage() {
           </h3>
           <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             We hold ourselves to a high standard. Our{" "}
-            <a
+            <Link
               href="/publications"
               className="text-primary hover:underline font-semibold"
             >
               publications
-            </a>{" "}
+            </Link>{" "}
             appear in top-tier venues. A couple have won awards:{" "}
             <a
               href="https://ijcai20.org/distinguished-papers/"
@@ -215,18 +213,16 @@ export default function JoinPage() {
             , who work and play together. You will have fun.
           </p>
         </div>
-      </div>
 
-      {/* 1x1 Table */}
-      <div className="border border-border rounded-2xl overflow-hidden mb-8 shadow-sm shadow-black/[0.01]">
-        <div className="p-6 bg-muted/40 dark:bg-card/20 text-center">
-          <div className="mb-4">
+        {/* Row 4 (Merged full-width final row on 3-col layout; pairs cleanly as 10th cell on 2-col layout) */}
+        <div className="p-6 bg-muted/40 dark:bg-card/20 flex flex-col md:col-span-3 md:text-center">
+          <div className="text-center mb-4">
             <span className="text-4xl">👍</span>
           </div>
-          <h3 className="font-bold mb-4 text-foreground">
+          <h3 className="text-center font-bold mb-4 text-foreground">
             We do what&apos;s <em>right</em>
           </h3>
-          <p className="text-sm leading-relaxed text-muted-foreground">
+          <p className="text-sm leading-relaxed text-muted-foreground flex-1">
             We do the right things and get them right. We get the right people
             and do right by them. You will make the right choice.
           </p>

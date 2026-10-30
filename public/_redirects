@@ -1,0 +1,4 @@
+/admin https://admin.preferred.ai/keystatic 302
+/admin/* https://admin.preferred.ai/keystatic 302
+/keystatic https://admin.preferred.ai/keystatic 302
+/keystatic/* https://admin.preferred.ai/keystatic/:splat 302

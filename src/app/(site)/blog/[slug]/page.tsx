@@ -1,14 +1,15 @@
+import { format } from "date-fns";
+import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { MermaidRenderer } from "@/components/MermaidRenderer";
 import {
   getAllPostSlugs,
   getPostBySlug,
   markdownToHtml,
 } from "@/lib/markdown-posts";
 import { siteName, siteUrl } from "@/lib/site";
-import { format } from "date-fns";
-import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { notFound } from "next/navigation";
 
 function formatDate(dateString: string): string {
   return format(new Date(dateString), "MMMM d, yyyy");
@@ -76,7 +77,12 @@ export default async function PostPage({
     notFound();
   }
 
-  const contentHtml = await markdownToHtml(post.content);
+  // Strip a leading # Title if it duplicates the post title to avoid double h1
+  const normalizedContent = post.content.replace(
+    /^\s*#\s+[^\n]+(?:\r?\n|$)/,
+    "",
+  );
+  const contentHtml = await markdownToHtml(normalizedContent);
 
   const blogPostingJsonLd = {
     "@context": "https://schema.org",
@@ -95,15 +101,68 @@ export default async function PostPage({
   };
 
   return (
-    <article className="max-w-4xl">
+    <article className="mx-auto max-w-4xl">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(blogPostingJsonLd),
+          __html: JSON.stringify(blogPostingJsonLd).replace(/</g, "\\u003c"),
         }}
       />
+
+      <div className="mb-6">
+        <Link
+          href="/blog"
+          className="group inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-primary transition-colors"
+        >
+          <span className="text-muted-foreground/60 group-hover:-translate-x-0.5 group-hover:text-primary transition-transform">
+            ←
+          </span>
+          <span>Back to blog</span>
+        </Link>
+      </div>
+
+      {post.categories.length > 0 && (
+        <div className="mb-3 flex flex-wrap items-center gap-1.5">
+          {post.categories.map((category) => {
+            const categorySlug = category.toLowerCase().replace(/\s+/g, "-");
+            return (
+              <Link
+                key={categorySlug}
+                href={`/category/${categorySlug}`}
+                className="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-medium bg-primary/10 text-primary border border-primary/20 hover:bg-primary/20 transition-colors"
+              >
+                {category}
+              </Link>
+            );
+          })}
+        </div>
+      )}
+
+      <h1 className="mb-4 text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight text-foreground leading-tight text-balance">
+        {post.title}
+      </h1>
+
+      {(post.author || post.date) && (
+        <div className="mb-8 flex flex-wrap items-center gap-2 text-xs text-muted-foreground pb-6 border-b border-border/60">
+          {post.author && (
+            <span>
+              By{" "}
+              <span className="font-medium text-foreground">{post.author}</span>
+            </span>
+          )}
+          {post.author && post.date && (
+            <span className="text-muted-foreground/40">•</span>
+          )}
+          {post.date && (
+            <time dateTime={post.date} className="font-mono">
+              {formatDate(post.date)}
+            </time>
+          )}
+        </div>
+      )}
+
       {post.featuredImage && (
-        <div className="relative mb-8 aspect-video overflow-hidden rounded">
+        <div className="relative mb-8 aspect-video overflow-hidden rounded-2xl border border-border/60 bg-muted">
           <Image
             src={post.featuredImage}
             alt={post.title}
@@ -115,42 +174,11 @@ export default async function PostPage({
         </div>
       )}
 
-      <h1 className="mb-6 text-3xl font-bold leading-tight md:text-4xl">
-        {post.title}
-      </h1>
-
-      <div className="mb-8 flex flex-wrap items-center gap-2 text-xs">
-        {post.categories.length > 0 &&
-          post.categories.map((category, index) => {
-            const categorySlug = category.toLowerCase().replace(/\s+/g, "-");
-            return (
-              <span key={categorySlug}>
-                <Link
-                  href={`/category/${categorySlug}`}
-                  className="category-link"
-                >
-                  {category.toUpperCase()}
-                </Link>
-                {index < post.categories.length - 1 && (
-                  <span className="mx-1 text-gray-400">/</span>
-                )}
-              </span>
-            );
-          })}
-        {post.date && post.categories.length > 0 && (
-          <span className="text-gray-400">•</span>
-        )}
-        {post.date && (
-          <time dateTime={post.date} className="post-date">
-            {formatDate(post.date).toUpperCase()}
-          </time>
-        )}
-      </div>
-
       <div
-        className="prose prose-lg max-w-none"
+        className="prose dark:prose-invert prose-lg max-w-none"
         dangerouslySetInnerHTML={{ __html: contentHtml }}
       />
+      <MermaidRenderer />
     </article>
   );
 }

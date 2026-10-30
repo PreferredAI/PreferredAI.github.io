@@ -1,7 +1,7 @@
 ---
 title: "RecSys 2023 in Singapore"
 date: "2023-09-28"
-author: "hieu"
+author: "Jaime Hieu Do"
 excerpt: "In September 2023, Hieu had the pleasure of attending RecSys’23, the 17th ACM Conference on Recommender Systems, held in Singapore. The conference venue was..."
 featuredImage: "/uploads/2023/09/F6nNZirbIAEooCf.jpeg"
 categories: ["Presentation", "Travel"]

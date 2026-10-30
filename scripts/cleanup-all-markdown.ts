@@ -22,7 +22,7 @@ function cleanupMarkdown(content: string): {
   // 1. Remove base64 placeholder images (multiple formats)
   // Format 1: ![](data:image...) or !(data:image...)
   const base64Pattern1 =
-    /!\[?[^\]]*\]?\(data:image\/[^;]+;base64,[^\)]+\)\s*\n*/g;
+    /!\[?[^\]]*\]?\(data:image\/[^;]+;base64,[^)]+\)\s*\n*/g;
   const base64Matches1 = content.match(base64Pattern1);
   if (base64Matches1) {
     changes += base64Matches1.length;
@@ -30,7 +30,7 @@ function cleanupMarkdown(content: string): {
   }
 
   // Format 2: * (data:image...) in list items
-  const base64Pattern2 = /^\*\s+\(data:image\/[^;]+;base64,[^\)]+\)\s*\n*/gm;
+  const base64Pattern2 = /^\*\s+\(data:image\/[^;]+;base64,[^)]+\)\s*\n*/gm;
   const base64Matches2 = cleaned.match(base64Pattern2);
   if (base64Matches2) {
     changes += base64Matches2.length;
@@ -38,7 +38,7 @@ function cleanupMarkdown(content: string): {
   }
 
   // Format 3: (data:image...) standalone
-  const base64Pattern3 = /^\(data:image\/[^;]+;base64,[^\)]+\)\s*\n*/gm;
+  const base64Pattern3 = /^\(data:image\/[^;]+;base64,[^)]+\)\s*\n*/gm;
   const base64Matches3 = cleaned.match(base64Pattern3);
   if (base64Matches3) {
     changes += base64Matches3.length;
@@ -46,8 +46,7 @@ function cleanupMarkdown(content: string): {
   }
 
   // Format 4: ](url)(data:image...) after links
-  const base64Pattern4 =
-    /\]\([^)]+\)\(data:image\/[^;]+;base64,[^\)]+\)\s*\n*/g;
+  const base64Pattern4 = /\]\([^)]+\)\(data:image\/[^;]+;base64,[^)]+\)\s*\n*/g;
   const base64Matches4 = cleaned.match(base64Pattern4);
   if (base64Matches4) {
     changes += base64Matches4.length;
@@ -99,7 +98,7 @@ function cleanupMarkdown(content: string): {
 
   // 3. Remove WordPress metadata lines (author, date links at top)
   const wpMetaPattern =
-    /^\*\s+\[[^\]]+\]\(https:\/\/preferred\.ai\/[^\)]+\)\s*\/\s*\[[^\]]+\]\(https:\/\/preferred\.ai\/[^\)]+\)\s*\n+/gm;
+    /^\*\s+\[[^\]]+\]\(https:\/\/preferred\.ai\/[^)]+\)\s*\/\s*\[[^\]]+\]\(https:\/\/preferred\.ai\/[^)]+\)\s*\n+/gm;
   if (wpMetaPattern.test(cleaned)) {
     changes++;
     cleaned = cleaned.replace(wpMetaPattern, "");
@@ -128,7 +127,7 @@ function cleanupMarkdown(content: string): {
 
   // 6. Remove broken image links stuck to end of sentences (e.g., "text!(/uploads/...)")
   // Pattern: punctuation followed immediately by !(/uploads...) without space
-  const brokenImagePattern = /([.!?])(\!\([^)]*\/uploads[^)]*\))/g;
+  const brokenImagePattern = /([.!?])(!\([^)]*\/uploads[^)]*\))/g;
   const brokenMatches = content.match(brokenImagePattern);
   if (brokenMatches) {
     changes += brokenMatches.length;

@@ -3,5 +3,11 @@
   "placement": "alumni",
   "photo": "/team/members/tuan-truong/photo.jpg",
   "title": "Senior ML Engineer (Pinterest)",
-  "url": "https://qtuantruong.github.io"
+  "role": "PhD (Feb 2022)",
+  "alumniSort": "2022-02",
+  "employment": [
+    "Now: Senior Machine Learning Engineer, Pinterest",
+    "Jul 2022: Applied Scientist at Amazon"
+  ],
+  "url": "https://www.qttruong.com"
 }
