@@ -6,7 +6,9 @@ on:
     types: [completed]
 
 permissions:
-  contents: read
+  contents: write
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: keystatic-publisher-${{ github.event.workflow_run.head_branch }}
@@ -26,64 +28,197 @@ jobs:
       BASE_BRANCH: ${{ github.event.repository.default_branch }}
       HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
     steps:
-      - name: Create repository-scoped publisher token
+      - name: Create repository-scoped publisher token (optional App)
         id: app-token
+        if: vars.PREFERREDAI_AUTOMATION_APP_ID != ''
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.PREFERREDAI_AUTOMATION_APP_ID }}
+          client-id: ${{ vars.PREFERREDAI_AUTOMATION_APP_ID }}
           private-key: ${{ secrets.PREFERREDAI_AUTOMATION_APP_PRIVATE_KEY }}
           owner: PreferredAI
           repositories: PreferredAI.github.io
           permission-contents: write
+          permission-issues: write
           permission-pull-requests: write
 
-      - name: Checkout trusted publisher code
+      - name: Checkout trusted publisher policy
         uses: actions/checkout@v7
         with:
           ref: ${{ github.event.repository.default_branch }}
+          path: policy
           persist-credentials: false
 
-      - name: Create or reuse pull request
-        id: pr
-        env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+      - name: Checkout repository for branch sync check
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: repo
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+
+      - name: Inspect branch state and auto-rebase stale editorial drafts
+        id: sync
         shell: bash
         run: |
           set -euo pipefail
-          pr_number="$(gh pr list \
+          git -C repo fetch --prune origin
+
+          if ! git -C repo show-ref --verify --quiet "refs/remotes/origin/$HEAD_BRANCH"; then
+            echo "status=missing" >> "$GITHUB_OUTPUT"
+            echo "Branch $HEAD_BRANCH no longer exists on origin." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          ahead_count="$(git -C repo rev-list --count "origin/$BASE_BRANCH..origin/$HEAD_BRANCH")"
+          behind_count="$(git -C repo rev-list --count "origin/$HEAD_BRANCH..origin/$BASE_BRANCH")"
+          echo "ahead_count=$ahead_count" >> "$GITHUB_OUTPUT"
+          echo "behind_count=$behind_count" >> "$GITHUB_OUTPUT"
+
+          if [[ "$ahead_count" == "0" ]]; then
+            echo "status=empty" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Keystatic branch created"
+              echo "Branch \`$HEAD_BRANCH\` currently has no commits ahead of \`$BASE_BRANCH\`."
+              echo "A pull request will be opened automatically on the first saved change."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          git -C repo diff --name-only "origin/$BASE_BRANCH...origin/$HEAD_BRANCH" > "$RUNNER_TEMP/branch-paths.txt"
+          branch_policy="$(node policy/.github/scripts/classify-keystatic-changes.mjs --paths-file "$RUNNER_TEMP/branch-paths.txt")"
+          branch_eligible="$(printf '%s' "$branch_policy" | node -e 'const fs=require("fs"); const d=JSON.parse(fs.readFileSync(0,"utf8")); process.stdout.write(String(d.eligible));')"
+
+          if [[ "$behind_count" != "0" && "$branch_eligible" == "true" ]]; then
+            git -C repo config --local user.name "github-actions[bot]"
+            git -C repo config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git -C repo checkout -B "$HEAD_BRANCH" "origin/$HEAD_BRANCH"
+            if git -C repo rebase "origin/$BASE_BRANCH"; then
+              git -C repo push --force-with-lease origin "HEAD:$HEAD_BRANCH"
+              echo "status=rebased" >> "$GITHUB_OUTPUT"
+              exit 0
+            else
+              git -C repo rebase --abort || true
+              echo "status=conflict" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+          fi
+
+          echo "status=ready" >> "$GITHUB_OUTPUT"
+
+      - name: Classify branch paths for PR metadata
+        id: branch-meta
+        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'rebased' || steps.sync.outputs.status == 'conflict'
+        run: >-
+          node policy/.github/scripts/classify-keystatic-changes.mjs
+          --paths-file "$RUNNER_TEMP/branch-paths.txt"
+
+      - name: Create or update pull request
+        id: pr
+        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'rebased' || steps.sync.outputs.status == 'conflict'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
+          KIND: ${{ steps.branch-meta.outputs.kind }}
+          HAS_PEOPLE: ${{ steps.branch-meta.outputs.has_people }}
+          ELIGIBLE: ${{ steps.branch-meta.outputs.eligible }}
+          SUMMARY_TITLE: ${{ steps.branch-meta.outputs.summary_title }}
+          SYNC_STATUS: ${{ steps.sync.outputs.status }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$ELIGIBLE" == "true" && "$KIND" == "blog" ]]; then
+            pr_body="Created automatically from Keystatic (**Blog**). Verified blog post and media changes auto-approve and merge after build and preview checks pass."
+          elif [[ "$ELIGIBLE" == "true" && "$HAS_PEOPLE" == "true" ]]; then
+            pr_body="Created automatically from Keystatic (**People**). Requires **1 maintainer approval** (@manhkhanhad) after build and preview checks pass."
+          else
+            pr_body="Created automatically from Keystatic. This branch contains paths outside the approved CMS directories — automatic publishing is disabled and manual review by @manhkhanhad is required."
+          fi
+
+          pr_json="$(gh pr list \
             --repo "$REPOSITORY" \
             --state open \
             --base "$BASE_BRANCH" \
             --head "$HEAD_BRANCH" \
-            --json number \
-            --jq '.[0].number // empty')"
+            --json number,title,author \
+            --jq '.[0] // empty')"
 
-          if [[ -z "$pr_number" ]]; then
+          if [[ -z "$pr_json" ]]; then
             gh pr create \
               --repo "$REPOSITORY" \
               --base "$BASE_BRANCH" \
               --head "$HEAD_BRANCH" \
-              --title "Keystatic: publish editorial changes" \
-              --body "Created automatically from Keystatic. Approved blog and People content changes merge after checks. Changes outside the approved CMS paths are excluded from editorial auto-merge and must be handled manually by @hieuddo."
-            pr_number="$(gh pr list \
+              --title "$SUMMARY_TITLE" \
+              --body "$pr_body"
+            pr_json="$(gh pr list \
               --repo "$REPOSITORY" \
               --state open \
               --base "$BASE_BRANCH" \
               --head "$HEAD_BRANCH" \
-              --json number \
-              --jq '.[0].number // empty')"
+              --json number,title,author \
+              --jq '.[0] // empty')"
+          else
+            existing_number="$(printf '%s' "$pr_json" | jq -r '.number')"
+            existing_title="$(printf '%s' "$pr_json" | jq -r '.title')"
+            if [[ "$existing_title" == "Keystatic: publish editorial changes" || "$existing_title" == Keystatic/* || "$existing_title" == keystatic/* ]]; then
+              gh pr edit "$existing_number" \
+                --repo "$REPOSITORY" \
+                --title "$SUMMARY_TITLE" \
+                --body "$pr_body"
+            fi
           fi
 
+          pr_number="$(printf '%s' "$pr_json" | jq -r '.number // empty')"
+          pr_author="$(printf '%s' "$pr_json" | jq -r '.author.login // empty')"
           if [[ -z "$pr_number" ]]; then
             echo "Could not create or find the Keystatic pull request." >&2
             exit 1
           fi
           echo "number=$pr_number" >> "$GITHUB_OUTPUT"
 
+          if [[ "$HAS_PEOPLE" == "true" || "$ELIGIBLE" != "true" ]]; then
+            if [[ "$pr_author" != "manhkhanhad" ]]; then
+              gh pr edit "$pr_number" --repo "$REPOSITORY" --add-reviewer manhkhanhad || true
+            fi
+          fi
+
+      - name: Notify on rebase conflict
+        if: steps.sync.outputs.status == 'conflict'
+        uses: actions/github-script@v9
+        env:
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        with:
+          github-token: ${{ steps.app-token.outputs.token || github.token }}
+          script: |
+            const marker = '<!-- preferredai-keystatic-sync -->';
+            const issue_number = Number(process.env.PR_NUMBER);
+            const body = `${marker}\n⚠️ **Branch out of date with \`main\` (merge conflict):** Automatic rebase onto \`main\` hit a conflict. Please resolve conflicts on GitHub or recreate a fresh branch in Keystatic. cc @manhkhanhad`;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number,
+              per_page: 100,
+            });
+            const previous = comments.find((c) => c.body?.includes(marker));
+            if (previous) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: previous.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number,
+                body,
+              });
+            }
+
       - name: Read complete pull request diff
         id: diff
+        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'conflict'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
         shell: bash
         run: |
           set -euo pipefail
@@ -99,17 +234,18 @@ jobs:
             "repos/$REPOSITORY/pulls/${{ steps.pr.outputs.number }}/files?per_page=100" \
             > "$RUNNER_TEMP/keystatic-pr-files.json"
 
-      - name: Classify editorial paths
+      - name: Classify editorial paths from PR diff
         id: policy
+        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'conflict'
         run: >-
-          node .github/scripts/classify-keystatic-changes.mjs
+          node policy/.github/scripts/classify-keystatic-changes.mjs
           --github-json "$RUNNER_TEMP/keystatic-pr-files.json"
           --expected-count "${{ steps.diff.outputs.changed_files }}"
 
       - name: Exclude non-editorial changes from automatic publishing
-        if: steps.policy.outputs.eligible != 'true'
+        if: (steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'conflict') && steps.policy.outputs.eligible != 'true'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
         shell: bash
         run: |
           set -euo pipefail
@@ -125,12 +261,13 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Record eligible editorial change
-        if: steps.policy.outputs.eligible == 'true'
+        if: steps.sync.outputs.status == 'ready' && steps.policy.outputs.eligible == 'true'
         shell: bash
         run: |
           set -euo pipefail
           {
-            echo "### Keystatic publisher: preview requested"
-            echo "Classification: ${{ steps.policy.outputs.kind }}"
-            echo "Squash auto-merge will be enabled only after validation and preview deployment succeed."
+            echo "### Keystatic publisher: PR #${{ steps.pr.outputs.number }} ready"
+            echo "- Classification: \`${{ steps.policy.outputs.kind }}\`"
+            echo "- Auto-merge blog post: \`${{ steps.policy.outputs.auto_merge_blog }}\`"
+            echo "- Requires People review (@manhkhanhad): \`${{ steps.policy.outputs.has_people }}\`"
           } >> "$GITHUB_STEP_SUMMARY"

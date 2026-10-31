@@ -8,19 +8,6 @@
     "url": "http://www.hadylauw.com"
   },
   {
-    "slug": "jaime-hieu",
-    "name": "Do Dinh Hieu, Jaime",
-    "placement": "research-staff",
-    "photo": "/team/members/jaime-hieu/photo.jpg",
-    "title": "Research Scientist (SMU)",
-    "role": "PhD (Jul 2025)",
-    "alumniSort": "2026-11",
-    "employment": [
-      "Research Scientist, Preferred.AI, SMU"
-    ],
-    "url": "https://jaimehd.com"
-  },
-  {
     "slug": "ezekiel",
     "name": "Ezekiel Ong Young",
     "placement": "phd-candidate",
@@ -83,6 +70,16 @@
     "photo": "/team/members/hoang/photo.jpg",
     "title": "PhD co-supervisee (SMU)",
     "url": "https://hoangdv.me"
+  },
+  {
+    "slug": "jaime-hieu",
+    "name": "Do Dinh Hieu, Jaime",
+    "placement": "alumni",
+    "photo": "/team/members/jaime-hieu/photo.jpg",
+    "title": "Research Scientist (SMU)",
+    "role": "PhD (July 2025), Research Scientist (Nov 2026)",
+    "alumniSort": "2026-11",
+    "url": "https://jaimehd.com"
   },
   {
     "slug": "jiapeng",

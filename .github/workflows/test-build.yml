@@ -3,6 +3,9 @@ name: Test website build
 on:
   pull_request:
     branches: ["main"]
+  push:
+    branches:
+      - "keystatic/**"
   workflow_dispatch:
 
 permissions:

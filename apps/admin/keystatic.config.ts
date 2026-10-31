@@ -4,6 +4,9 @@ const isGitHubStorage =
   process.env.NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND === "github" ||
   Boolean(process.env.NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG);
 
+const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
+const OPTIONAL_ALUMNI_SORT_REGEX = /^(?:\d{4}-(0[1-9]|1[0-2]))?$/;
+
 const categoryOptions = [
   "Announcement",
   "Defense",
@@ -15,6 +18,15 @@ const categoryOptions = [
   "Video",
 ].map((category) => ({ label: category, value: category }));
 
+function slugify(input: string): string {
+  return input
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
 function sanitizeAssetFilename(originalFilename: string): string {
   const extensionIndex = originalFilename.lastIndexOf(".");
   const hasExtension = extensionIndex > 0;
@@ -24,12 +36,7 @@ function sanitizeAssetFilename(originalFilename: string): string {
   const extension = hasExtension
     ? originalFilename.slice(extensionIndex).toLowerCase()
     : "";
-  const safeBasename = basename
-    .normalize("NFKD")
-    .replace(/[\u0300-\u036f]/g, "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+  const safeBasename = slugify(basename);
 
   return `${safeBasename || "image"}${extension}`;
 }
@@ -63,6 +70,19 @@ export default config({
             label: "Title",
             validation: { isRequired: true },
           },
+          slug: {
+            label: "URL-safe post slug",
+            description:
+              "Auto-generated from the title. Lowercase letters, numbers, and single hyphens only.",
+            generate: slugify,
+            validation: {
+              pattern: {
+                regex: SLUG_REGEX,
+                message:
+                  "Use lowercase letters, numbers, and single hyphens only.",
+              },
+            },
+          },
         }),
         date: fields.date({
           label: "Publish date",
@@ -84,18 +104,19 @@ export default config({
         cover: fields.image({
           label: "Featured image",
           description:
-            "Choose or drop an image. Keystatic stores it in public/uploads/<post-slug>/cover.<ext>.",
+            "Required for all new posts. Choose or drop an image — Keystatic stores it in public/uploads/<post-slug>/cover.<ext>.",
           directory: "public/uploads",
           publicPath: "/uploads/",
         }),
         featuredImage: fields.text({
-          label: "Existing featured image path (legacy)",
+          label: "Legacy image path (leave empty for new posts)",
           description:
-            "Existing posts may use an /uploads/YYYY/MM/... path. Leave this empty for new posts and use the image picker above.",
+            "Older migrated posts use an /uploads/YYYY/MM/... path. Leave empty for new posts and upload a Featured image above.",
         }),
         categories: fields.multiselect({
           label: "Categories",
-          description: "Choose every category that applies.",
+          description:
+            "Required — select at least one category that applies to this post.",
           options: categoryOptions,
           defaultValue: ["Education"],
         }),
@@ -146,9 +167,10 @@ export default config({
             label: "URL-safe slug",
             description:
               "Lowercase letters, numbers, and hyphens. This also names the profile photo folder.",
+            generate: slugify,
             validation: {
               pattern: {
-                regex: /^[a-z0-9]+(?:-[a-z0-9]+)*$/,
+                regex: SLUG_REGEX,
                 message:
                   "Use lowercase letters, numbers, and single hyphens only.",
               },
@@ -188,7 +210,14 @@ export default config({
         alumniSort: fields.text({
           label: "Alumni sort key (YYYY-MM)",
           description:
-            "Optional. Used to sort Alumni in reverse chronological order (e.g. 2026-05).",
+            "Optional (for Alumni). Used to sort Alumni in reverse chronological order (e.g. 2026-05).",
+          validation: {
+            pattern: {
+              regex: OPTIONAL_ALUMNI_SORT_REGEX,
+              message:
+                "Use YYYY-MM with a two-digit month (e.g. 2026-05), or leave empty.",
+            },
+          },
         }),
         employment: fields.array(fields.text({ label: "Employment entry" }), {
           label: "Employment history",

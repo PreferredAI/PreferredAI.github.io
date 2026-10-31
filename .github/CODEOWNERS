@@ -1,8 +1,14 @@
-# Code and repository configuration default to the current maintainer.
-* @hieuddo
+# Code, repository configuration, and People updates default to the current maintainer.
+* @manhkhanhad
 
-# Keep the publishing system and its ownership rules under technical review.
-/apps/admin/** @hieuddo
-/.github/workflows/nextjs.yml @hieuddo
-/.github/workflows/deploy-admin.yml @hieuddo
-/.github/** @hieuddo
+# Blog posts and post uploads auto-publish after CI and preview checks pass.
+/content/posts/**
+/public/uploads/**
+
+# People directory and publishing infrastructure require maintainer review.
+/content/people/** @manhkhanhad
+/public/team/members/** @manhkhanhad
+/apps/admin/** @manhkhanhad
+/.github/workflows/nextjs.yml @manhkhanhad
+/.github/workflows/deploy-admin.yml @manhkhanhad
+/.github/** @manhkhanhad

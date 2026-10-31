@@ -31,38 +31,90 @@ Use these protected GitHub environments:
   to the `preferredai` project;
 - `admin-production`: `CLOUDFLARE_ACCOUNT_ID` and a Workers API token restricted
   to the `preferredai-admin` Worker;
-- `editorial-publish`: the automation GitHub App ID and private key;
-- `content-preview`: the automation App credentials plus the Pages account ID
-  and token.
+- `editorial-publish`: optional automation GitHub App ID and private key (falls
+  back to `GITHUB_TOKEN` + `DEPLOY_KEY` when unset);
+- `content-preview`: Pages account ID and token, plus `DEPLOY_KEY` (and optional
+  automation App credentials).
 
-The workflows expect the automation credentials as
-`PREFERREDAI_AUTOMATION_APP_ID` and
-`PREFERREDAI_AUTOMATION_APP_PRIVATE_KEY`. Install that App only on this
+If an optional automation GitHub App is configured (`PREFERREDAI_AUTOMATION_APP_ID`
+and `PREFERREDAI_AUTOMATION_APP_PRIVATE_KEY`), install that App only on this
 repository and grant Actions read, Contents read/write, and Pull requests
-read/write. Each workflow requests only the permissions needed by its job.
+read/write. When unset, the workflows operate natively using `GITHUB_TOKEN` for
+pull request metadata/comments and `DEPLOY_KEY` (a bypass actor on `main`) for
+branch rebasing and verified blog fast-forward merges. Each workflow requests
+only the permissions needed by its job.
 
 ## Keystatic publication flow
 
-The admin Worker stores changes in `PreferredAI/PreferredAI.github.io` on
-branches beginning with `keystatic/`.
+The admin Worker (`https://admin.preferred.ai/keystatic`) stores changes in
+`PreferredAI/PreferredAI.github.io` on branches beginning with `keystatic/`.
+Editors can click **+ New Blog Post** or **+ Edit People Info** in the bottom-right
+**Keystatic Workflow** bar to create a fresh auto-named branch directly from the
+latest `main` HEAD (e.g. `keystatic/post-2026-10-31-a1b2` or
+`keystatic/people-alex-2026-10-31-c3d4`), check branch freshness, sync behind
+branches, and jump directly to the open pull request.
 
-1. A branch update triggers the trusted publisher workflow.
-2. The publisher creates or reuses a pull request and rejects automatic
-   publishing if the complete diff includes paths outside the four editorial
-   directories.
-3. The pull request validates Markdown, People data, media references, the
+1. Pushing a commit to `keystatic/**` triggers both `Test website build` and
+   `Publish Keystatic branch` (`.github/workflows/publish-keystatic.yml`). Newly
+   created empty branches (`0` commits ahead of `main`) exit cleanly until the
+   first edit is saved.
+2. If an eligible editorial branch (`content/posts/**`, `public/uploads/**`,
+   `content/people/**`, `public/team/members/**`) has fallen behind `main`, the
+   publisher automatically rebases it onto `origin/main` using `DEPLOY_KEY` (or
+   posts a conflict notice on the PR if manual resolution is required).
+3. The publisher creates or updates the pull request with a descriptive title
+   (e.g. `Keystatic (Blog): my-post` or `Keystatic (People): alex`) and enforces
+   a split approval policy:
+   - **Blog-only edits** (`content/posts/**`, `public/uploads/**`): Eligible for
+     automatic publication once CI and preview checks pass.
+   - **People or mixed edits** (`content/people/**`, `public/team/members/**`):
+     Require **1 maintainer approval** (`@manhkhanhad` via `.github/CODEOWNERS`).
+   - **Non-editorial edits**: Excluded from automatic publishing; require manual
+     maintainer review.
+4. `Test website build` validates Markdown, People data, media references, the
    static export, and the admin Worker without deployment secrets.
-4. A trusted workflow downloads the static artifact without executing it,
-   reclassifies the complete diff, and deploys it to the Pages branch
-   `content-pr-<number>`.
-5. After Access protection and `noindex` are verified, the workflow comments
-   the preview URL and enables squash auto-merge for the exact branch head.
-6. The merge advances `main`, which triggers the normal Pages production
-   deployment. It does not trigger an admin Worker deployment.
+5. `Deploy content preview` (`.github/workflows/deploy-content-preview.yml`)
+   downloads the verified static artifact without executing untrusted code,
+   reclassifies the complete diff, deploys it to the Cloudflare Pages branch
+   `content-pr-<number>`, verifies Access protection and `noindex`, and comments
+   the preview URL on the pull request.
+6. For **blog-only** pull requests whose verified SHA matches the exact branch
+   tip, `Deploy content preview` submits an approval review and performs a
+   linear fast-forward merge onto `main` via `DEPLOY_KEY`, then deletes the
+   merged `keystatic/*` branch. Advancing `main` via `DEPLOY_KEY` triggers the
+   normal `.github/workflows/nextjs.yml` production deployment without
+   redeploying the admin Worker.
+7. **People or mixed** pull requests receive their verified preview comment and
+   remain open for 1 maintainer approval and merge on GitHub.
+8. `.github/workflows/scheduled-maintenance.yml` runs dependency maintenance
+   exclusively on `main` and automatically prunes abandoned `keystatic/*`
+   branches that have `0` commits ahead of `main`, no open pull request, and no
+   activity for over 7 days.
 
-Protect `main`, require pull requests and the validation checks, and allow the
-automation App to create pull requests and enable auto-merge. Keep Pages preview
+Protect `main` with the repository ruleset (`id: 20780485`), require pull
+requests, linear history, and the `build` status check, and keep Pages preview
 deployments behind Cloudflare Access.
+
+## Maintainer handover & operations
+
+- **Organization & GitHub App ownership**: The `PreferredAI` GitHub Organization
+  owns both `PreferredAI/PreferredAI.github.io` and the `preferredai-keystatic`
+  GitHub App (`https://github.com/organizations/PreferredAI/settings/apps/preferredai-keystatic`),
+  so individual maintainer departures do not break Keystatic OAuth or branch
+  access. `hadylauw` holds Organization `Owner` and Repository `admin`.
+- **Day-to-day maintainer (`@manhkhanhad`)**:
+  - Holds Repository `maintain` permission, Cloudflare team access, `.github/CODEOWNERS`
+    ownership (People records, workflows, `apps/admin`), and bypass eligibility
+    on the `main` branch ruleset (`id: 20780485`).
+  - Reviews and merges People/mixed editorial PRs and code/infrastructure PRs.
+  - Note: Repository `maintain` covers all routine editorial, branch, PR, and
+    Actions operations. Repository `admin` (via `hadylauw`) is only required if
+    rotating GitHub Actions repository secrets (`DEPLOY_KEY`, Cloudflare tokens,
+    or Keystatic OAuth secrets) or editing repository rulesets.
+- **Completing transition cleanup**: Once handover from `@hieuddo` is finalized,
+  a repository admin can remove `@hieuddo` (`actor_id: 26546698`) from the
+  `bypass_actors` list on ruleset `20780485` (`Settings -> Rules -> Rulesets -> main`)
+  and downgrade or remove repository collaborator access as appropriate.
 
 ## Cloudflare and GitHub OAuth
 

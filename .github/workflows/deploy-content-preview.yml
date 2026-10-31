@@ -7,7 +7,9 @@ on:
 
 permissions:
   actions: read
-  contents: read
+  contents: write
+  issues: write
+  pull-requests: write
 
 concurrency:
   group: keystatic-preview-${{ github.event.workflow_run.head_branch }}
@@ -17,48 +19,67 @@ jobs:
   preview:
     if: >-
       github.event.workflow_run.conclusion == 'success' &&
-      github.event.workflow_run.event == 'pull_request' &&
+      (github.event.workflow_run.event == 'pull_request' || github.event.workflow_run.event == 'push') &&
       startsWith(github.event.workflow_run.head_branch, 'keystatic/') &&
       github.event.workflow_run.head_repository.full_name == github.repository
     runs-on: ubuntu-latest
     environment: content-preview
+    env:
+      BASE_BRANCH: ${{ github.event.repository.default_branch }}
+      HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
-      - name: Create repository-scoped publisher token
+      - name: Create repository-scoped publisher token (optional App)
         id: app-token
+        if: vars.PREFERREDAI_AUTOMATION_APP_ID != ''
         uses: actions/create-github-app-token@v3
         with:
-          app-id: ${{ vars.PREFERREDAI_AUTOMATION_APP_ID }}
+          client-id: ${{ vars.PREFERREDAI_AUTOMATION_APP_ID }}
           private-key: ${{ secrets.PREFERREDAI_AUTOMATION_APP_PRIVATE_KEY }}
           owner: PreferredAI
           repositories: PreferredAI.github.io
           permission-actions: read
           permission-contents: write
+          permission-issues: write
           permission-pull-requests: write
 
       - name: Resolve the matching open pull request
         id: pr
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          pr_number="$(gh pr list \
-            --repo "$GITHUB_REPOSITORY" \
-            --state open \
-            --base main \
-            --head "$HEAD_BRANCH" \
-            --json number,headRefOid \
-            --jq ".[] | select(.headRefOid == \"$HEAD_SHA\") | .number" \
-            | sed -n '1p')"
+          pr_number=""
+          for attempt in 1 2 3 4 5 6; do
+            pr_number="$(gh pr list \
+              --repo "$GITHUB_REPOSITORY" \
+              --state open \
+              --base "$BASE_BRANCH" \
+              --head "$HEAD_BRANCH" \
+              --json number,headRefOid \
+              --jq ".[] | select(.headRefOid == \"$HEAD_SHA\") | .number" \
+              | sed -n '1p')"
+            if [[ -n "$pr_number" ]]; then
+              break
+            fi
+            sleep 5
+          done
+
           if [[ -z "$pr_number" ]]; then
-            echo "No open pull request matches $HEAD_BRANCH at $HEAD_SHA." >&2
-            exit 1
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            {
+              echo "### Keystatic preview skipped"
+              echo "No open pull request currently matches \`$HEAD_BRANCH\` at \`$HEAD_SHA\` (branch may have 0 commits ahead of \`$BASE_BRANCH\` or was superseded by a rebase/newer push)."
+            } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
           fi
+
+          echo "found=true" >> "$GITHUB_OUTPUT"
           echo "number=$pr_number" >> "$GITHUB_OUTPUT"
 
       - name: Check out trusted publishing policy
+        if: steps.pr.outputs.found == 'true'
         uses: actions/checkout@v7
         with:
           ref: ${{ github.event.repository.default_branch }}
@@ -67,8 +88,9 @@ jobs:
 
       - name: Read complete pull request diff
         id: diff
+        if: steps.pr.outputs.found == 'true'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
         shell: bash
         run: |
@@ -83,13 +105,14 @@ jobs:
 
       - name: Reclassify editorial paths with trusted policy
         id: policy
+        if: steps.pr.outputs.found == 'true'
         run: >-
           node policy/.github/scripts/classify-keystatic-changes.mjs
           --github-json "$RUNNER_TEMP/keystatic-pr-files.json"
           --expected-count "${{ steps.diff.outputs.changed_files }}"
 
       - name: Reject paths outside the editorial policy
-        if: steps.policy.outputs.eligible != 'true'
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.eligible != 'true'
         env:
           INELIGIBLE_PATHS: ${{ steps.policy.outputs.ineligible_paths }}
         run: |
@@ -97,14 +120,16 @@ jobs:
           exit 1
 
       - name: Download validated static artifact
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.eligible == 'true'
         uses: actions/download-artifact@v8
         with:
           name: test-static-export
           path: preview
-          github-token: ${{ steps.app-token.outputs.token }}
+          github-token: ${{ steps.app-token.outputs.token || github.token }}
           run-id: ${{ github.event.workflow_run.id }}
 
       - name: Reject executable or invalid Pages artifacts
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.eligible == 'true'
         shell: bash
         run: |
           set -euo pipefail
@@ -126,6 +151,7 @@ jobs:
 
       - name: Deploy isolated Pages preview
         id: pages
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.eligible == 'true'
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_PAGES_API_TOKEN || secrets.CLOUDFLARE_API_TOKEN }}
@@ -135,6 +161,7 @@ jobs:
           command: pages deploy ./preview --project-name=preferredai --branch=content-pr-${{ steps.pr.outputs.number }} --commit-hash=${{ github.event.workflow_run.head_sha }}
 
       - name: Verify Cloudflare Access protects preview
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.eligible == 'true'
         env:
           PREVIEW_URL: ${{ steps.pages.outputs.pages-deployment-alias-url || steps.pages.outputs.deployment-url }}
         shell: bash
@@ -146,17 +173,26 @@ jobs:
             *) echo "Preview is not protected by Access (HTTP $status)." >&2; exit 1 ;;
           esac
 
-      - name: Comment preview URL
+      - name: Comment preview URL and approval policy
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.eligible == 'true'
         uses: actions/github-script@v9
         env:
+          AUTO_MERGE_BLOG: ${{ steps.policy.outputs.auto_merge_blog }}
+          HAS_PEOPLE: ${{ steps.policy.outputs.has_people }}
           PREVIEW_URL: ${{ steps.pages.outputs.pages-deployment-alias-url || steps.pages.outputs.deployment-url }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
         with:
-          github-token: ${{ steps.app-token.outputs.token }}
+          github-token: ${{ steps.app-token.outputs.token || github.token }}
           script: |
             const marker = '<!-- preferredai-content-preview -->';
             const issue_number = Number(process.env.PR_NUMBER);
-            const body = `${marker}\nAccess-protected preview: ${process.env.PREVIEW_URL}`;
+            let policyNote = '';
+            if (process.env.AUTO_MERGE_BLOG === 'true') {
+              policyNote = '\n\n✅ **Blog-only update verified:** Auto-approving and merging into `main` now.';
+            } else if (process.env.HAS_PEOPLE === 'true') {
+              policyNote = '\n\n👤 **People directory update:** Requires **1 maintainer approval** (@manhkhanhad) before squash-merging.';
+            }
+            const body = `${marker}\n🔒 Access-protected preview: ${process.env.PREVIEW_URL}${policyNote}`;
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -180,9 +216,69 @@ jobs:
               });
             }
 
-      - name: Enable squash auto-merge
+      - name: Checkout repository with deploy key for blog auto-merge
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.auto_merge_blog == 'true'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: merge-repo
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+
+      - name: Auto-approve and merge verified blog-only PR
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.auto_merge_blog == 'true'
         env:
-          GH_TOKEN: ${{ steps.app-token.outputs.token }}
-          HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
           PR_NUMBER: ${{ steps.pr.outputs.number }}
-        run: gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --auto --squash --match-head-commit "$HEAD_SHA"
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh pr review "$PR_NUMBER" \
+            --repo "$GITHUB_REPOSITORY" \
+            --approve \
+            --body "Automated verification and preview succeeded for blog-only editorial changes." || true
+
+          git -C merge-repo fetch --prune origin
+          current_branch_sha="$(git -C merge-repo rev-parse "origin/$HEAD_BRANCH")"
+          if [[ "$current_branch_sha" != "$HEAD_SHA" ]]; then
+            echo "Branch $HEAD_BRANCH advanced from $HEAD_SHA to $current_branch_sha during preview; skipping stale merge." >&2
+            exit 0
+          fi
+
+          if git -C merge-repo merge-base --is-ancestor "origin/$BASE_BRANCH" "$HEAD_SHA"; then
+            git -C merge-repo checkout "$BASE_BRANCH"
+            git -C merge-repo reset --hard "origin/$BASE_BRANCH"
+            git -C merge-repo merge --ff-only "$HEAD_SHA"
+            git -C merge-repo push origin "$BASE_BRANCH"
+            sleep 3
+            git -C merge-repo push origin --delete "$HEAD_BRANCH" || true
+            echo "Merged blog-only PR #$PR_NUMBER ($HEAD_SHA) into $BASE_BRANCH." >> "$GITHUB_STEP_SUMMARY"
+          else
+            git -C merge-repo config --local user.name "github-actions[bot]"
+            git -C merge-repo config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git -C merge-repo checkout -B "$HEAD_BRANCH" "$HEAD_SHA"
+            git -C merge-repo rebase "origin/$BASE_BRANCH"
+            git -C merge-repo push --force-with-lease origin "HEAD:$HEAD_BRANCH"
+            echo "Rebased $HEAD_BRANCH onto latest $BASE_BRANCH; fresh CI will complete auto-merge." >> "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Require maintainer approval for People updates
+        if: steps.pr.outputs.found == 'true' && steps.policy.outputs.eligible == 'true' && steps.policy.outputs.has_people == 'true'
+        env:
+          APP_TOKEN: ${{ steps.app-token.outputs.token }}
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          pr_author="$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json author --jq '.author.login // empty')"
+          if [[ "$pr_author" != "manhkhanhad" ]]; then
+            gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-reviewer manhkhanhad || true
+          fi
+          if [[ -n "$APP_TOKEN" ]]; then
+            gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --auto --squash --match-head-commit "$HEAD_SHA"
+          fi
+          {
+            echo "### Keystatic preview deployed (awaiting People approval)"
+            echo "- PR #$PR_NUMBER touches People records and requires **1 approval** (@manhkhanhad) before squash-merging."
+          } >> "$GITHUB_STEP_SUMMARY"

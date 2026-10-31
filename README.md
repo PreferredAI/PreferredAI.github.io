@@ -45,6 +45,26 @@ pnpm prepare:site
 
 Restart `pnpm dev` if the page does not update.
 
+## Publish on `admin.preferred.ai` (Keystatic)
+
+Sign in with GitHub at <https://admin.preferred.ai/keystatic> and use the
+**Keystatic Workflow** quick-actions bar in the bottom-right corner:
+
+1. Click **+ New Blog Post** or **+ Edit People Info** to create a fresh,
+   auto-named `keystatic/*` branch directly from `main` (avoiding outdated
+   unpublished branches). If you use Keystatic's built-in **New branch** dialog,
+   a timestamped branch name is also pre-filled automatically.
+2. Write the post or update the People entry and click **Save**.
+3. GitHub Actions automatically opens a pull request, builds an Access-protected
+   Cloudflare Pages preview, and posts the preview link on the PR:
+   - **Blog-only changes** (`content/posts/**`, `public/uploads/**`) are
+     automatically approved and merged into `main` once CI and preview checks pass.
+   - **People or mixed changes** (`content/people/**`, `public/team/members/**`)
+     request **1 maintainer approval** (`@manhkhanhad`) before merging.
+
+See [`docs/publishing-operations.md`](docs/publishing-operations.md) for full
+workflow and maintainer details.
+
 ## Write with Keystatic locally
 
 Keystatic provides a form-based alternative to editing Markdown:

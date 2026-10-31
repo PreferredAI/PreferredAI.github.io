@@ -7,6 +7,7 @@ on:
     - cron: "0 0 * * 0"
 
   push:
+    branches: ["main"]
     paths:
       - ".github/workflows/scheduled-maintenance.yml"
       - "scripts/crawl-publications.ts"
@@ -22,6 +23,7 @@ on:
 
 permissions:
   contents: write
+  pull-requests: read
 
 jobs:
   maintenance:
@@ -96,3 +98,36 @@ jobs:
         if: steps.check-changes.outputs.changed == 'true'
         run: |
           echo "Changes detected and pushed to main. Cloudflare Pages deployment will be triggered automatically."
+
+      - name: Clean up stale empty Keystatic branches
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git fetch --prune origin
+          now_ts="$(date +%s)"
+          min_age_seconds=$((7 * 24 * 60 * 60))
+
+          while IFS=' ' read -r remote_ref commit_ts; do
+            [[ -z "$remote_ref" ]] && continue
+            branch_name="${remote_ref#origin/}"
+            age=$((now_ts - commit_ts))
+            if (( age < min_age_seconds )); then
+              continue
+            fi
+
+            ahead_count="$(git rev-list --count "origin/main..$remote_ref")"
+            if [[ "$ahead_count" != "0" ]]; then
+              continue
+            fi
+
+            open_prs="$(gh pr list --repo "$GITHUB_REPOSITORY" --state open --head "$branch_name" --json number --jq 'length')"
+            if [[ "$open_prs" != "0" ]]; then
+              continue
+            fi
+
+            echo "Deleting abandoned empty Keystatic branch: $branch_name (idle $((age / 86400))d)"
+            git push origin --delete "$branch_name" || true
+          done < <(git for-each-ref --format='%(refname:short) %(committerdate:unix)' refs/remotes/origin/keystatic/)

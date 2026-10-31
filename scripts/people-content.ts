@@ -53,10 +53,7 @@ function readRequiredString(
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error(`${filename}: ${key} must be a non-empty string`);
   }
-  if (value !== value.trim()) {
-    throw new Error(`${filename}: ${key} must not have surrounding whitespace`);
-  }
-  return value;
+  return value.trim();
 }
 
 function readOptionalString(
@@ -65,14 +62,12 @@ function readOptionalString(
   filename: string,
 ): string | undefined {
   const value = record[key];
-  if (value === undefined || value === null || value === "") return undefined;
+  if (value === undefined || value === null) return undefined;
   if (typeof value !== "string") {
     throw new Error(`${filename}: ${key} must be a string when provided`);
   }
-  if (value !== value.trim()) {
-    throw new Error(`${filename}: ${key} must not have surrounding whitespace`);
-  }
-  return value;
+  const trimmed = value.trim();
+  return trimmed.length > 0 ? trimmed : undefined;
 }
 
 function readOptionalStringArray(
@@ -90,12 +85,7 @@ function readOptionalStringArray(
     if (typeof item !== "string" || item.trim().length === 0) {
       throw new Error(`${filename}: ${key} items must be non-empty strings`);
     }
-    if (item !== item.trim()) {
-      throw new Error(
-        `${filename}: ${key} items must not have surrounding whitespace`,
-      );
-    }
-    items.push(item);
+    items.push(item.trim());
   }
   return items.length > 0 ? items : undefined;
 }

@@ -24,6 +24,10 @@ export interface MarkdownPost {
   content: string;
 }
 
+function trimStr(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 export function buildPostsIndex(): MarkdownPost[] {
   if (!fs.existsSync(postsDirectory)) {
     throw new Error(`Missing posts directory: ${postsDirectory}`);
@@ -41,17 +45,24 @@ export function buildPostsIndex(): MarkdownPost[] {
     const fileContents = fs.readFileSync(fullPath, "utf8");
     const { data, content } = matter(fileContents);
 
+    const title = trimStr(data.title);
+    const excerpt = trimStr(data.excerpt);
+
     return {
       slug,
-      title: data.title || "",
-      date: data.date || "",
-      author: data.author || "",
-      excerpt: data.excerpt || "",
-      featuredImage: data.cover || data.featuredImage || "",
-      categories: data.categories || [],
-      tags: data.tags || [],
-      seoTitle: data.seoTitle || data.title || "",
-      seoDescription: data.seoDescription || data.excerpt || "",
+      title,
+      date: trimStr(data.date),
+      author: trimStr(data.author),
+      excerpt,
+      featuredImage: trimStr(data.cover) || trimStr(data.featuredImage),
+      categories: Array.isArray(data.categories)
+        ? data.categories.map(trimStr).filter(Boolean)
+        : [],
+      tags: Array.isArray(data.tags)
+        ? data.tags.map(trimStr).filter(Boolean)
+        : [],
+      seoTitle: trimStr(data.seoTitle) || title,
+      seoDescription: trimStr(data.seoDescription) || excerpt,
       content,
     };
   });

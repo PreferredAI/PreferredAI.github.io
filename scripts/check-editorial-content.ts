@@ -51,10 +51,7 @@ function requiredString(
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error(`${filename}: ${key} must be a non-empty string`);
   }
-  if (value !== value.trim()) {
-    throw new Error(`${filename}: ${key} must not have surrounding whitespace`);
-  }
-  return value;
+  return value.trim();
 }
 
 function isRealDate(value: string): boolean {
@@ -139,8 +136,10 @@ function validatePost(filename: string): number {
     throw new Error(`${filename}: date must be a real YYYY-MM-DD date`);
   }
 
-  const featuredImage =
+  const rawFeaturedImage =
     typeof data.cover === "string" ? data.cover : data.featuredImage;
+  const featuredImage =
+    typeof rawFeaturedImage === "string" ? rawFeaturedImage.trim() : undefined;
   if (
     typeof featuredImage !== "string" ||
     !featuredImage.startsWith("/uploads/")
