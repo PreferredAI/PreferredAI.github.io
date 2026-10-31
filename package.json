@@ -33,13 +33,13 @@
     "crawl:team": "node --import tsx scripts/crawl-team.ts"
   },
   "dependencies": {
-    "@markdoc/markdoc": "^0.5.10",
+    "@markdoc/markdoc": "^0.5.11",
     "@tailwindcss/typography": "^0.5.20",
     "clsx": "^2.1.1",
     "date-fns": "^4.4.0",
     "feed": "^5.2.1",
     "gray-matter": "^4.0.3",
-    "katex": "^0.18.9",
+    "katex": "^0.19.1",
     "next": "16.4.3",
     "react": "19.3.0",
     "react-dom": "19.3.0",

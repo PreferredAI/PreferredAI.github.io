@@ -22,8 +22,8 @@ importers:
   .:
     dependencies:
       '@markdoc/markdoc':
-        specifier: ^0.5.10
-        version: 0.5.10(@types/react@19.3.0)(react@19.3.0)
+        specifier: ^0.5.11
+        version: 0.5.11(@types/react@19.3.0)(react@19.3.0)
       '@tailwindcss/typography':
         specifier: ^0.5.20
         version: 0.5.20(tailwindcss@4.3.3)
@@ -1237,8 +1237,8 @@ packages:
       react:
         optional: true
 
-  '@markdoc/markdoc@0.5.10':
-    resolution: {integrity: sha512-5HwkG2cLG/ivffeJlxGmraJ9erYfsaYz9rjG1KCf46PLy+yhrBQWw26h69GewNUHbyKNW6FrXuDYgbl2kvIYdA==}
+  '@markdoc/markdoc@0.5.11':
+    resolution: {integrity: sha512-Jyoyv7Ieq2/L9fzz9lTN+ojoufpqiiWOZT3xPgssReZwGze84XFEU/xDNbM4iIua5sJ6JjhDDlBuwZoQLrqAgw==}
     engines: {node: '>=14.7.0'}
     peerDependencies:
       '@types/react': '*'
@@ -4721,10 +4721,8 @@ snapshots:
       '@types/react': 19.3.0
       react: 19.3.0
 
-  '@markdoc/markdoc@0.5.10(@types/react@19.3.0)(react@19.3.0)':
+  '@markdoc/markdoc@0.5.11(@types/react@19.3.0)(react@19.3.0)':
     optionalDependencies:
-      '@types/linkify-it': 3.0.5
-      '@types/markdown-it': 12.2.3
       '@types/react': 19.3.0
       react: 19.3.0
 
