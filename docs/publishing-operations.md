@@ -31,18 +31,17 @@ Use these protected GitHub environments:
   to the `preferredai` project;
 - `admin-production`: `CLOUDFLARE_ACCOUNT_ID` and a Workers API token restricted
   to the `preferredai-admin` Worker;
-- `editorial-publish`: optional automation GitHub App ID and private key (falls
-  back to `GITHUB_TOKEN` + `DEPLOY_KEY` when unset);
-- `content-preview`: Pages account ID and token, plus `DEPLOY_KEY` (and optional
-  automation App credentials).
+- `editorial-publish`: `DEPLOY_KEY` (and optional automation GitHub App ID and
+  private key; falls back to `GITHUB_TOKEN` + `DEPLOY_KEY` when unset).
 
 If an optional automation GitHub App is configured (`PREFERREDAI_AUTOMATION_APP_ID`
 and `PREFERREDAI_AUTOMATION_APP_PRIVATE_KEY`), install that App only on this
-repository and grant Actions read, Contents read/write, and Pull requests
-read/write. When unset, the workflows operate natively using `GITHUB_TOKEN` for
-pull request metadata/comments and `DEPLOY_KEY` (a bypass actor on `main`) for
-branch rebasing and verified blog fast-forward merges. Each workflow requests
-only the permissions needed by its job.
+repository and grant Actions read, Checks read, Contents read/write, and Pull
+requests read/write. When unset, `.github/workflows/publish-keystatic.yml`
+operates natively using `GITHUB_TOKEN` for pull request management and
+`DEPLOY_KEY` (a bypass actor on `main`) for branch rebasing and verified
+fast-forward merges. Each workflow requests only the permissions needed by its
+job.
 
 ## Keystatic publication flow
 
@@ -52,48 +51,49 @@ Editors can click **+ New Blog Post** or **+ Edit People Info** in the bottom-ri
 **Keystatic Workflow** bar to create a fresh auto-named branch directly from the
 latest `main` HEAD (e.g. `keystatic/post-2026-10-31-a1b2` or
 `keystatic/people-alex-2026-10-31-c3d4`), check branch freshness, sync behind
-branches, and jump directly to the open pull request.
+branches, and jump directly to the build or open pull request.
 
-1. Pushing a commit to `keystatic/**` triggers both `Test website build` and
-   `Publish Keystatic branch` (`.github/workflows/publish-keystatic.yml`). Newly
-   created empty branches (`0` commits ahead of `main`) exit cleanly until the
-   first edit is saved.
-2. If an eligible editorial branch (`content/posts/**`, `public/uploads/**`,
-   `content/people/**`, `public/team/members/**`) has fallen behind `main`, the
-   publisher automatically rebases it onto `origin/main` using `DEPLOY_KEY` (or
-   posts a conflict notice on the PR if manual resolution is required).
-3. The publisher creates or updates the pull request with a descriptive title
-   (e.g. `Keystatic (Blog): my-post` or `Keystatic (People): alex`) and enforces
-   a split approval policy:
-   - **Blog-only edits** (`content/posts/**`, `public/uploads/**`): Eligible for
-     automatic publication once CI and preview checks pass.
+1. Pushing a commit to a non-`main` branch triggers **one** `Test website build`
+   run (`.github/workflows/test-build.yml`), which validates dependency audits,
+   Markdown, People data, media references, the full static export, and the
+   admin Worker without deployment secrets. Newly created empty branches (`0`
+   commits ahead of `main`) exit cleanly in seconds without running a full build
+   or opening a pull request.
+2. Once `Test website build` succeeds on a `keystatic/*` push,
+   `Publish Keystatic Changes` (`.github/workflows/publish-keystatic.yml`) runs:
+   - If an eligible editorial branch (`content/posts/**`, `public/uploads/**`,
+     `content/people/**`, `public/team/members/**`) has fallen behind `main`, it
+     automatically rebases the branch onto `origin/main` using `DEPLOY_KEY` so
+     `Test website build` re-verifies the rebased commit (or posts a single
+     conflict notice on the PR if manual resolution is needed).
+3. Once up to date with `main` and green on `Test website build`, the publisher
+   creates or updates the pull request (`Keystatic (Blog): <slug>` or
+   `Keystatic (People): <slug>`) and applies a quiet, low-noise approval policy:
+   - **Blog-only edits** (`content/posts/**`, `public/uploads/**`): Opens the PR
+     for history with **no reviewer ping**, immediately fast-forward merges the
+     verified commit onto `main` via `DEPLOY_KEY`, and deletes the `keystatic/*`
+     branch.
    - **People or mixed edits** (`content/people/**`, `public/team/members/**`):
-     Require **1 maintainer approval** (`@manhkhanhad` via `.github/CODEOWNERS`).
-   - **Non-editorial edits**: Excluded from automatic publishing; require manual
+     Opens the PR and requests **1 maintainer approval** (`@manhkhanhad` via
+     `.github/CODEOWNERS`) **only after** `Test website build` has passed.
+   - **Non-editorial edits**: Excluded from automatic merging; require manual
      maintainer review.
-4. `Test website build` validates Markdown, People data, media references, the
-   static export, and the admin Worker without deployment secrets.
-5. `Deploy content preview` (`.github/workflows/deploy-content-preview.yml`)
-   downloads the verified static artifact without executing untrusted code,
-   reclassifies the complete diff, deploys it to the Cloudflare Pages branch
-   `content-pr-<number>`, verifies Access protection and `noindex`, and comments
-   the preview URL on the pull request.
-6. For **blog-only** pull requests whose verified SHA matches the exact branch
-   tip, `Deploy content preview` submits an approval review and performs a
-   linear fast-forward merge onto `main` via `DEPLOY_KEY`, then deletes the
-   merged `keystatic/*` branch. Advancing `main` via `DEPLOY_KEY` triggers the
-   normal `.github/workflows/nextjs.yml` production deployment without
-   redeploying the admin Worker.
-7. **People or mixed** pull requests receive their verified preview comment and
-   remain open for 1 maintainer approval and merge on GitHub.
-8. `.github/workflows/scheduled-maintenance.yml` runs dependency maintenance
+4. When a maintainer (`admin`, `maintain`, or `write` permission) submits an
+   **Approve** review on an open `keystatic/*` PR, the `merge-on-approval` job in
+   `.github/workflows/publish-keystatic.yml` verifies passing `audit` + `build`
+   checks and editorial path eligibility, fast-forward merges onto `main` via
+   `DEPLOY_KEY` (rebasing first if `main` moved ahead cleanly), and deletes the
+   merged `keystatic/*` branch.
+5. Advancing `main` via `DEPLOY_KEY` natively triggers
+   `.github/workflows/nextjs.yml` to deploy the static website to Cloudflare
+   Pages without redeploying the admin Worker.
+6. `.github/workflows/scheduled-maintenance.yml` runs dependency maintenance
    exclusively on `main` and automatically prunes abandoned `keystatic/*`
    branches that have `0` commits ahead of `main`, no open pull request, and no
    activity for over 7 days.
 
-Protect `main` with the repository ruleset (`id: 20780485`), require pull
-requests, linear history, and the `build` status check, and keep Pages preview
-deployments behind Cloudflare Access.
+Protect `main` with the repository ruleset (`id: 20780485`), requiring pull
+requests, linear history, and the `audit` + `build` status checks.
 
 ## Maintainer handover & operations
 
@@ -133,9 +133,10 @@ deployments behind Cloudflare Access.
 ## Acceptance checks
 
 Test blog-only, People-only, mixed, renamed, deleted, malicious Markdown,
-malformed JSON, missing-media, and out-of-policy pull requests. Successful
-previews must require Access, contain `noindex`, use `content-pr-<number>`, and
-leave the production alias unchanged.
+malformed JSON, missing-media, and out-of-policy pull requests. Verify that
+blog-only edits create a pull request without reviewer pings and auto-merge
+after `Test website build` succeeds, while People edits request 1 maintainer
+review after `Test website build` succeeds and auto-merge upon approval.
 
 For production, verify `/`, blog pagination, People, category pages, feeds,
 sitemap, robots, 404 responses, `/_next/**`, uploads, and team media. The export

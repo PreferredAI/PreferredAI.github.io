@@ -55,12 +55,13 @@ Sign in with GitHub at <https://admin.preferred.ai/keystatic> and use the
    unpublished branches). If you use Keystatic's built-in **New branch** dialog,
    a timestamped branch name is also pre-filled automatically.
 2. Write the post or update the People entry and click **Save**.
-3. GitHub Actions automatically opens a pull request, builds an Access-protected
-   Cloudflare Pages preview, and posts the preview link on the PR:
-   - **Blog-only changes** (`content/posts/**`, `public/uploads/**`) are
-     automatically approved and merged into `main` once CI and preview checks pass.
+3. GitHub Actions runs a single `Test website build` check:
+   - **Blog-only changes** (`content/posts/**`, `public/uploads/**`)
+     automatically open a pull request (without reviewer notifications) and
+     auto-merge into `main` as soon as the build passes.
    - **People or mixed changes** (`content/people/**`, `public/team/members/**`)
-     request **1 maintainer approval** (`@manhkhanhad`) before merging.
+     open a pull request after the build passes, request **1 maintainer
+     approval** (`@manhkhanhad`), and auto-merge once approved.
 
 See [`docs/publishing-operations.md`](docs/publishing-operations.md) for full
 workflow and maintainer details.

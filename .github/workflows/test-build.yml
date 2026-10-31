@@ -1,67 +1,107 @@
 name: Test website build
 
 on:
-  pull_request:
-    branches: ["main"]
   push:
-    branches:
-      - "keystatic/**"
+    branches-ignore:
+      - "main"
   workflow_dispatch:
 
 permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.workflow }}-${{ github.head_ref || github.ref }}
+  group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
 jobs:
   audit:
     runs-on: ubuntu-latest
     steps:
+      - name: Check whether branch has commits ahead of main
+        id: branch-check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]]; then
+            main_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+            if [[ "$GITHUB_SHA" == "$main_sha" ]]; then
+              echo "empty=true" >> "$GITHUB_OUTPUT"
+              echo "Branch points to main ($main_sha) with 0 new commits; skipping duplicate audit." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+          echo "empty=false" >> "$GITHUB_OUTPUT"
+
       - name: Check out proposed revision
+        if: steps.branch-check.outputs.empty != 'true'
         uses: actions/checkout@v7
         with:
           persist-credentials: false
 
       - name: Set up pnpm
+        if: steps.branch-check.outputs.empty != 'true'
         uses: pnpm/action-setup@v6
 
       - name: Set up Node.js
+        if: steps.branch-check.outputs.empty != 'true'
         uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: pnpm
 
       - name: Install dependencies
+        if: steps.branch-check.outputs.empty != 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Audit dependencies
+        if: steps.branch-check.outputs.empty != 'true'
         run: pnpm audit:dependencies
 
   build:
     runs-on: ubuntu-latest
-    env:
-      PREFERREDAI_NOINDEX: ${{ startsWith(github.head_ref || github.ref_name, 'keystatic/') && 'true' || 'false' }}
     steps:
+      - name: Check whether branch has commits ahead of main
+        id: branch-check
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          if [[ "$GITHUB_EVENT_NAME" != "workflow_dispatch" ]]; then
+            main_sha="$(gh api "repos/$GITHUB_REPOSITORY/git/ref/heads/main" --jq '.object.sha')"
+            if [[ "$GITHUB_SHA" == "$main_sha" ]]; then
+              echo "empty=true" >> "$GITHUB_OUTPUT"
+              echo "Branch points to main ($main_sha) with 0 new commits; skipping duplicate build." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+          fi
+          echo "empty=false" >> "$GITHUB_OUTPUT"
+
       - name: Check out proposed revision
+        if: steps.branch-check.outputs.empty != 'true'
         uses: actions/checkout@v7
         with:
           persist-credentials: false
 
       - name: Set up pnpm
+        if: steps.branch-check.outputs.empty != 'true'
         uses: pnpm/action-setup@v6
 
       - name: Set up Node.js
+        if: steps.branch-check.outputs.empty != 'true'
         uses: actions/setup-node@v7
         with:
           node-version: "22"
           cache: pnpm
 
       - name: Install dependencies
+        if: steps.branch-check.outputs.empty != 'true'
         run: pnpm install --frozen-lockfile
 
       - name: Restore generated-image cache
+        if: steps.branch-check.outputs.empty != 'true'
         uses: actions/cache@v6
         with:
           path: |
@@ -72,20 +112,19 @@ jobs:
             ${{ runner.os }}-images-v4-
 
       - name: Validate website and editorial content
+        if: steps.branch-check.outputs.empty != 'true'
         run: pnpm check
 
       - name: Build static website
+        if: steps.branch-check.outputs.empty != 'true'
         run: pnpm build:prepared
 
-      - name: Add preview-only robots header
-        if: env.PREFERREDAI_NOINDEX == 'true'
-        run: |
-          printf '\n/*\n  X-Robots-Tag: noindex, nofollow\n' >> out/_headers
-
       - name: Type-check admin application
+        if: steps.branch-check.outputs.empty != 'true'
         run: pnpm --filter @preferredai/admin typecheck
 
       - name: Build admin Worker without deployment secrets
+        if: steps.branch-check.outputs.empty != 'true'
         env:
           KEYSTATIC_GITHUB_CLIENT_ID: build-placeholder
           KEYSTATIC_GITHUB_CLIENT_SECRET: build-placeholder
@@ -93,11 +132,3 @@ jobs:
           NEXT_PUBLIC_KEYSTATIC_STORAGE_KIND: github
           NEXT_PUBLIC_KEYSTATIC_GITHUB_APP_SLUG: preferredai-keystatic
         run: pnpm --filter @preferredai/admin build:worker
-
-      - name: Upload static export
-        uses: actions/upload-artifact@v7
-        with:
-          name: test-static-export
-          path: out
-          if-no-files-found: error
-          retention-days: 3

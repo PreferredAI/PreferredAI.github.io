@@ -461,10 +461,7 @@ export default function KeystaticWorkflowAssistant() {
     route.collection === "people" && route.itemSlug
       ? `+ Edit "${route.itemSlug}"`
       : "+ Edit People Info";
-  const manualPrHref = `https://github.com/${REPO_OWNER}/${REPO_NAME}/compare/${DEFAULT_BRANCH}...${currentBranch
-    .split("/")
-    .map(encodeURIComponent)
-    .join("/")}?expand=1`;
+  const actionsHref = `https://github.com/${REPO_OWNER}/${REPO_NAME}/actions?query=${encodeURIComponent(`branch:${currentBranch}`)}`;
 
   return (
     <div
@@ -621,9 +618,9 @@ export default function KeystaticWorkflowAssistant() {
         >
           <span style={{ color: "#d4d4d8" }}>
             {status.isBlogOnly
-              ? "Blog post: auto-publishes after CI passes"
+              ? "Blog post: auto-merges once build passes"
               : status.hasPeopleChanges
-                ? "People edit: needs 1 maintainer approval"
+                ? "People edit: requests review after build, then auto-merges"
                 : `${status.aheadBy} saved commit(s)`}
           </span>
           {status.prUrl && status.prNumber ? (
@@ -646,7 +643,7 @@ export default function KeystaticWorkflowAssistant() {
             </a>
           ) : (
             <a
-              href={manualPrHref}
+              href={actionsHref}
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -660,7 +657,7 @@ export default function KeystaticWorkflowAssistant() {
                 whiteSpace: "nowrap",
               }}
             >
-              Auto-PR pending / Open ↗
+              View Build ↗
             </a>
           )}
         </div>

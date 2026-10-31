@@ -2,21 +2,25 @@ name: Publish Keystatic Changes
 
 on:
   workflow_run:
-    workflows: ["Keystatic Branch Update"]
+    workflows: ["Test website build"]
     types: [completed]
+  pull_request_review:
+    types: [submitted]
 
 permissions:
+  checks: read
   contents: write
   issues: write
   pull-requests: write
 
 concurrency:
-  group: keystatic-publisher-${{ github.event.workflow_run.head_branch }}
-  cancel-in-progress: true
+  group: keystatic-publisher-${{ github.event.workflow_run.head_branch || github.event.pull_request.head.ref }}
+  cancel-in-progress: false
 
 jobs:
   publish:
     if: >-
+      github.event_name == 'workflow_run' &&
       github.event.workflow_run.conclusion == 'success' &&
       github.event.workflow_run.event == 'push' &&
       startsWith(github.event.workflow_run.head_branch, 'keystatic/') &&
@@ -27,6 +31,7 @@ jobs:
       REPOSITORY: ${{ github.repository }}
       BASE_BRANCH: ${{ github.event.repository.default_branch }}
       HEAD_BRANCH: ${{ github.event.workflow_run.head_branch }}
+      HEAD_SHA: ${{ github.event.workflow_run.head_sha }}
     steps:
       - name: Create repository-scoped publisher token (optional App)
         id: app-token
@@ -48,7 +53,7 @@ jobs:
           path: policy
           persist-credentials: false
 
-      - name: Checkout repository for branch sync check
+      - name: Checkout repository with deploy key
         uses: actions/checkout@v7
         with:
           ref: ${{ github.event.repository.default_branch }}
@@ -69,18 +74,19 @@ jobs:
             exit 0
           fi
 
+          tip_sha="$(git -C repo rev-parse "origin/$HEAD_BRANCH")"
+          if [[ "$tip_sha" != "$HEAD_SHA" ]]; then
+            echo "status=superseded" >> "$GITHUB_OUTPUT"
+            echo "Branch $HEAD_BRANCH advanced from $HEAD_SHA to $tip_sha; skipping superseded run." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
           ahead_count="$(git -C repo rev-list --count "origin/$BASE_BRANCH..origin/$HEAD_BRANCH")"
           behind_count="$(git -C repo rev-list --count "origin/$HEAD_BRANCH..origin/$BASE_BRANCH")"
-          echo "ahead_count=$ahead_count" >> "$GITHUB_OUTPUT"
-          echo "behind_count=$behind_count" >> "$GITHUB_OUTPUT"
 
           if [[ "$ahead_count" == "0" ]]; then
             echo "status=empty" >> "$GITHUB_OUTPUT"
-            {
-              echo "### Keystatic branch created"
-              echo "Branch \`$HEAD_BRANCH\` currently has no commits ahead of \`$BASE_BRANCH\`."
-              echo "A pull request will be opened automatically on the first saved change."
-            } >> "$GITHUB_STEP_SUMMARY"
+            echo "Branch $HEAD_BRANCH has 0 commits ahead of $BASE_BRANCH; skipping PR creation." >> "$GITHUB_STEP_SUMMARY"
             exit 0
           fi
 
@@ -95,6 +101,7 @@ jobs:
             if git -C repo rebase "origin/$BASE_BRANCH"; then
               git -C repo push --force-with-lease origin "HEAD:$HEAD_BRANCH"
               echo "status=rebased" >> "$GITHUB_OUTPUT"
+              echo "Rebased $HEAD_BRANCH onto $BASE_BRANCH; Test website build will validate the rebased commit next." >> "$GITHUB_STEP_SUMMARY"
               exit 0
             else
               git -C repo rebase --abort || true
@@ -107,30 +114,29 @@ jobs:
 
       - name: Classify branch paths for PR metadata
         id: branch-meta
-        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'rebased' || steps.sync.outputs.status == 'conflict'
+        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'conflict'
         run: >-
           node policy/.github/scripts/classify-keystatic-changes.mjs
           --paths-file "$RUNNER_TEMP/branch-paths.txt"
 
       - name: Create or update pull request
         id: pr
-        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'rebased' || steps.sync.outputs.status == 'conflict'
+        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'conflict'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
           KIND: ${{ steps.branch-meta.outputs.kind }}
           HAS_PEOPLE: ${{ steps.branch-meta.outputs.has_people }}
           ELIGIBLE: ${{ steps.branch-meta.outputs.eligible }}
           SUMMARY_TITLE: ${{ steps.branch-meta.outputs.summary_title }}
-          SYNC_STATUS: ${{ steps.sync.outputs.status }}
         shell: bash
         run: |
           set -euo pipefail
           if [[ "$ELIGIBLE" == "true" && "$KIND" == "blog" ]]; then
-            pr_body="Created automatically from Keystatic (**Blog**). Verified blog post and media changes auto-approve and merge after build and preview checks pass."
+            pr_body="Created automatically from Keystatic (**Blog**). \`Test website build\` passed — auto-merging into \`main\`."
           elif [[ "$ELIGIBLE" == "true" && "$HAS_PEOPLE" == "true" ]]; then
-            pr_body="Created automatically from Keystatic (**People**). Requires **1 maintainer approval** (@manhkhanhad) after build and preview checks pass."
+            pr_body="Created automatically from Keystatic (**People**). \`Test website build\` passed — awaiting **1 maintainer approval** (\`manhkhanhad\`), after which this PR will auto-merge."
           else
-            pr_body="Created automatically from Keystatic. This branch contains paths outside the approved CMS directories — automatic publishing is disabled and manual review by @manhkhanhad is required."
+            pr_body="Created automatically from Keystatic. This branch touches paths outside the approved CMS directories — manual review by \`manhkhanhad\` is required."
           fi
 
           pr_json="$(gh pr list \
@@ -138,10 +144,12 @@ jobs:
             --state open \
             --base "$BASE_BRANCH" \
             --head "$HEAD_BRANCH" \
-            --json number,title,author \
+            --json number,title,author,reviewDecision,reviewRequests \
             --jq '.[0] // empty')"
 
+          created_new="false"
           if [[ -z "$pr_json" ]]; then
+            created_new="true"
             gh pr create \
               --repo "$REPOSITORY" \
               --base "$BASE_BRANCH" \
@@ -153,12 +161,12 @@ jobs:
               --state open \
               --base "$BASE_BRANCH" \
               --head "$HEAD_BRANCH" \
-              --json number,title,author \
+              --json number,title,author,reviewDecision,reviewRequests \
               --jq '.[0] // empty')"
           else
             existing_number="$(printf '%s' "$pr_json" | jq -r '.number')"
             existing_title="$(printf '%s' "$pr_json" | jq -r '.title')"
-            if [[ "$existing_title" == "Keystatic: publish editorial changes" || "$existing_title" == Keystatic/* || "$existing_title" == keystatic/* ]]; then
+            if [[ "$existing_title" == "Keystatic: publish editorial changes" || "$existing_title" == Keystatic* || "$existing_title" == keystatic/* ]]; then
               gh pr edit "$existing_number" \
                 --repo "$REPOSITORY" \
                 --title "$SUMMARY_TITLE" \
@@ -168,14 +176,19 @@ jobs:
 
           pr_number="$(printf '%s' "$pr_json" | jq -r '.number // empty')"
           pr_author="$(printf '%s' "$pr_json" | jq -r '.author.login // empty')"
+          review_decision="$(printf '%s' "$pr_json" | jq -r '.reviewDecision // empty')"
+          already_requested="$(printf '%s' "$pr_json" | jq -r '[.reviewRequests[]?.login // empty] | index("manhkhanhad") != null')"
+
           if [[ -z "$pr_number" ]]; then
             echo "Could not create or find the Keystatic pull request." >&2
             exit 1
           fi
           echo "number=$pr_number" >> "$GITHUB_OUTPUT"
 
-          if [[ "$HAS_PEOPLE" == "true" || "$ELIGIBLE" != "true" ]]; then
-            if [[ "$pr_author" != "manhkhanhad" ]]; then
+          # On newly created PRs, .github/CODEOWNERS already requests manhkhanhad once.
+          # Only re-request on updated existing PRs when neither approved nor already pending.
+          if [[ "$created_new" == "false" && ( "$HAS_PEOPLE" == "true" || "$ELIGIBLE" != "true" ) ]]; then
+            if [[ "$pr_author" != "manhkhanhad" && "$review_decision" != "APPROVED" && "$already_requested" != "true" ]]; then
               gh pr edit "$pr_number" --repo "$REPOSITORY" --add-reviewer manhkhanhad || true
             fi
           fi
@@ -190,7 +203,7 @@ jobs:
           script: |
             const marker = '<!-- preferredai-keystatic-sync -->';
             const issue_number = Number(process.env.PR_NUMBER);
-            const body = `${marker}\n⚠️ **Branch out of date with \`main\` (merge conflict):** Automatic rebase onto \`main\` hit a conflict. Please resolve conflicts on GitHub or recreate a fresh branch in Keystatic. cc @manhkhanhad`;
+            const body = `${marker}\n⚠️ **Branch out of date with \`main\` (merge conflict):** Automatic rebase onto \`main\` hit a conflict. Please resolve conflicts on GitHub or start a fresh branch in Keystatic.`;
             const comments = await github.paginate(github.rest.issues.listComments, {
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -216,7 +229,7 @@ jobs:
 
       - name: Read complete pull request diff
         id: diff
-        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'conflict'
+        if: steps.sync.outputs.status == 'ready'
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
         shell: bash
@@ -236,38 +249,224 @@ jobs:
 
       - name: Classify editorial paths from PR diff
         id: policy
-        if: steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'conflict'
+        if: steps.sync.outputs.status == 'ready'
         run: >-
           node policy/.github/scripts/classify-keystatic-changes.mjs
           --github-json "$RUNNER_TEMP/keystatic-pr-files.json"
           --expected-count "${{ steps.diff.outputs.changed_files }}"
 
-      - name: Exclude non-editorial changes from automatic publishing
-        if: (steps.sync.outputs.status == 'ready' || steps.sync.outputs.status == 'conflict') && steps.policy.outputs.eligible != 'true'
+      - name: Auto-merge verified blog-only PR
+        if: steps.sync.outputs.status == 'ready' && steps.policy.outputs.auto_merge_blog == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
+          PR_NUMBER: ${{ steps.pr.outputs.number }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          for _ in 1 2 3 4 5; do
+            indexed_sha="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid --jq '.headRefOid')"
+            if [[ "$indexed_sha" == "$HEAD_SHA" ]]; then
+              break
+            fi
+            sleep 2
+          done
+          sleep 2
+
+          git -C repo fetch --prune origin
+          current_branch_sha="$(git -C repo rev-parse "origin/$HEAD_BRANCH")"
+          if [[ "$current_branch_sha" != "$HEAD_SHA" ]]; then
+            echo "Branch $HEAD_BRANCH advanced from $HEAD_SHA to $current_branch_sha; skipping stale merge." >&2
+            exit 0
+          fi
+
+          if ! git -C repo merge-base --is-ancestor "origin/$BASE_BRANCH" "$HEAD_SHA"; then
+            echo "Base branch $BASE_BRANCH moved ahead; rebasing $HEAD_BRANCH for next build cycle." >&2
+            git -C repo config --local user.name "github-actions[bot]"
+            git -C repo config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git -C repo checkout -B "$HEAD_BRANCH" "$HEAD_SHA"
+            git -C repo rebase "origin/$BASE_BRANCH"
+            git -C repo push --force-with-lease origin "HEAD:$HEAD_BRANCH"
+            exit 0
+          fi
+
+          git -C repo checkout "$BASE_BRANCH"
+          git -C repo reset --hard "origin/$BASE_BRANCH"
+          git -C repo merge --ff-only "$HEAD_SHA"
+          git -C repo push origin "$BASE_BRANCH"
+
+          for _ in 1 2 3 4 5; do
+            pr_state="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json state --jq '.state')"
+            if [[ "$pr_state" == "MERGED" ]]; then
+              break
+            fi
+            sleep 2
+          done
+
+          git -C repo push origin --delete "$HEAD_BRANCH" || true
+          echo "Auto-merged blog-only PR #$PR_NUMBER ($HEAD_SHA) into $BASE_BRANCH." >> "$GITHUB_STEP_SUMMARY"
+
+  merge-on-approval:
+    if: >-
+      github.event_name == 'pull_request_review' &&
+      github.event.review.state == 'approved' &&
+      github.event.pull_request.state == 'open' &&
+      github.event.pull_request.draft == false &&
+      github.event.pull_request.base.ref == github.event.repository.default_branch &&
+      startsWith(github.event.pull_request.head.ref, 'keystatic/') &&
+      github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    environment: editorial-publish
+    env:
+      REPOSITORY: ${{ github.repository }}
+      BASE_BRANCH: ${{ github.event.pull_request.base.ref }}
+      HEAD_BRANCH: ${{ github.event.pull_request.head.ref }}
+      REVIEWED_SHA: ${{ github.event.review.commit_id }}
+      PR_NUMBER: ${{ github.event.pull_request.number }}
+      REVIEWER: ${{ github.event.review.user.login }}
+    steps:
+      - name: Create repository-scoped publisher token (optional App)
+        id: app-token
+        if: vars.PREFERREDAI_AUTOMATION_APP_ID != ''
+        uses: actions/create-github-app-token@v3
+        with:
+          client-id: ${{ vars.PREFERREDAI_AUTOMATION_APP_ID }}
+          private-key: ${{ secrets.PREFERREDAI_AUTOMATION_APP_PRIVATE_KEY }}
+          owner: PreferredAI
+          repositories: PreferredAI.github.io
+          permission-contents: write
+          permission-issues: write
+          permission-pull-requests: write
+
+      - name: Verify maintainer permission and passing checks
+        id: gate
         env:
           GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          if [[ "$(gh pr view "${{ steps.pr.outputs.number }}" --repo "$REPOSITORY" --json autoMergeRequest --jq '.autoMergeRequest != null')" == "true" ]]; then
-            gh pr merge "${{ steps.pr.outputs.number }}" \
-              --repo "$REPOSITORY" \
-              --disable-auto
-          fi
-          {
-            echo "### Keystatic publisher: manual handling required"
-            echo "The complete PR diff contains paths outside the approved CMS directories."
-            echo "Ineligible paths: ${{ steps.policy.outputs.ineligible_paths }}"
-          } >> "$GITHUB_STEP_SUMMARY"
+          perm="$(gh api "repos/$REPOSITORY/collaborators/$REVIEWER/permission" --jq '.permission' 2>/dev/null || echo 'none')"
+          case "$perm" in
+            admin|maintain|write) ;;
+            *)
+              echo "approved=false" >> "$GITHUB_OUTPUT"
+              echo "Reviewer $REVIEWER has permission '$perm'; ignoring non-maintainer review." >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+              ;;
+          esac
 
-      - name: Record eligible editorial change
-        if: steps.sync.outputs.status == 'ready' && steps.policy.outputs.eligible == 'true'
+          pr_meta="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json state,headRefOid)"
+          pr_state="$(printf '%s' "$pr_meta" | jq -r '.state')"
+          head_oid="$(printf '%s' "$pr_meta" | jq -r '.headRefOid')"
+          if [[ "$pr_state" != "OPEN" || "$head_oid" != "$REVIEWED_SHA" ]]; then
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            echo "PR #$PR_NUMBER state=$pr_state or head ($head_oid) differs from reviewed SHA ($REVIEWED_SHA); skipping." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          checks_json="$(gh api "repos/$REPOSITORY/commits/$REVIEWED_SHA/check-runs?per_page=100")"
+          audit_ok="$(printf '%s' "$checks_json" | jq -r '[.check_runs[] | select(.app.id == 15368 and .name == "audit" and .status == "completed" and .conclusion == "success")] | length > 0')"
+          build_ok="$(printf '%s' "$checks_json" | jq -r '[.check_runs[] | select(.app.id == 15368 and .name == "build" and .status == "completed" and .conclusion == "success")] | length > 0')"
+
+          if [[ "$audit_ok" != "true" || "$build_ok" != "true" ]]; then
+            echo "approved=false" >> "$GITHUB_OUTPUT"
+            echo "PR #$PR_NUMBER approved by $REVIEWER, but Test website build checks (audit=$audit_ok, build=$build_ok) have not passed yet." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+
+          echo "approved=true" >> "$GITHUB_OUTPUT"
+
+      - name: Checkout trusted publisher policy
+        if: steps.gate.outputs.approved == 'true'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: policy
+          persist-credentials: false
+
+      - name: Read complete pull request diff
+        id: diff
+        if: steps.gate.outputs.approved == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
         shell: bash
         run: |
           set -euo pipefail
-          {
-            echo "### Keystatic publisher: PR #${{ steps.pr.outputs.number }} ready"
-            echo "- Classification: \`${{ steps.policy.outputs.kind }}\`"
-            echo "- Auto-merge blog post: \`${{ steps.policy.outputs.auto_merge_blog }}\`"
-            echo "- Requires People review (@manhkhanhad): \`${{ steps.policy.outputs.has_people }}\`"
-          } >> "$GITHUB_STEP_SUMMARY"
+          changed_files="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json changedFiles --jq '.changedFiles')"
+          echo "changed_files=$changed_files" >> "$GITHUB_OUTPUT"
+          gh api \
+            --paginate \
+            --slurp \
+            "repos/$REPOSITORY/pulls/$PR_NUMBER/files?per_page=100" \
+            > "$RUNNER_TEMP/keystatic-pr-files.json"
+
+      - name: Classify editorial paths from PR diff
+        id: policy
+        if: steps.gate.outputs.approved == 'true'
+        run: >-
+          node policy/.github/scripts/classify-keystatic-changes.mjs
+          --github-json "$RUNNER_TEMP/keystatic-pr-files.json"
+          --expected-count "${{ steps.diff.outputs.changed_files }}"
+
+      - name: Checkout repository with deploy key
+        if: steps.gate.outputs.approved == 'true' && steps.policy.outputs.eligible == 'true'
+        uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          path: repo
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+          fetch-depth: 0
+
+      - name: Merge approved editorial PR into main
+        if: steps.gate.outputs.approved == 'true' && steps.policy.outputs.eligible == 'true'
+        env:
+          GH_TOKEN: ${{ steps.app-token.outputs.token || github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          git -C repo fetch --prune origin
+          current_branch_sha="$(git -C repo rev-parse "origin/$HEAD_BRANCH")"
+          if [[ "$current_branch_sha" != "$REVIEWED_SHA" ]]; then
+            echo "Branch $HEAD_BRANCH changed from $REVIEWED_SHA to $current_branch_sha; aborting merge." >&2
+            exit 0
+          fi
+
+          merge_sha="$REVIEWED_SHA"
+          if ! git -C repo merge-base --is-ancestor "origin/$BASE_BRANCH" "$REVIEWED_SHA"; then
+            git -C repo config --local user.name "github-actions[bot]"
+            git -C repo config --local user.email "github-actions[bot]@users.noreply.github.com"
+            git -C repo checkout -B "$HEAD_BRANCH" "$REVIEWED_SHA"
+            git -C repo rebase "origin/$BASE_BRANCH"
+            git -C repo diff --name-only "origin/$BASE_BRANCH...HEAD" > "$RUNNER_TEMP/rebased-paths.txt"
+            rebased_policy="$(node policy/.github/scripts/classify-keystatic-changes.mjs --paths-file "$RUNNER_TEMP/rebased-paths.txt")"
+            rebased_eligible="$(printf '%s' "$rebased_policy" | node -e 'const fs=require("fs"); const d=JSON.parse(fs.readFileSync(0,"utf8")); process.stdout.write(String(d.eligible));')"
+            if [[ "$rebased_eligible" != "true" ]]; then
+              echo "Rebased diff contains ineligible paths; aborting automatic merge." >&2
+              exit 1
+            fi
+            merge_sha="$(git -C repo rev-parse HEAD)"
+            git -C repo push --force-with-lease origin "HEAD:$HEAD_BRANCH"
+            for _ in 1 2 3 4 5; do
+              indexed_sha="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json headRefOid --jq '.headRefOid')"
+              if [[ "$indexed_sha" == "$merge_sha" ]]; then
+                break
+              fi
+              sleep 2
+            done
+            sleep 2
+          fi
+
+          git -C repo checkout "$BASE_BRANCH"
+          git -C repo reset --hard "origin/$BASE_BRANCH"
+          git -C repo merge --ff-only "$merge_sha"
+          git -C repo push origin "$BASE_BRANCH"
+
+          for _ in 1 2 3 4 5; do
+            pr_state="$(gh pr view "$PR_NUMBER" --repo "$REPOSITORY" --json state --jq '.state')"
+            if [[ "$pr_state" == "MERGED" ]]; then
+              break
+            fi
+            sleep 2
+          done
+
+          git -C repo push origin --delete "$HEAD_BRANCH" || true
+          echo "Auto-merged approved editorial PR #$PR_NUMBER ($merge_sha) into $BASE_BRANCH." >> "$GITHUB_STEP_SUMMARY"
