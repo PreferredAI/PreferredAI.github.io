@@ -19,6 +19,7 @@ const allowedPostKeys = new Set([
   "excerpt",
   "cover",
   "featuredImage",
+  "featured",
   "categories",
   "tags",
   "seoTitle",
@@ -41,6 +42,17 @@ const dangerousMarkdown = [
 ];
 const angleWrappedMediaReference = /<((?:\/uploads|\/team\/members)\/[^>]+)>/gu;
 const localMediaReference = /\/(?:uploads|team\/members)\/[^)\]}\s"'<>]+/gu;
+
+function parseDateValue(value: unknown): string | null {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (trimmed.length > 0) return trimmed;
+  }
+  return null;
+}
 
 function requiredString(
   data: Record<string, unknown>,
@@ -131,9 +143,13 @@ function validatePost(filename: string): number {
   requiredString(data, "title", filename);
   requiredString(data, "author", filename);
   requiredString(data, "excerpt", filename);
-  const date = requiredString(data, "date", filename);
-  if (!isRealDate(date)) {
+  const date = parseDateValue(data.date);
+  if (!date || !isRealDate(date)) {
     throw new Error(`${filename}: date must be a real YYYY-MM-DD date`);
+  }
+
+  if (data.featured !== undefined && typeof data.featured !== "boolean") {
+    throw new Error(`${filename}: featured must be a boolean`);
   }
 
   const rawFeaturedImage =

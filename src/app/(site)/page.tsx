@@ -4,13 +4,14 @@ import { FeaturedPostCard } from "@/components/FeaturedPostCard";
 import Pagination from "@/components/Pagination";
 import { PostCard } from "@/components/PostCard";
 import TeamPhotos from "@/components/TeamPhotos";
-import { getAllPosts } from "@/lib/markdown-posts";
+import { getAllPosts, getFeaturedPost } from "@/lib/markdown-posts";
 
 export default async function Home() {
-  const { posts, pages } = await getAllPosts(1, 12, { firstPageLimit: 10 });
-
-  const featuredPost = posts[0];
-  const remainingPosts = posts.slice(1);
+  const featuredPost = getFeaturedPost();
+  const { posts: remainingPosts, pages } = await getAllPosts(1, 12, {
+    firstPageLimit: 9,
+    excludeSlug: featuredPost?.slug,
+  });
 
   return (
     <div>
@@ -34,7 +35,9 @@ export default async function Home() {
         </div>
       )}
 
-      {posts.length > 0 && <CategoryFilterBar allHref="/" className="mb-6" />}
+      {(featuredPost || remainingPosts.length > 0) && (
+        <CategoryFilterBar allHref="/" className="mb-6" />
+      )}
 
       {remainingPosts.length > 0 && (
         <div className="feed-grid grid gap-5 sm:gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -44,7 +47,7 @@ export default async function Home() {
         </div>
       )}
 
-      {posts.length === 0 && (
+      {!featuredPost && remainingPosts.length === 0 && (
         <div className="rounded-3xl border border-border/70 bg-card/85 px-6 py-16 text-center">
           <p className="text-lg font-extrabold text-foreground">No posts yet</p>
           <p className="mx-auto mt-2 max-w-md text-pretty text-muted-foreground">

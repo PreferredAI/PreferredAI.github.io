@@ -117,6 +117,12 @@ export function createKeystaticConfig(sortRanks?: CollectionSortRanks) {
             directory: "public/uploads",
             publicPath: "/uploads/",
           }),
+          featured: fields.checkbox({
+            label: "Featured post (Pin to Homepage hero)",
+            description:
+              "Check to pin this post in the main Featured spot at the top of the homepage. If unchecked, the newest post is featured automatically.",
+            defaultValue: false,
+          }),
           featuredImage: fields.text({
             label: "Legacy image path (leave empty for new posts)",
             description:

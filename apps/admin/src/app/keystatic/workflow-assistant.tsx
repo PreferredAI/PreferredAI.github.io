@@ -143,7 +143,27 @@ export default function KeystaticWorkflowAssistant() {
   const [status, setStatus] = useState<BranchStatus | null>(null);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [collapsed, setCollapsed] = useState<boolean>(false);
+  const [collapsed, setCollapsed] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        return localStorage.getItem("ks-assistant-collapsed") === "true";
+      } catch {
+        return false;
+      }
+    }
+    return false;
+  });
+
+  const toggleCollapsed = useCallback((nextCollapsed: boolean) => {
+    setCollapsed(nextCollapsed);
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.setItem("ks-assistant-collapsed", String(nextCollapsed));
+      } catch {
+        // ignore localStorage errors
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const syncLocationAndCookie = () => {
@@ -429,7 +449,7 @@ export default function KeystaticWorkflowAssistant() {
       <div
         style={{
           position: "fixed",
-          right: 16,
+          left: 16,
           bottom: 16,
           zIndex: 9999,
           fontFamily:
@@ -437,7 +457,7 @@ export default function KeystaticWorkflowAssistant() {
         }}
       >
         <button
-          onClick={() => setCollapsed(false)}
+          onClick={() => toggleCollapsed(false)}
           style={{
             background: "#18181b",
             color: "#fafafa",
@@ -467,7 +487,7 @@ export default function KeystaticWorkflowAssistant() {
     <div
       style={{
         position: "fixed",
-        right: 16,
+        left: 16,
         bottom: 16,
         zIndex: 9999,
         maxWidth: 440,
@@ -526,7 +546,7 @@ export default function KeystaticWorkflowAssistant() {
             </button>
           )}
           <button
-            onClick={() => setCollapsed(true)}
+            onClick={() => toggleCollapsed(true)}
             title="Minimize helper"
             style={{
               background: "transparent",

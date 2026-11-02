@@ -17,6 +17,7 @@ export interface MarkdownPost {
   author: string;
   excerpt: string;
   featuredImage: string;
+  featured?: boolean;
   categories: string[];
   tags: string[];
   seoTitle: string;
@@ -25,6 +26,13 @@ export interface MarkdownPost {
 }
 
 function trimStr(value: unknown): string {
+  return typeof value === "string" ? value.trim() : "";
+}
+
+function parsePostDate(value: unknown): string {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
   return typeof value === "string" ? value.trim() : "";
 }
 
@@ -51,10 +59,11 @@ export function buildPostsIndex(): MarkdownPost[] {
     return {
       slug,
       title,
-      date: trimStr(data.date),
+      date: parsePostDate(data.date),
       author: trimStr(data.author),
       excerpt,
       featuredImage: trimStr(data.cover) || trimStr(data.featuredImage),
+      featured: Boolean(data.featured),
       categories: Array.isArray(data.categories)
         ? data.categories.map(trimStr).filter(Boolean)
         : [],

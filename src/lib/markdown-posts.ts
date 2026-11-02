@@ -25,6 +25,7 @@ export interface MarkdownPost {
   author: string;
   excerpt: string;
   featuredImage: string;
+  featured?: boolean;
   categories: string[];
   tags: string[];
   seoTitle: string;
@@ -39,8 +40,16 @@ export interface PostPreview {
   author: string;
   excerpt: string;
   featuredImage: string;
+  featured?: boolean;
   categories: string[];
   tags: string[];
+}
+
+function parsePostDate(value: unknown): string {
+  if (value instanceof Date && !Number.isNaN(value.getTime())) {
+    return value.toISOString().slice(0, 10);
+  }
+  return typeof value === "string" ? value.trim() : "";
 }
 
 function parsePostFile(filename: string): MarkdownPost {
@@ -61,10 +70,11 @@ function parsePostFile(filename: string): MarkdownPost {
   const post: MarkdownPost = {
     slug,
     title: data.title || "",
-    date: data.date || "",
+    date: parsePostDate(data.date),
     author: data.author || "",
     excerpt: data.excerpt || "",
     featuredImage: data.cover || data.featuredImage || "",
+    featured: Boolean(data.featured),
     categories: data.categories || [],
     tags: data.tags || [],
     seoTitle: data.seoTitle || data.title || "",
@@ -107,12 +117,33 @@ export function loadAllPosts(): MarkdownPost[] {
   return posts;
 }
 
+export function getFeaturedPost(): PostPreview | null {
+  const allPosts = loadAllPosts();
+  const pinned = allPosts.find((p) => p.featured);
+  const target = pinned || allPosts[0];
+  if (!target) return null;
+  return {
+    slug: target.slug,
+    title: target.title,
+    date: target.date,
+    author: target.author,
+    excerpt: target.excerpt,
+    featuredImage: target.featuredImage,
+    featured: Boolean(target.featured),
+    categories: target.categories,
+    tags: target.tags,
+  };
+}
+
 export function getAllPosts(
   page = 1,
   limit = 10,
-  options?: { firstPageLimit?: number },
+  options?: { firstPageLimit?: number; excludeSlug?: string },
 ): { posts: PostPreview[]; total: number; pages: number } {
-  const allPosts = loadAllPosts();
+  let allPosts = loadAllPosts();
+  if (options?.excludeSlug) {
+    allPosts = allPosts.filter((post) => post.slug !== options.excludeSlug);
+  }
 
   const total = allPosts.length;
   const firstPageLimit = options?.firstPageLimit ?? limit;
@@ -140,6 +171,7 @@ export function getAllPosts(
     author: post.author,
     excerpt: post.excerpt,
     featuredImage: post.featuredImage,
+    featured: Boolean(post.featured),
     categories: post.categories,
     tags: post.tags,
   }));
@@ -301,6 +333,10 @@ export function getAllPostSlugs(): string[] {
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {
+  const normalizedMarkdown = markdown.replace(
+    /!\[([^\]]*)\]\s*!\[\]\(([^)]+)\)/g,
+    "![$1]($2)",
+  );
   const result = await unified()
     .use(remarkParse)
     .use(gfm)
@@ -316,6 +352,6 @@ export async function markdownToHtml(markdown: string): Promise<string> {
       strict: "error",
     })
     .use(rehypeStringify)
-    .process(markdown);
+    .process(normalizedMarkdown);
   return result.toString();
 }

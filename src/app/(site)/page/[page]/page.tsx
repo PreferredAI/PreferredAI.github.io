@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import CategoryFilterBar from "@/components/CategoryFilterBar";
 import Pagination from "@/components/Pagination";
 import { PostCard } from "@/components/PostCard";
-import { getAllPosts } from "@/lib/markdown-posts";
+import { getAllPosts, getFeaturedPost } from "@/lib/markdown-posts";
 
 interface PageProps {
   params: Promise<{
@@ -31,8 +31,10 @@ export default async function PaginatedHomePage({ params }: PageProps) {
     notFound();
   }
 
+  const featuredPost = getFeaturedPost();
   const { posts, pages } = await getAllPosts(currentPage, 12, {
-    firstPageLimit: 10,
+    firstPageLimit: 9,
+    excludeSlug: featuredPost?.slug,
   });
 
   if (currentPage > pages) {
@@ -70,7 +72,11 @@ export default async function PaginatedHomePage({ params }: PageProps) {
 }
 
 export async function generateStaticParams() {
-  const { pages } = await getAllPosts(1, 12, { firstPageLimit: 10 });
+  const featuredPost = getFeaturedPost();
+  const { pages } = await getAllPosts(1, 12, {
+    firstPageLimit: 9,
+    excludeSlug: featuredPost?.slug,
+  });
   if (pages <= 1) return [];
 
   return Array.from({ length: pages - 1 }, (_, i) => ({

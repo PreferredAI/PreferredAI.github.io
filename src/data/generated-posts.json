@@ -8,6 +8,7 @@
       "author": "Jaime Hieu Do",
       "excerpt": "A recommender-system result is not just a property of the algorithm. It is a property of the entire experimental pipeline: Data → Model → Tuning → Evaluation. Each small flaw along the way distorts research benchmarks, and here is what we can do about it.",
       "featuredImage": "/uploads/reproducibility-in-recommender-systems/cover.jpg",
+      "featured": false,
       "categories": [
         "Education",
         "Presentation"
@@ -24,12 +25,30 @@
       "content": "\nOn 17 June, I had the pleasure of giving an invited talk to the Master of IT in Business (MITB) students at Singapore Management University (SMU) on **Reproducibility in Recommender Systems**. ([Slides here!](/uploads/reproducibility-in-recommender-systems/slides.pdf))\n\nI started the talk with what ought to be a boring question:\n\n> *\"Who here doesn’t know BPR (Bayesian Personalized Ranking)? ...please don’t raise your hand!\"*\n\nAlmost everyone working in recommender systems knows BPR (which had also been covered in a previous sessions of the class). Introduced in 2009 by Steffen Rendle and colleagues, BPR is one of the most foundational pairwise ranking algorithms in the literature. It is taught in university courses, implemented across almost all popular recommendation libraries, and routinely serves as the go-to baseline to this day.\n\nNaturally, if you asked a researcher or a modern AI coding agent:\n\n```text\nClaude, help me build a BPR pipeline.\n```\n\nWould you feel confident that you are getting a standard, reproducible baseline?\nOr more critically: would you get the best-performing BPR configuration on your benchmark?\n\nIt is great to see that the community has been putting more emphasis on reproducibility recently. I believe this is crucial for the progress of the field. In this post, I will share some of the widespread issues in the pipeline of recommender system research that can lead to irreproducible results.\n\n---\n\n## TL;DR: Your Recommender Model Is Only as Reproducible as Its Pipeline\n\nA recommender-system result is not just an intrinsic property of the algorithm. It is a property of the **entire experimental pipeline**:\n\n```mermaid\nflowchart LR\n    D[Data] --> M[Model]\n    M --> T[Tuning]\n    T --> E[Evaluation]\n\n    D -. mismatch / leakage .-> R[Misleading result]\n    M -. incorrect baseline .-> R\n    T -. unequal effort .-> R\n    E -. cherry-picking / sampled metrics .-> R\n```\n\nFlaws at any stage of the pipeline; from dataset selection and preprocessing to implementation details, unequal tuning effort, and evaluation choices; can dramatically alter the relative ranking of models:\n\n| Step           | Common Example Flaw                                                                       | Likely Impact                                                                               | Practical Mitigation                                                                                                                             |\n| :------------- | :---------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------ | :----------------------------------------------------------------------------------------------------------------------------------------------- |\n| **Data**       | Dataset-task mismatch, inconsistent preprocessing, temporal leakage                       | The benchmark measures an artificial problem, or the model learns information ahead of time | Document preprocessing; verify that the dataset exhibits true task signals; use time-respecting global splits                                    |\n| **Model**      | Incorrect or incomplete baseline implementations                                          | A broken baseline makes a proposed model appear artificially superior                       | Prefer official/vetted implementations; audit loss calculations, sampling, and inference routines; sanity-check against published references     |\n| **Tuning**     | Baselines receive default parameters while the proposed model gets extensive optimization | The ranking of models becomes a hyperparameter-budget artifact                              | Allocate comparable tuning budgets to all models; disclose search spaces, budgets, and selection criteria for both baselines and proposed models |\n| **Evaluation** | Test-set model selection (cherry-picking) or sampled negatives                            | Optimistic performance estimates or completely inverted model rankings                      | Select checkpoints strictly on validation; evaluate on the full item space; disclose and stress-test sampling (only with good justification)     |\n\nLet us examine how flaws emerge at each of these four stages.\n\n---\n\n## 1. Data: The Dataset May Not Match the Task\n\nBefore we even discuss model architectures, there is a more fundamental question: **what does our dataset actually tell us?**\n\n### Sequential Data Needs Meaningful Order\nIn sequential recommendation, it has become common practice to take rating datasets (such as Amazon Reviews or MovieLens), sort each user's history by timestamp, and evaluate sequential models (like SASRec, BERT4Rec) using leave-one-out testing.\n\nHowever, a sequence of ratings spread out over months or years does not automatically contain the sequential dynamics of an active e-commerce session where clicks happen seconds apart.\n\n[Klenitskiy et al. (RecSys 2024)](https://arxiv.org/abs/2408.12008) tested this directly in *\"Does It Look Sequential?\"* by deliberately shuffling user interaction sequences across 15 commonly used benchmarks:\n* If destroying temporal order barely hurts a sequential model, the dataset has very little sequential signal to begin with.\n* Their results showed that many popular datasets exhibit minimal sequential dependencies, meaning complex sequential models were merely memorizing general popularity and user preferences rather than learning true ***sequential dynamics***.\n\n### Temporal Data Leakage\nOffline evaluation typically adopts one of three data-splitting strategies:\n\n1. **Random Split:** Interactions are randomly partitioned. Test interactions are scattered across the entire timeline, allowing the model to train on future interactions to predict past behavior.\n2. **User Leave-One-Out:** The last interaction of each user is placed in the test set. However, User A's last interaction may have occurred in January 2025, while User B's training interactions continue through December 2025. Consequently, interactions occurring long after User A's test event end up in the training data, allowing future signals to leak into past predictions.\n3. **Global Temporal Split:** A single global timestamp cutoff is chosen. The model trains strictly on interactions before the cutoff and is evaluated on interactions occurring after it.\n\n[Ji et al. (ACM TOIS 2023)](https://arxiv.org/abs/2010.11060) showed that non-temporal splits leak future training data, artificially inflating ranking metrics by **as much as 89.5% on NDCG@20** and overturning the relative performance ranking between models.\n\n> **Takeaway:** Always ask *\"what problem did I actually construct from this dataset?\"*\n\n---\n\n## 2. Model: The Same Name Does Not Imply the Same Implementation\n\nWhen comparing a new method against a familiar baseline, we often assume standard algorithms are identical across libraries. However, implementations of even classic (and conceptually simple) algorithms differ significantly across frameworks.\n\n### BPR Implementations Are NOT the Same\n[Milogradskii et al. (RecSys 2024)](https://arxiv.org/abs/2409.14217) audited BPR implementations across popular open-source frameworks (**Cornac**, **DaisyRec**, **Elliot**, **RecBole**, **ReChorus**, **RecPack**, **Implicit**, and **LightFM**):\n\n| Framework                  | Core       | Item Biases |                     Regularization Scheme                     |  Optimizer  | Negative Sampling  |\n| :------------------------- | :--------- | :---------: | :-----------------------------------------------------------: | :---------: | :----------------: |\n| **Cornac**                 | Cython     |     Yes     |                       Shared $\\lambda$                        |  Only SGD   |      Uniform       |\n| **DaisyRec**               | Python     |     No      |                       Shared $\\lambda$                        | Include SGD |      Uniform       |\n| **Elliot**                 | Python     |     Yes     |          Separate $\\lambda_u, \\lambda_i, \\lambda_j$           |  Only SGD   |      Uniform       |\n| **RecBole**                | PyTorch    |     No      |                       Shared $\\lambda$                        | Include SGD |      Uniform       |\n| **Implicit**               | Cython     |     Yes     |                       Shared $\\lambda$                        |  Only SGD   |  Popularity-based  |\n| **LightFM**                | C / Cython |     Yes     |          Separate $\\lambda_u, \\lambda_i, \\lambda_j$           |   No SGD    |      Uniform       |\n| **Original (MyMediaLite)** | C#         |     Yes     | Separate $\\lambda_u, \\lambda_i, \\lambda_j$ & Shared $\\lambda$ |  Only SGD   | Uniform & Adaptive |\n\nDifferences in bias terms, regularization formulations, optimizer defaults, and negative sampling strategies resulted in substantial performance divergence. For example, on the Million Song Dataset (MSD), NDCG@100 varied widely under the same nominal algorithm:\n\n* **Cornac:** $0.3114$\n* **Implicit:** $0.2567$\n* **LightFM:** $0.0575$\n* **RecBole:** $0.0117$\n\nThe exact \"same\" algorithm yields vastly different results depending on the library, and the discrepancies are substantial.\n\nBy today's standards, BPR is a relatively simple algorithm with few implementation details. If the gap is already this wide for a basic baseline, the discrepancies in complex deep learning architectures can be catastrophic.\n\n### Case Study: GRU4Rec\nGRU4Rec ([Hidasi et al., 2016](https://arxiv.org/abs/1511.06939)) is a landmark sequential recommendation model with over 5,000 citations. The original reference was implemented in Theano. As Theano became deprecated, researchers created third-party ports in PyTorch, TensorFlow, and Keras.\n\n[Hidasi and Czapp (RecSys 2023)](https://arxiv.org/abs/2307.14956) (the original authors of GRU4Rec) evaluated six third-party GRU4Rec implementations across five benchmark datasets:\n* The most-starred PyTorch implementation on GitHub contained critical bugs in its loss functions (Cross-Entropy and BPR-max) and an incorrect inference routine.\n* Out of the box, its performance was **75% to 99% lower** than the reference implementation.\n* Meanwhile, a correct PyTorch reimplementation with only ~15 GitHub stars matched the reference within 1–2%.\n\n> **Takeaway:** *An implementation is part of the experimental method.* When adopting a baseline, verify the correctness of every components, including model architecture, loss functions, sampling logic, optimizer, and inference process; not just the class name.\n\n---\n\n## 3. Tuning: With Enough Asymmetry, \"Everyone's a Winner!\"\n\nSuppose a researcher spends three weeks fine-tuning a newly proposed model: sweeping learning rates, adjusting latent dimensions, testing regularizers, and tuning dropout. Then, they run the baselines using out-of-the-box default hyperparameters that were never tuned for that dataset. Such a comparison may be reproducible, but it is scientifically flawed.\n\nIn *\"Everyone’s a Winner! On Hyperparameter Tuning of Recommendation Models\"* ([Shehzad & Jannach, RecSys 2023](https://dl.acm.org/doi/10.1145/3604915.3609488)), the authors showed how conclusions about which recommender is \"best\" depend heavily on hyperparameter optimization budgets:\n\n* When neural models are insufficiently tuned, even a non-parametric **`MostPop` (popularity baseline)** can outperform complex models like NGCF, ConvMF, and NeuMF on standard datasets (such as Epinions and AMZm).\n* With unequal tuning, almost any proposed architecture can be made to look like a state-of-the-art winner.\n\nA study by [Benigni, Ferrari Dacrema & Jannach (ACM TORS 2026)](https://arxiv.org/abs/2505.09364) examined 9 recommendation papers on Denoising Diffusion Probabilistic Models (SIGIR 2023 and 2024):\n* Only ~25% of reported results were fully reproducible, often relying on comparisons against *weak or undertuned baselines*.\n* When evaluated fairly, well-tuned simpler baselines consistently outperformed the diffusion-based models.\n\n> **Takeaway:** Give competing models comparable optimization budgets, and report the full search space and selection process, not just the winning hyperparameter values.\n\n---\n\n## 4. Evaluation: Protocol Shortcuts Invert Conclusions\n\nEvaluation determines what scientific claims an experiment actually supports.\n\nThe standard evaluation protocol is straightforward:\n* **Training set:** Fit model parameters.\n* **Validation set:** Tune hyperparameters, select model checkpoints, and apply early stopping.\n* **Test set:** Measure final generalization performance ***strictly once***, after all modeling choices are frozen.\n\nIf test metrics are evaluated after every epoch and the peak score is reported (test-set cherry-picking), information from the test set leaks directly into model selection, producing artificially optimistic results.\n\n### Negative Sampling at Inference\nTo reduce computation on large catalogues ($>100\\text{k}$ items), many papers evaluate models by ranking each test item against a small sampled set of 99 negative items (1-in-100 evaluation) instead of the full catalogue.\n\n[Krichene and Rendle (KDD 2020)](https://dl.acm.org/doi/pdf/10.1145/3394486.3403226) proved that:\n1. **Sampled metrics are inconsistent:** Naively sampled metrics do not necessarily preserve the relative ordering of recommenders ($A > B$ under full evaluation can become $B > A$ under sampled evaluation, even in expectation).\n2. **Metrics collapse toward AUC:** As sample size shrinks, ranking metrics (like Recall@$K$ and NDCG@$K$) behave increasingly like classification AUC rather than evaluating top-$N$ recommendation utility.\n\nFull-catalogue evaluation should always be preferred unless explicitly studying a candidate retrieval stage with a well-defined candidate generator.\n\n### Case Study: Neural Collaborative Filtering (NCF) vs. Matrix Factorization (MF)\nNeural Collaborative Filtering ([He et al., WWW 2017](https://arxiv.org/abs/1708.05031)) proposed replacing linear matrix factorization dot products with non-linear Multi-Layer Perceptrons (MLP).\n\nWhen [Rendle et al. (RecSys 2020)](https://arxiv.org/abs/2005.09683) revisited NCF with thorough hyperparameter tuning and standard dot-product baselines, **simple dot-product Matrix Factorization consistently outperformed or matched the learned MLP similarity models**. The apparent superiority of the neural interaction layers was driven by undertuned baselines and test-set epoch selection.\n\n---\n\n## Same Pattern, New Architecture, Every Year\n\nThis pattern has repeated across successive architectural paradigms in recommender systems:\n\n* **2019 ([Ferrari Dacrema et al., RecSys'19 / TOIS'21](https://arxiv.org/abs/1907.06902)):** Out of 18 top-tier neural recommenders, only 7 could be reproduced. Simple heuristic baselines (ItemKNN, UserKNN, $RP_3\\beta$) beat 6 of them, and none consistently outperformed a tuned linear model (SLIM). The 2021 TOIS extension confirmed this across 26 models.\n* **2020 ([Rendle et al., RecSys'20](https://arxiv.org/abs/2005.09683)):** Standard dot-product Matrix Factorization (MF) outperforms Neural Collaborative Filtering (NCF / NeuMF) under equal hyperparameter tuning.\n* **2022 ([Petrov & Macdonald, RecSys'22](https://arxiv.org/abs/2207.07483)):** Implementations of BERT4Rec are inconsistent, performance varied widely, with popular library implementations (e.g., RecBole) suffering up to a ~65% metric drop.\n* **2023 ([Hidasi & Czapp, RecSys'23](https://arxiv.org/abs/2307.14956)):** Evaluated 6 third-party implementations of GRU4Rec; all were feature-incomplete and buggy, causing median metric drops of 7.5%–89.5% and maximum degradations up to 99.6%.\n* **2023 ([Anelli et al., RecSys'23](https://arxiv.org/abs/2308.00404)):** Re-evaluated 6 Graph CF models (NGCF to LightGCN/GFCF); classic baselines ($RP_3\\beta$, `EASE_R`) and non-iterative linear graph filters (GFCF) matched or outperformed deep GNNs, with GNN gains disappearing when moved beyond standard dense datasets.\n* **2024 ([Milogradskii et al., RecSys'24](https://arxiv.org/abs/2409.14217)):** Analyzed BPR-MF across 6 open-source implementations (Cornac, Elliot, Implicit, LightFM, RecBole, MyMediaLite); implementation discrepancies degraded performance by up to 50%.\n* **2025 ([Shehzad et al., SIGIR'25](https://arxiv.org/abs/2501.10143) / [Shehzad & Jannach, RecSys'25](https://dl.acm.org/doi/pdf/10.1145/3705328.3748156)):** In intent-aware recommendation (SIGIR'25), all 5 examined neural/graph models were consistently beaten by ItemKNN, SLIM, and `EASE_R`; in session-based GNNs (RecSys'25), a properly tuned GRU4Rec baseline outperformed 6 recent GNN architectures on 2 of 3 benchmarks.\n* **2026 ([Benigni, Ferrari Dacrema & Jannach, ACM TORS'26](https://arxiv.org/abs/2505.09364)):** Diffusion-based recommenders (DDPMs) exhibited only 25% reproducibility across 9 SIGIR papers. Simpler baselines beat all reported results.\n\n---\n\n## Key Takeaways: How to Build Reproducible RecSys\n\nRecommender system performance is the combined output of the complete experimental system:\n\n$$\\mathbf{Performance} = \\mathbf{Data} + \\mathbf{Algorithm} + \\mathbf{Implementation} + \\mathbf{Tuning} + \\mathbf{Evaluation}$$\n\nPublished numbers in papers represent a single winning lap on a specific benchmark setup. When designing experiments or deploying models:\n\n1. **Verify Your Data Assumptions:** Confirm that your dataset actually exhibits the signal you are modeling (e.g., sequential dynamics). Prioritize global over random temporal splits for time-sensitive tasks.\n2. **Audit Baseline Implementations:** Do not blindly trust third-party ports. Verify loss functions, sampling strategies, and inference code. Check baseline numbers against established benchmarks.\n3. **Budget Equal Tuning Effort:** Provide competing models with comparable hyperparameter search spaces and reasonable compute budgets. Disclose the full tuning procedure.\n4. **Enforce Clean Evaluation Protocols:** Select hyperparameters and checkpoints strictly on the validation set. Evaluate on the full candidate set whenever possible.\n5. **Publish the Full Pipeline:** Share end-to-end preprocessing code, baseline implementations, evaluation scripts, and seed configurations.\n\nSo, **trust, but verify.**\n"
     },
     {
+      "slug": "disentangling-preferences",
+      "title": "Disentangling Preferences, Entangling Lives",
+      "date": "2025-05-31",
+      "author": "Hady Lauw",
+      "excerpt": "On 28 May 2025, Tran Nhu Thuat successfully defended his dissertation, titled \"Disentangling User Preferences Towards Self-Interpretable Recommender Systems.\"",
+      "featuredImage": "/uploads/disentangling-preferences/cover.jpg",
+      "featured": false,
+      "categories": [
+        "Defense",
+        "Presentation"
+      ],
+      "tags": [],
+      "seoTitle": "Disentangling Preferences, Entangling Lives",
+      "seoDescription": "On 28 May 2025, Tran Nhu Thuat successfully defended his dissertation, titled \"Disentangling User Preferences Towards Self-Interpretable Recommender Systems.\"",
+      "content": "# Disentangling Preferences, Entangling Lives\n\nOn 28 May 2025, Tran Nhu Thuat successfully defended his dissertation, titled \"Disentangling User Preferences Towards Self-Interpretable Recommender Systems.\"\\\n\\\n![Thuat outlining the structure of his thesis at the beginning of the defense](/uploads/disentangling-preferences/thuat-defense.jpg)\n\nThe main thesis of his dissertation is that disentangling the multiple latent factors underlying user preferences, through both behavioral interactions and side information, enables more accurate and interpretable recommendations.\n\nThe first part focuses on disentangling user preferences from item interactions by modeling personalized, compositional, and shared interests across users.\n\nThe second part addresses behavioral data sparsity by aligning preference factors derived from ratings and textual information, using compositional de-attention and optimal transport to improve recommendation accuracy and interpretability.\\\n\\\n![Dinner at Ellenborough Market Cafe in December 2020 while Thuat was a first-year PhD candidate (Thuat was third from left)](/uploads/disentangling-preferences/photo-20201228b.jpg)\n\nThuat first joined Preferred.AI in 2020 as a PhD candidate and our first Vingroup Young Talent Scholar. Over the ensuing five years, he has built an exemplary record of research achievements and accolades, adding the Dean's List, SMU Presidential Doctoral Fellowship, and SDSC Dissertation Fellowship to his list of distinctions. Through his dedication, intellectual curiosity, and pursuit of excellence, he has set a high standard for the younger scholars and students in our group to aspire to.\\\n\\\n![Post-defense celebration at Chimichanga (Thuat was fourth from right)](/uploads/disentangling-preferences/chimichanga.jpg)\n\nSince completing his PhD, Thuat has also celebrated two significant milestones in his personal and professional life: getting married and embarking on his career with Huawei. We warmly congratulate him on these wonderful new beginnings and wish him every success and happiness in the years ahead!\n"
+    },
+    {
       "slug": "robustly-poly-skilled",
       "title": "Robustly Poly-Skilled",
       "date": "2024-07-01",
       "author": "Hady Lauw",
       "excerpt": "On 25 June 2024, Lee Ween Jiann successfully defended his dissertation, titled “Incorporating Intrinsic Structures into Entity Matching and Representation Learning”. The work came...",
       "featuredImage": "/uploads/2024/07/kl2019_seafood3.jpg",
+      "featured": false,
       "categories": [
         "Defense",
         "Presentation"
@@ -46,6 +65,7 @@
       "author": "Hady Lauw",
       "excerpt": "In May 2024, a majority of the Preferred.AI members were involved in The Web Conference 2024, in various capacities, as organizers, authors, and attendees....",
       "featuredImage": "/uploads/2024/07/53728024029_591b2c8e77_k.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Social"
@@ -62,6 +82,7 @@
       "author": "Darryl Ong",
       "excerpt": "With the dream of chasing the best deals, we introduce to you ThriftCity, where data and technology meet your retail therapy needs.",
       "featuredImage": "/uploads/2024/02/banner_resized.jpg",
+      "featured": false,
       "categories": [
         "Announcement"
       ],
@@ -77,6 +98,7 @@
       "author": "Hady Lauw",
       "excerpt": "On 27 November 2023, Chia Chong Cher (that’s three C’s) successfully defended his dissertation entitled “Effective and Efficient Semantic Representations and Their Applications”. His...",
       "featuredImage": "/uploads/2024/01/photo_20190424.jpg",
+      "featured": false,
       "categories": [
         "Defense",
         "Presentation"
@@ -93,6 +115,7 @@
       "author": "Jaime Hieu Do",
       "excerpt": "In September 2023, Hieu had the pleasure of attending RecSys’23, the 17th ACM Conference on Recommender Systems, held in Singapore. The conference venue was...",
       "featuredImage": "/uploads/2023/09/F6nNZirbIAEooCf.jpeg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -109,6 +132,7 @@
       "author": "Hady Lauw",
       "excerpt": "In August 2023, Hady attended the 2023 ACM SIGKDD International Conference on Knowledge Discovery and Data Mining, also known as KDD 2023. The conference...",
       "featuredImage": "/uploads/2023/08/IMG_9872.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -125,6 +149,7 @@
       "author": "Hady Lauw",
       "excerpt": "On 12 May 2023, Zhang Ce successfully defended his dissertation, entitled “Document Graph Representation Learning”. The gist of it is to derive more holistic...",
       "featuredImage": "/uploads/2023/05/2020-02-06-14.35.14.jpg",
+      "featured": false,
       "categories": [
         "Defense",
         "Presentation"
@@ -141,6 +166,7 @@
       "author": "Hady Lauw",
       "excerpt": "In May 2023, Hady attended The Web Conference 2023 (previously the conference series was known as World Wide Web or WWW). The conference was...",
       "featuredImage": "/uploads/2023/05/IMG_6593.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -157,6 +183,7 @@
       "author": "Hady Lauw",
       "excerpt": "Hoang, Tuan, Aghiles, and Hady will be delivering a tutorial at the ACM Web Conference 2023 conference that will take place in May 2023...",
       "featuredImage": "/uploads/2023/04/pexels-pixabay-45182.jpg",
+      "featured": false,
       "categories": [
         "Announcement",
         "Presentation"
@@ -173,6 +200,7 @@
       "author": "Hady Lauw",
       "excerpt": "WSDM (pronounced “wisdom”) is one of the premier conferences on web-inspired research involving search and data mining. The WSDM-23 conference took place in Singapore...",
       "featuredImage": "/uploads/2023/05/IMG_6640.jpg",
+      "featured": false,
       "categories": [
         "Presentation"
       ],
@@ -188,6 +216,7 @@
       "author": "jiapeng",
       "excerpt": "Jia Peng attended the 2022 Conference on Empirical Methods in Natural Language Processing (EMNLP 2022) in Abu Dhabi, United Arab Emirates, from 7 to...",
       "featuredImage": "/uploads/2022/12/adnec.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -204,6 +233,7 @@
       "author": "Zhang Ce",
       "excerpt": "Zhang Ce attended the 36th Conference on Neural Information Processing Systems (NeurIPS-22), which took place 28 November through 9 December, 2022. After two-year virtual...",
       "featuredImage": "/uploads/2022/12/new_orleans_convention_center.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel",
@@ -221,6 +251,7 @@
       "author": "Nhu-Thuat Tran",
       "excerpt": "In August 2022, Hady, Zhang Ce, and Thuat travelled to Washington D.C. to attend the 28th ACM SIGKDD Conference on Knowledge Discovery and Data...",
       "featuredImage": "/uploads/2022/11/Washington-D.C.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -237,6 +268,7 @@
       "author": "Hady Lauw",
       "excerpt": "On November 29, 2022, Hoang successfully defended his dissertation entitled “Mining Product Textual Data for Recommendation Explanations”. While we were then coming out of...",
       "featuredImage": "/uploads/2023/05/2022-11-29-11.14.34.jpg",
+      "featured": false,
       "categories": [
         "Defense",
         "Presentation"
@@ -253,6 +285,7 @@
       "author": "Hady Lauw",
       "excerpt": "On 10 February 2022, Tuan Truong successfully defended his dissertation, entitled “Modeling Sentiments and Preferences from Multimodal Data”. In a sign of the times,...",
       "featuredImage": "/uploads/2022/02/photo_defense_tuan0.jpg",
+      "featured": false,
       "categories": [
         "Defense",
         "Presentation"
@@ -269,6 +302,7 @@
       "author": "Hady Lauw",
       "excerpt": "Tuan, Aghiles, and Hady will be delivering a tutorial at the RecSys-21 conference that will take place in September 2021. The slides and the...",
       "featuredImage": "/uploads/2021/07/azhar-j-t2hgHV1R7_g-unsplash.jpg",
+      "featured": false,
       "categories": [
         "Announcement",
         "Presentation"
@@ -285,6 +319,7 @@
       "author": "Andrew Le",
       "excerpt": "In a previous blog post, we introduce the problem of top-K recommendation retrieval using Matrix Factorization (MF). We also highlight the importance of indexing structures as a...",
       "featuredImage": "/uploads/2020/12/way-918900_1920.jpg",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -300,6 +335,7 @@
       "author": "Andrew Le",
       "excerpt": "Personalized recommender systems attempt to generate a limited number of item options (e.g., products on Amazon, movies on Netflix, or videos on Youtube, etc.)...",
       "featuredImage": "/uploads/2020/11/download-1.jpg",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -315,6 +351,7 @@
       "author": "Hady Lauw",
       "excerpt": "Join us for TechFest 2020 by Preferred.AI! Our theme this year is Zooming In. Inside an innovative app is a cool AI algorithm. On...",
       "featuredImage": "/uploads/2020/08/summer_internship_2020.jpg",
+      "featured": false,
       "categories": [
         "Announcement",
         "Presentation"
@@ -331,6 +368,7 @@
       "author": "Zhang Ce",
       "excerpt": "Text documents are usually linked to one another. For example, academic papers cite other papers, web pages link to other pages, etc. Most of...",
       "featuredImage": "/uploads/2020/08/adjacent_encoder_cover.jpg",
+      "featured": false,
       "categories": [
         "Publication"
       ],
@@ -346,6 +384,7 @@
       "author": "Quoc-Tuan Truong",
       "excerpt": "Previously, we gave our readers a glance at visual sentiment analysis in an earlier blog post. The goal of the task was seeking the...",
       "featuredImage": "/uploads/2020/08/sunglasses.jpg",
+      "featured": false,
       "categories": [
         "Publication"
       ],
@@ -361,6 +400,7 @@
       "author": "Aghiles Salah",
       "excerpt": "Generative models specify procedures allowing us to produce data samples, e.g., images, texts, user preferences, etc. These models are central to unsupervised learning, and...",
       "featuredImage": "/uploads/2020/04/blue-planet-earth-planet-globe.jpg",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -376,6 +416,7 @@
       "author": "Hady Lauw",
       "excerpt": "Preferred.AI is calling for internship applications from current students of SMU to work with us during the summer (May to July 2020) on a...",
       "featuredImage": "/uploads/2020/03/IMG_0103.jpg",
+      "featured": false,
       "categories": [
         "Announcement"
       ],
@@ -391,6 +432,7 @@
       "author": "Maksim T",
       "excerpt": "During the teaching appointment at Montana State University, Robert M. Pirsig, the author of “Zen and the Art of Motorcycle Maintenance“, conducted a following...",
       "featuredImage": "/uploads/2019/12/cover.jpg",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -406,6 +448,7 @@
       "author": "Hady Lauw",
       "excerpt": "On 11 September 2019, Andrew successfully passed the defense of his PhD dissertation, entitled “Preference Learning and Similarity Learning Perspectives on Personalized Recommendation”. He...",
       "featuredImage": "/uploads/2020/01/photo_20190911a.jpg",
+      "featured": false,
       "categories": [
         "Defense",
         "Presentation"
@@ -422,6 +465,7 @@
       "author": "Andrew Le",
       "excerpt": "In August 2019, Andrew attended the 28th International Joint Conference on Artificial Intelligence (IJCAI-2019). He shares his learning and experience in this blog post....",
       "featuredImage": "/uploads/2019/11/somewhere.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -438,6 +482,7 @@
       "author": "Jing yao",
       "excerpt": "Preferred.AI held a TechFest on Friday 23 August 2019, 3.30pm – 6.30pm to share the recent projects that we’re actively pursuing. Captivating talks based...",
       "featuredImage": "/uploads/2019/07/group.jpg",
+      "featured": false,
       "categories": [
         "Announcement",
         "Presentation"
@@ -454,6 +499,7 @@
       "author": "Aghiles Salah",
       "excerpt": "Data sparsity is one of the biggest challenges in recommender systems. A promising solution to alleviate this problem is to rely on auxiliary sources...",
       "featuredImage": "/uploads/2019/06/item_context_post2-e1560861332106.png",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -469,6 +515,7 @@
       "author": "Hady Lauw",
       "excerpt": "In May 2019, Hady traveled to San Francisco for the Web Conference 2019 (previously the conference series was known as World Wide Web or...",
       "featuredImage": "/uploads/2019/06/www19_pic0.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -485,6 +532,7 @@
       "author": "Chong Cher",
       "excerpt": "Here in Preferred.AI, much of our work involves processing and manipulating data. We regularly find ourselves wanting to explore a given dataset quickly and...",
       "featuredImage": "/uploads/2019/04/ccchia.png",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -500,6 +548,7 @@
       "author": "Hady Lauw",
       "excerpt": "On 22 April 2019, Preferred.AI minted a new PhD. Trong Le passed the defense of his PhD dissertation, entitied “Modeling Sequential and Basket-Oriented Associations...",
       "featuredImage": "/uploads/2019/04/photo_20190424a.jpg",
+      "featured": false,
       "categories": [
         "Defense",
         "Presentation"
@@ -516,6 +565,7 @@
       "author": "Hady Lauw",
       "excerpt": "In an attempt to build bridges, Preferred.AI crossed the bridge and conducted a data science meetup at Kuala Lumpur (KL), Malaysia on 16 March...",
       "featuredImage": "/uploads/2019/04/kl2019_presentation3.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel",
@@ -533,6 +583,7 @@
       "author": "Hady Lauw",
       "excerpt": "In January 2019, four members of Preferred.AI travelled to the AAAI-19 conference held in Honolulu, Hawaii to present 2 papers and 1 tutorial. As...",
       "featuredImage": "/uploads/2019/03/aaai19-hilton.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel",
@@ -550,6 +601,7 @@
       "author": "Ween Jiann",
       "excerpt": "In this age where new content is generated on the Web every second, it is only natural that we find ways to harness them....",
       "featuredImage": "/uploads/2019/02/Crawling_to_the_finish.jpg",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -565,6 +617,7 @@
       "author": "Hady Lauw",
       "excerpt": "Artificial Intelligence or AI is pervading many aspects of our lives, influencing the array of options we encounter and changing the way we make...",
       "featuredImage": "/uploads/2019/02/20190121_cover.jpg",
+      "featured": false,
       "categories": [
         "Presentation"
       ],
@@ -580,6 +633,7 @@
       "author": "Hady Lauw",
       "excerpt": "To begin the year 2019 on a high note, Preferred.AI went on a group outing to Climb Central, an indoor rock climbing gym at...",
       "featuredImage": "/uploads/2019/02/20190116_autobelay.jpg",
+      "featured": false,
       "categories": [
         "Social"
       ],
@@ -595,6 +649,7 @@
       "author": "Hady Lauw",
       "excerpt": "Building on the success of the premiere of Preferred.AI-designed enrichment course on Web Data Extraction & Regression Analysis Using Java, we staged another run...",
       "featuredImage": "/uploads/2018/12/venom-regression-201812-cover3.jpg",
+      "featured": false,
       "categories": [
         "Education",
         "Video"
@@ -611,6 +666,7 @@
       "author": "Andrew Le",
       "excerpt": "Andrew and Hady will be delivering a tutorial at the AAAI-19 conference to take place on Monday, January 28, 2019 from 8:30am to 12:30pm...",
       "featuredImage": "/uploads/2018/12/aaai19-tutorial-cover-2.png",
+      "featured": false,
       "categories": [
         "Announcement",
         "Presentation"
@@ -627,6 +683,7 @@
       "author": "Hady Lauw",
       "excerpt": "On 2 November 2018, Maksim defended his PhD dissertation entitled “Comparison Mining from Text” before the dissertation committee at SMU School of Information Systems....",
       "featuredImage": "/uploads/2018/11/photo_20181102a.jpg",
+      "featured": false,
       "categories": [
         "Defense",
         "Presentation"
@@ -643,6 +700,7 @@
       "author": "Hady Lauw",
       "excerpt": "Upon the invitation from NUS High School of Mathematics and Science, Tuan and Hady interacted with a group of 24 eager and precocious students...",
       "featuredImage": "/uploads/2018/11/photo_20181109b.jpg",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -658,6 +716,7 @@
       "author": "Andrew Le",
       "excerpt": "In October, Andrew attended the 27th ACM International Conference on Information and Knowledge Management (CIKM 2018) that was organized in Torino, Italy. Here, he...",
       "featuredImage": "/uploads/2018/11/keynote2.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -674,6 +733,7 @@
       "author": "Hady Lauw",
       "excerpt": "Fired with an educational zeal, Preferred.AI conducted a 5-day (Oct 3-8 2018) enrichment course on Web Data Extraction and Regression Analysis, which was organized...",
       "featuredImage": "/uploads/2018/10/iprep_regression.jpg",
+      "featured": false,
       "categories": [
         "Education"
       ],
@@ -689,6 +749,7 @@
       "author": "Aghiles Salah",
       "excerpt": "In early August 2018, Aghiles attended the international conference on Uncertainty in Artificial Intelligence (UAI), which took place in Monterey, California. Hereafter, he shares...",
       "featuredImage": "/uploads/2018/09/20180809_145604.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -705,6 +766,7 @@
       "author": "Hady Lauw",
       "excerpt": "In July 2018, Hady traveled to Stockholm, Sweden for the International Joint Conference on Artificial Intelligence (IJCAI). Here, he recounts his experience from the...",
       "featuredImage": "/uploads/2018/07/ijcai18_posters.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel"
@@ -721,6 +783,7 @@
       "author": "Hady Lauw",
       "excerpt": "Our appreciation to KDD.SG (Singapore Chapter of SIGKDD) and DSSG (DataScience Singapore) for jointly organizing and inviting us to deliver a public tutorial on...",
       "featuredImage": "/uploads/2018/06/photo_20180609_tutorial_tuan.jpg",
+      "featured": false,
       "categories": [
         "Education",
         "Video"
@@ -737,6 +800,7 @@
       "author": "Hady Lauw",
       "excerpt": "We are grateful to SDSC (Singapore Data Science Consortium and DSSG (DataScience Singapore) for organizing the June 7 meetup, and to the hundred attendees...",
       "featuredImage": "/uploads/2018/06/photo_20180609_tutorial_hady.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Video"
@@ -753,6 +817,7 @@
       "author": "Hady Lauw",
       "excerpt": "In collaboration with KDD.SG (Singapore Chapter of SIGKDD) and DSSG (DataScience Singapore), we are organizing a tutorial on image classification using convolutional neural networks. ...",
       "featuredImage": "/uploads/2018/06/kdd-sg_tutorial_20180609_brochure1.jpg",
+      "featured": false,
       "categories": [
         "Announcement"
       ],
@@ -768,6 +833,7 @@
       "author": "Hady Lauw",
       "excerpt": "In collaboration with SDSC (Singapore Data Science Consortium and DSSG (DataScience Singapore), we will be giving several talks at a meetup on Thursday 7...",
       "featuredImage": "/uploads/2018/06/Data-Science-SG-Meetup_EDM.jpg",
+      "featured": false,
       "categories": [
         "Announcement"
       ],
@@ -783,6 +849,7 @@
       "author": "Hady Lauw",
       "excerpt": "In collaboration with SMU Office of Research and Tech Transfer, we produce a fun video that showcases Maksim‘s PhD research. Enjoy!",
       "featuredImage": "/uploads/2018/05/Capture.png",
+      "featured": false,
       "categories": [
         "Video"
       ],
@@ -798,6 +865,7 @@
       "author": "Hady Lauw",
       "excerpt": "“A picture is worth a thousand words.” So they say. Indeed, some images could capture certain moments so vividly that they become iconic and...",
       "featuredImage": "/uploads/2018/05/vscnn_basemodel_architecture-e1528105019495.png",
+      "featured": false,
       "categories": [
         "Publication"
       ],
@@ -813,6 +881,7 @@
       "author": "Hady Lauw",
       "excerpt": "Braving the depths of winter, Hady and Maksim visited Russia in late February to early March, when the temperature stayed below zero throughout. Parks...",
       "featuredImage": "/uploads/2018/04/2018-03-06-17.05.32_spb_rooftop-e1528105099740.jpg",
+      "featured": false,
       "categories": [
         "Presentation",
         "Travel",
@@ -830,6 +899,7 @@
       "author": "Hady Lauw",
       "excerpt": "… to the home page of Preferred.AI. We are a close-knit group of data mining and machine learning researchers based in SMU, focusing on...",
       "featuredImage": "/uploads/2018/04/photo_20171011b-e1528105169794.jpg",
+      "featured": false,
       "categories": [
         "Announcement"
       ],
