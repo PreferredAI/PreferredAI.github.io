@@ -26,6 +26,7 @@
     "validate:prepared": "pnpm lint && pnpm typecheck:prepared && pnpm check:content && pnpm check:markdown && pnpm check:people && pnpm check:keystatic-policy",
     "validate": "pnpm prepare:site && pnpm validate:prepared",
     "format": "biome format --write .",
+    "format:content": "node --import tsx scripts/format-editorial-content.ts",
     "fix": "biome check --write .",
     "check": "pnpm validate",
     "export": "pnpm build",

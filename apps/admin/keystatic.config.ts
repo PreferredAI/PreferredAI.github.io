@@ -101,19 +101,18 @@ export function createKeystaticConfig(sortRanks?: CollectionSortRanks) {
           author: fields.text({
             label: "Author",
             defaultValue: "Preferred.AI",
-            validation: { isRequired: true },
+            description: "Author name (defaults to Preferred.AI if empty).",
           }),
           excerpt: fields.text({
             label: "Excerpt",
             multiline: true,
             description:
-              "A one or two sentence summary used in post listings and as the default SEO description.",
-            validation: { isRequired: true },
+              "A one or two sentence summary used in post listings and as the default SEO description. If left blank, it is automatically derived from the post content.",
           }),
           cover: fields.image({
             label: "Featured image",
             description:
-              "Required for all new posts. Choose or drop an image — Keystatic stores it in public/uploads/<post-slug>/cover.<ext>.",
+              "Optional cover image — Keystatic stores it in public/uploads/<post-slug>/cover.<ext>. If left empty, the first image in the post or a branded fallback is used.",
             directory: "public/uploads",
             publicPath: "/uploads/",
           }),

@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 
 const REPO_OWNER = "PreferredAI";
 const REPO_NAME = "PreferredAI.github.io";
@@ -143,131 +144,60 @@ export default function KeystaticWorkflowAssistant() {
   const [status, setStatus] = useState<BranchStatus | null>(null);
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
-  const [collapsed, setCollapsed] = useState<boolean>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        return localStorage.getItem("ks-assistant-collapsed") === "true";
-      } catch {
-        return false;
-      }
-    }
-    return false;
-  });
+  const [portalNode, setPortalNode] = useState<HTMLElement | null>(null);
 
-  const [customPosition, setCustomPosition] = useState<{
-    x: number;
-    y: number;
-  } | null>(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = localStorage.getItem("ks-assistant-pos");
-        if (saved) {
-          const parsed = JSON.parse(saved) as { x?: number; y?: number };
-          if (typeof parsed.x === "number" && typeof parsed.y === "number") {
-            return { x: parsed.x, y: parsed.y };
-          }
+  useEffect(() => {
+    const mountSlot = () => {
+      let slot = document.getElementById("keystatic-workflow-sidebar-slot");
+      if (slot && document.body.contains(slot)) {
+        return;
+      }
+
+      if (!slot) {
+        slot = document.createElement("div");
+        slot.id = "keystatic-workflow-sidebar-slot";
+        slot.style.padding = "0 12px 12px 12px";
+        slot.style.boxSizing = "border-box";
+        slot.style.width = "100%";
+      }
+
+      // Try 1: Right below the branch selector (HStack containing BranchPicker & GitMenu)
+      const branchControl =
+        document.querySelector('[aria-label="Current branch"]') ||
+        document.querySelector('button[aria-haspopup="listbox"]') ||
+        document.querySelector('button[aria-label="Git actions"]');
+
+      if (branchControl) {
+        const gitActions =
+          branchControl.closest<HTMLElement>('div[class*="HStack"]') ||
+          branchControl.parentElement?.parentElement;
+        if (gitActions?.parentElement) {
+          gitActions.insertAdjacentElement("afterend", slot);
+          setPortalNode(slot);
+          return;
         }
-      } catch {
-        // ignore localStorage errors
       }
-    }
-    return null;
-  });
 
-  const isDraggingRef = useRef(false);
-  const dragStartRef = useRef<{
-    mouseX: number;
-    mouseY: number;
-    elemX: number;
-    elemY: number;
-  }>({ mouseX: 0, mouseY: 0, elemX: 0, elemY: 0 });
-  const containerRef = useRef<HTMLDivElement | null>(null);
+      // Try 2: Right above the main navigation in the sidebar
+      const nav = document.querySelector<HTMLElement>(
+        'nav:not([aria-label*="Breadcrumb"])',
+      );
+      if (nav?.parentElement) {
+        nav.parentElement.insertBefore(slot, nav);
+        setPortalNode(slot);
+        return;
+      }
 
-  const onPointerDown = useCallback((e: React.PointerEvent) => {
-    const target = e.target as HTMLElement;
-    if (
-      target.closest("button") ||
-      target.closest("a") ||
-      target.closest("input")
-    ) {
-      return;
-    }
-    if (!containerRef.current) return;
-    const rect = containerRef.current.getBoundingClientRect();
-    isDraggingRef.current = true;
-    dragStartRef.current = {
-      mouseX: e.clientX,
-      mouseY: e.clientY,
-      elemX: rect.left,
-      elemY: rect.top,
+      // Fallback: append inside nav if present
+      if (nav) {
+        nav.appendChild(slot);
+        setPortalNode(slot);
+      }
     };
-    try {
-      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
-  }, []);
 
-  const onPointerMove = useCallback((e: React.PointerEvent) => {
-    if (!isDraggingRef.current || !containerRef.current) return;
-    const dx = e.clientX - dragStartRef.current.mouseX;
-    const dy = e.clientY - dragStartRef.current.mouseY;
-    const width = containerRef.current.offsetWidth;
-    const height = containerRef.current.offsetHeight;
-    const newX = Math.max(
-      8,
-      Math.min(window.innerWidth - width - 8, dragStartRef.current.elemX + dx),
-    );
-    const newY = Math.max(
-      8,
-      Math.min(
-        window.innerHeight - height - 8,
-        dragStartRef.current.elemY + dy,
-      ),
-    );
-    setCustomPosition({ x: Math.round(newX), y: Math.round(newY) });
-  }, []);
-
-  const onPointerUp = useCallback((e: React.PointerEvent) => {
-    if (isDraggingRef.current) {
-      isDraggingRef.current = false;
-      try {
-        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
-      } catch {
-        // ignore
-      }
-      if (containerRef.current) {
-        const rect = containerRef.current.getBoundingClientRect();
-        const pos = { x: Math.round(rect.left), y: Math.round(rect.top) };
-        setCustomPosition(pos);
-        try {
-          localStorage.setItem("ks-assistant-pos", JSON.stringify(pos));
-        } catch {
-          // ignore
-        }
-      }
-    }
-  }, []);
-
-  const resetPosition = useCallback((e?: React.MouseEvent) => {
-    e?.stopPropagation();
-    setCustomPosition(null);
-    try {
-      localStorage.removeItem("ks-assistant-pos");
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  const toggleCollapsed = useCallback((nextCollapsed: boolean) => {
-    setCollapsed(nextCollapsed);
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.setItem("ks-assistant-collapsed", String(nextCollapsed));
-      } catch {
-        // ignore localStorage errors
-      }
-    }
+    mountSlot();
+    const timer = setInterval(mountSlot, 500);
+    return () => clearInterval(timer);
   }, []);
 
   useEffect(() => {
@@ -545,7 +475,7 @@ export default function KeystaticWorkflowAssistant() {
     }
   }, [token, currentBranch]);
 
-  if (!token || !currentBranch) {
+  if (!token || !currentBranch || !portalNode) {
     return null;
   }
 
@@ -556,55 +486,40 @@ export default function KeystaticWorkflowAssistant() {
       : "+ Edit People Info";
   const actionsHref = `https://github.com/${REPO_OWNER}/${REPO_NAME}/actions?query=${encodeURIComponent(`branch:${currentBranch}`)}`;
 
-  const rootStyle: React.CSSProperties = {
-    position: "fixed",
-    zIndex: 9999,
-    fontFamily:
-      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-    ...(customPosition
-      ? { left: customPosition.x, top: customPosition.y }
-      : { top: 8, left: "50%", transform: "translateX(-50%)" }),
-  };
-
-  if (collapsed) {
-    return (
+  const content = (
+    <div
+      style={{
+        background: "#18181b",
+        color: "#f4f4f5",
+        border: "1px solid #27272a",
+        borderRadius: 10,
+        padding: "10px",
+        fontSize: 12,
+        lineHeight: 1.4,
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+        boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
+      }}
+    >
       <div
-        ref={containerRef}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
         style={{
-          ...rootStyle,
-          userSelect: "none",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 6,
+          marginBottom: 8,
+          paddingBottom: 6,
+          borderBottom: "1px solid #27272a",
         }}
       >
         <div
           style={{
             display: "flex",
             alignItems: "center",
-            gap: 7,
-            background: "#18181b",
-            color: "#fafafa",
-            border: "1px solid #3f3f46",
-            borderRadius: 999,
-            padding: "4px 8px 4px 6px",
-            fontSize: 12,
-            boxShadow: "0 4px 14px rgba(0, 0, 0, 0.35)",
-            cursor: "grab",
+            gap: 6,
+            minWidth: 0,
           }}
         >
-          <span
-            title="Drag anywhere (double-click to center)"
-            onDoubleClick={resetPosition}
-            style={{
-              color: "#71717a",
-              cursor: "grab",
-              fontSize: 12,
-              padding: "0 2px",
-            }}
-          >
-            ⠿
-          </span>
           <span
             style={{
               display: "inline-block",
@@ -612,210 +527,76 @@ export default function KeystaticWorkflowAssistant() {
               height: 7,
               borderRadius: "50%",
               background: isMain ? "#f59e0b" : "#10b981",
+              flexShrink: 0,
             }}
           />
-          <strong style={{ fontSize: 11, color: "#f4f4f5" }}>
-            {isMain ? "main" : currentBranch}
-          </strong>
-          {status?.prNumber && (
-            <span
-              style={{
-                background: "#2563eb",
-                color: "#fff",
-                fontSize: 10,
-                fontWeight: 600,
-                padding: "1px 5px",
-                borderRadius: 4,
-              }}
-            >
-              PR #{status.prNumber}
-            </span>
-          )}
-          <button
-            onClick={() => toggleCollapsed(false)}
+          <strong
             style={{
-              background: "#27272a",
-              color: "#e4e4e7",
-              border: "1px solid #52525b",
-              borderRadius: 999,
-              padding: "2px 7px",
               fontSize: 11,
-              fontWeight: 600,
-              cursor: "pointer",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
             }}
+            title={currentBranch}
           >
-            Quick Publish ▾
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div
-      ref={containerRef}
-      style={{
-        ...rootStyle,
-        width: "max-content",
-        maxWidth: 440,
-        background: "#18181b",
-        color: "#f4f4f5",
-        border: "1px solid #3f3f46",
-        borderRadius: 12,
-        padding: "10px 12px",
-        fontSize: 12,
-        lineHeight: 1.4,
-        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.35)",
-      }}
-    >
-      <div
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          gap: 8,
-          marginBottom: 8,
-          cursor: "grab",
-          userSelect: "none",
-          paddingBottom: 4,
-          borderBottom: "1px solid #27272a",
-        }}
-      >
-        <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-          <span
-            title="Drag anywhere (double-click to center)"
-            onDoubleClick={resetPosition}
-            style={{
-              color: "#71717a",
-              cursor: "grab",
-              fontSize: 12,
-              paddingRight: 2,
-            }}
-          >
-            ⠿
-          </span>
-          <span
-            style={{
-              display: "inline-block",
-              width: 8,
-              height: 8,
-              borderRadius: "50%",
-              background: isMain ? "#f59e0b" : "#10b981",
-            }}
-          />
-          <strong style={{ fontSize: 12 }}>
             {isMain ? "main (read-only)" : currentBranch}
           </strong>
         </div>
-        <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-          {customPosition && (
-            <button
-              onClick={resetPosition}
-              title="Reset position to top center"
-              style={{
-                background: "transparent",
-                color: "#a1a1aa",
-                border: "none",
-                cursor: "pointer",
-                padding: "2px 5px",
-                fontSize: 11,
-              }}
-            >
-              Reset ↺
-            </button>
-          )}
-          {isKeystaticBranch && (
-            <button
-              onClick={() => {
-                void fetchBranchStatus();
-              }}
-              title="Refresh branch & PR status"
-              style={{
-                background: "transparent",
-                color: "#a1a1aa",
-                border: "none",
-                cursor: "pointer",
-                padding: "2px 5px",
-                fontSize: 13,
-              }}
-            >
-              ↻
-            </button>
-          )}
+        {isKeystaticBranch && (
           <button
-            onClick={() => toggleCollapsed(true)}
-            title="Minimize helper"
+            onClick={() => {
+              void fetchBranchStatus();
+            }}
+            title="Refresh branch & PR status"
             style={{
               background: "transparent",
               color: "#a1a1aa",
               border: "none",
               cursor: "pointer",
-              padding: "2px 5px",
+              padding: "1px 4px",
               fontSize: 12,
+              flexShrink: 0,
             }}
           >
-            ▾
+            ↻
           </button>
-        </div>
+        )}
       </div>
 
       {isMain && (
-        <div style={{ color: "#d4d4d8", marginBottom: 8 }}>
-          Start a fresh auto-named branch from latest <code>main</code>:
+        <div style={{ color: "#a1a1aa", fontSize: 11, marginBottom: 8 }}>
+          Start a draft branch:
         </div>
       )}
 
-      {!isMain && status && status.behindBy > 0 && status.aheadBy === 0 && (
+      {!isMain && status && status.behindBy > 0 && (
         <div
           style={{
             background: "#451a03",
             border: "1px solid #92400e",
             color: "#fde68a",
-            borderRadius: 8,
-            padding: "6px 8px",
+            borderRadius: 6,
+            padding: "5px 7px",
             marginBottom: 8,
+            fontSize: 11,
           }}
         >
-          This old branch has <strong>0 unpublished edits</strong> and is{" "}
-          <strong>{status.behindBy} commits behind main</strong>. Start a fresh
-          branch below before editing.
-        </div>
-      )}
-
-      {!isMain && status && status.behindBy > 0 && status.aheadBy > 0 && (
-        <div
-          style={{
-            background: "#451a03",
-            border: "1px solid #92400e",
-            color: "#fde68a",
-            borderRadius: 8,
-            padding: "6px 8px",
-            marginBottom: 8,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
-          }}
-        >
-          <span>
-            Draft is <strong>{status.behindBy} commits behind main</strong>.
-          </span>
+          <span>Behind main by {status.behindBy} commit(s).</span>
           <button
             disabled={busyAction !== null}
             onClick={() => void syncBranchWithMain()}
             style={{
+              marginTop: 4,
+              display: "block",
+              width: "100%",
               background: "#d97706",
               color: "#fff",
               border: "none",
-              borderRadius: 6,
-              padding: "4px 8px",
+              borderRadius: 5,
+              padding: "3px 6px",
               fontSize: 11,
               fontWeight: 600,
               cursor: busyAction ? "wait" : "pointer",
-              whiteSpace: "nowrap",
             }}
           >
             {busyAction === "sync" ? "Syncing..." : "Sync with main"}
@@ -827,36 +608,34 @@ export default function KeystaticWorkflowAssistant() {
         <div
           style={{
             background: "#27272a",
-            borderRadius: 8,
+            borderRadius: 6,
             padding: "6px 8px",
             marginBottom: 8,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            gap: 8,
+            fontSize: 11,
           }}
         >
-          <span style={{ color: "#d4d4d8" }}>
+          <div style={{ color: "#a1a1aa", marginBottom: 4, fontSize: 11 }}>
             {status.isBlogOnly
-              ? "Blog post: auto-merges once build passes"
+              ? "Blog post: auto-merges on build"
               : status.hasPeopleChanges
-                ? "People edit: requests review after build, then auto-merges"
+                ? "People edit: review then merge"
                 : `${status.aheadBy} saved commit(s)`}
-          </span>
+          </div>
           {status.prUrl && status.prNumber ? (
             <a
               href={status.prUrl}
               target="_blank"
               rel="noopener noreferrer"
               style={{
+                display: "block",
+                textAlign: "center",
                 background: "#2563eb",
                 color: "#fff",
                 textDecoration: "none",
-                borderRadius: 6,
+                borderRadius: 5,
                 padding: "4px 8px",
                 fontSize: 11,
                 fontWeight: 600,
-                whiteSpace: "nowrap",
               }}
             >
               PR #{status.prNumber} ↗
@@ -867,14 +646,15 @@ export default function KeystaticWorkflowAssistant() {
               target="_blank"
               rel="noopener noreferrer"
               style={{
+                display: "block",
+                textAlign: "center",
                 background: "#3f3f46",
                 color: "#fafafa",
                 textDecoration: "none",
-                borderRadius: 6,
+                borderRadius: 5,
                 padding: "4px 8px",
                 fontSize: 11,
                 fontWeight: 600,
-                whiteSpace: "nowrap",
               }}
             >
               View Build ↗
@@ -883,46 +663,52 @@ export default function KeystaticWorkflowAssistant() {
         </div>
       )}
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+      <div style={{ display: "flex", flexDirection: "column", gap: 5 }}>
         <button
           disabled={busyAction !== null}
           onClick={() => void createFreshBranchAndNavigate("posts")}
           style={{
+            width: "100%",
             background: "#2563eb",
             color: "#ffffff",
             border: "none",
-            borderRadius: 7,
-            padding: "6px 10px",
-            fontSize: 12,
+            borderRadius: 6,
+            padding: "5px 8px",
+            fontSize: 11,
             fontWeight: 600,
             cursor: busyAction ? "wait" : "pointer",
+            textAlign: "center",
           }}
         >
-          {busyAction === "posts" ? "Creating branch..." : "+ New Blog Post"}
+          {busyAction === "posts" ? "Creating..." : "+ New Blog Post"}
         </button>
         <button
           disabled={busyAction !== null}
           onClick={() => void createFreshBranchAndNavigate("people")}
           style={{
-            background: "#3f3f46",
-            color: "#fafafa",
-            border: "1px solid #52525b",
-            borderRadius: 7,
-            padding: "6px 10px",
-            fontSize: 12,
+            width: "100%",
+            background: "#27272a",
+            color: "#d4d4d8",
+            border: "1px solid #3f3f46",
+            borderRadius: 6,
+            padding: "5px 8px",
+            fontSize: 11,
             fontWeight: 600,
             cursor: busyAction ? "wait" : "pointer",
+            textAlign: "center",
           }}
         >
-          {busyAction === "people" ? "Creating branch..." : peopleButtonLabel}
+          {busyAction === "people" ? "Creating..." : peopleButtonLabel}
         </button>
       </div>
 
       {errorMsg && (
-        <div style={{ color: "#fca5a5", marginTop: 6, fontSize: 11 }}>
+        <div style={{ color: "#fca5a5", marginTop: 6, fontSize: 10 }}>
           {errorMsg}
         </div>
       )}
     </div>
   );
+
+  return createPortal(content, portalNode);
 }

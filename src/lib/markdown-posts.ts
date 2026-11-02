@@ -45,6 +45,29 @@ export interface PostPreview {
   tags: string[];
 }
 
+const canonicalCategories: Record<string, string> = {
+  announcement: "Announcement",
+  defense: "Defense",
+  education: "Education",
+  presentation: "Presentation",
+  publication: "Publication",
+  social: "Social",
+  travel: "Travel",
+  video: "Video",
+};
+
+function extractExcerpt(content: string): string {
+  const plainText = content
+    .replace(/^#+\s+.*$/gm, "")
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+    .replace(/[*_`]/g, "")
+    .trim();
+  const firstPara = plainText.split(/\n\s*\n/)[0] || "";
+  const cleaned = firstPara.replace(/\s+/g, " ").trim();
+  return cleaned.length > 200 ? `${cleaned.slice(0, 197)}...` : cleaned;
+}
+
 function parsePostDate(value: unknown): string {
   if (value instanceof Date && !Number.isNaN(value.getTime())) {
     return value.toISOString().slice(0, 10);
@@ -67,18 +90,34 @@ function parsePostFile(filename: string): MarkdownPost {
   const fileContents = fs.readFileSync(fullPath, "utf8");
   const { data, content } = matter(fileContents);
 
+  const explicitImage = data.cover || data.featuredImage || "";
+  const contentImage =
+    content.match(/!\[.*?\]\((\/uploads\/[^)]+)\)/)?.[1] || "";
+  const featuredImage = explicitImage || contentImage;
+
+  const rawCategories = Array.isArray(data.categories) ? data.categories : [];
+  const categories = rawCategories.map(
+    (cat: string) => canonicalCategories[cat.toLowerCase()] || cat,
+  );
+  if (categories.length === 0) {
+    categories.push("Announcement");
+  }
+
+  const excerpt = data.excerpt || extractExcerpt(content);
+  const author = data.author || "Preferred.AI";
+
   const post: MarkdownPost = {
     slug,
     title: data.title || "",
     date: parsePostDate(data.date),
-    author: data.author || "",
-    excerpt: data.excerpt || "",
-    featuredImage: data.cover || data.featuredImage || "",
+    author,
+    excerpt,
+    featuredImage,
     featured: Boolean(data.featured),
-    categories: data.categories || [],
+    categories,
     tags: data.tags || [],
     seoTitle: data.seoTitle || data.title || "",
-    seoDescription: data.seoDescription || data.excerpt || "",
+    seoDescription: data.seoDescription || excerpt,
     content,
   };
 
@@ -333,10 +372,17 @@ export function getAllPostSlugs(): string[] {
 }
 
 export async function markdownToHtml(markdown: string): Promise<string> {
-  const normalizedMarkdown = markdown.replace(
+  let normalizedMarkdown = markdown.replace(
     /!\[([^\]]*)\]\s*!\[\]\(([^)]+)\)/g,
     "![$1]($2)",
   );
+
+  // Auto-embed standalone YouTube URLs on their own line
+  normalizedMarkdown = normalizedMarkdown.replace(
+    /^(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([A-Za-z0-9_-]{11})(?:\S*)?$/gm,
+    '<iframe src="https://www.youtube.com/embed/$1"></iframe>',
+  );
+
   const result = await unified()
     .use(remarkParse)
     .use(gfm)
@@ -349,7 +395,7 @@ export async function markdownToHtml(markdown: string): Promise<string> {
     .use(rehypeSanitize, markdownSanitizeSchema)
     .use(rehypeKatex, {
       trust: false,
-      strict: "error",
+      strict: "warn",
     })
     .use(rehypeStringify)
     .process(normalizedMarkdown);

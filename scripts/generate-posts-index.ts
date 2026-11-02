@@ -25,6 +25,29 @@ export interface MarkdownPost {
   content: string;
 }
 
+const canonicalCategories: Record<string, string> = {
+  announcement: "Announcement",
+  defense: "Defense",
+  education: "Education",
+  presentation: "Presentation",
+  publication: "Publication",
+  social: "Social",
+  travel: "Travel",
+  video: "Video",
+};
+
+function extractExcerpt(content: string): string {
+  const plainText = content
+    .replace(/^#+\s+.*$/gm, "")
+    .replace(/!\[.*?\]\(.*?\)/g, "")
+    .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+    .replace(/[*_`]/g, "")
+    .trim();
+  const firstPara = plainText.split(/\n\s*\n/)[0] || "";
+  const cleaned = firstPara.replace(/\s+/g, " ").trim();
+  return cleaned.length > 200 ? `${cleaned.slice(0, 197)}...` : cleaned;
+}
+
 function trimStr(value: unknown): string {
   return typeof value === "string" ? value.trim() : "";
 }
@@ -54,19 +77,32 @@ export function buildPostsIndex(): MarkdownPost[] {
     const { data, content } = matter(fileContents);
 
     const title = trimStr(data.title);
-    const excerpt = trimStr(data.excerpt);
+    const excerpt = trimStr(data.excerpt) || extractExcerpt(content);
+    const author = trimStr(data.author) || "Preferred.AI";
+    const explicitImage = trimStr(data.cover) || trimStr(data.featuredImage);
+    const contentImage =
+      content.match(/!\[.*?\]\((\/uploads\/[^)]+)\)/)?.[1] || "";
+    const featuredImage = explicitImage || contentImage;
+
+    const rawCategories = Array.isArray(data.categories)
+      ? data.categories.map(trimStr).filter(Boolean)
+      : [];
+    const categories = rawCategories.map(
+      (cat) => canonicalCategories[cat.toLowerCase()] || cat,
+    );
+    if (categories.length === 0) {
+      categories.push("Announcement");
+    }
 
     return {
       slug,
       title,
       date: parsePostDate(data.date),
-      author: trimStr(data.author),
+      author,
       excerpt,
-      featuredImage: trimStr(data.cover) || trimStr(data.featuredImage),
+      featuredImage,
       featured: Boolean(data.featured),
-      categories: Array.isArray(data.categories)
-        ? data.categories.map(trimStr).filter(Boolean)
-        : [],
+      categories,
       tags: Array.isArray(data.tags)
         ? data.tags.map(trimStr).filter(Boolean)
         : [],

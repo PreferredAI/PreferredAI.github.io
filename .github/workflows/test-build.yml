@@ -111,6 +111,10 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-images-v4-
 
+      - name: Auto-format editorial content
+        if: steps.branch-check.outputs.empty != 'true'
+        run: pnpm format:content
+
       - name: Validate website and editorial content
         if: steps.branch-check.outputs.empty != 'true'
         run: pnpm check

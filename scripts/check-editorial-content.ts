@@ -141,8 +141,12 @@ function validatePost(filename: string): number {
   }
 
   requiredString(data, "title", filename);
-  requiredString(data, "author", filename);
-  requiredString(data, "excerpt", filename);
+  if (data.author !== undefined && typeof data.author !== "string") {
+    throw new Error(`${filename}: author must be a string if provided`);
+  }
+  if (data.excerpt !== undefined && typeof data.excerpt !== "string") {
+    throw new Error(`${filename}: excerpt must be a string if provided`);
+  }
   const date = parseDateValue(data.date);
   if (!date || !isRealDate(date)) {
     throw new Error(`${filename}: date must be a real YYYY-MM-DD date`);
@@ -156,24 +160,27 @@ function validatePost(filename: string): number {
     typeof data.cover === "string" ? data.cover : data.featuredImage;
   const featuredImage =
     typeof rawFeaturedImage === "string" ? rawFeaturedImage.trim() : undefined;
-  if (
-    typeof featuredImage !== "string" ||
-    !featuredImage.startsWith("/uploads/")
-  ) {
-    throw new Error(
-      `${filename}: cover or featuredImage must use /uploads/...`,
-    );
+  if (featuredImage) {
+    if (!featuredImage.startsWith("/uploads/")) {
+      throw new Error(
+        `${filename}: cover or featuredImage must use /uploads/...`,
+      );
+    }
+    validateMediaReference(featuredImage, filename);
   }
-  validateMediaReference(featuredImage, filename);
 
-  const categories = stringArray(data, "categories", filename);
-  if (
-    categories.length === 0 ||
-    categories.some((category) => !allowedCategories.has(category))
-  ) {
-    throw new Error(
-      `${filename}: categories must contain only ${[...allowedCategories].join(", ")}`,
-    );
+  const categoryLookup = new Map(
+    [...allowedCategories].map((cat) => [cat.toLowerCase(), cat]),
+  );
+  if (data.categories !== undefined) {
+    const rawCategories = stringArray(data, "categories", filename);
+    for (const category of rawCategories) {
+      if (!categoryLookup.has(category.trim().toLowerCase())) {
+        throw new Error(
+          `${filename}: unknown category "${category}". Must be one of: ${[...allowedCategories].join(", ")}`,
+        );
+      }
+    }
   }
   stringArray(data, "tags", filename);
   for (const optionalKey of ["seoTitle", "seoDescription"]) {
