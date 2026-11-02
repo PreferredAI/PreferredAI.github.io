@@ -1,6 +1,6 @@
 ---
 title: Disentangling Preferences, Entangling Lives
-date: 2025-05-31
+date: "2025-05-31"
 author: Hady Lauw
 excerpt: >-
   On 28 May 2025, Tran Nhu Thuat successfully defended his dissertation, titled
