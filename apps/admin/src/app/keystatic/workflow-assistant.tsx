@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 const REPO_OWNER = "PreferredAI";
 const REPO_NAME = "PreferredAI.github.io";
@@ -153,6 +153,111 @@ export default function KeystaticWorkflowAssistant() {
     }
     return false;
   });
+
+  const [customPosition, setCustomPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const saved = localStorage.getItem("ks-assistant-pos");
+        if (saved) {
+          const parsed = JSON.parse(saved) as { x?: number; y?: number };
+          if (typeof parsed.x === "number" && typeof parsed.y === "number") {
+            return { x: parsed.x, y: parsed.y };
+          }
+        }
+      } catch {
+        // ignore localStorage errors
+      }
+    }
+    return null;
+  });
+
+  const isDraggingRef = useRef(false);
+  const dragStartRef = useRef<{
+    mouseX: number;
+    mouseY: number;
+    elemX: number;
+    elemY: number;
+  }>({ mouseX: 0, mouseY: 0, elemX: 0, elemY: 0 });
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  const onPointerDown = useCallback((e: React.PointerEvent) => {
+    const target = e.target as HTMLElement;
+    if (
+      target.closest("button") ||
+      target.closest("a") ||
+      target.closest("input")
+    ) {
+      return;
+    }
+    if (!containerRef.current) return;
+    const rect = containerRef.current.getBoundingClientRect();
+    isDraggingRef.current = true;
+    dragStartRef.current = {
+      mouseX: e.clientX,
+      mouseY: e.clientY,
+      elemX: rect.left,
+      elemY: rect.top,
+    };
+    try {
+      (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+  }, []);
+
+  const onPointerMove = useCallback((e: React.PointerEvent) => {
+    if (!isDraggingRef.current || !containerRef.current) return;
+    const dx = e.clientX - dragStartRef.current.mouseX;
+    const dy = e.clientY - dragStartRef.current.mouseY;
+    const width = containerRef.current.offsetWidth;
+    const height = containerRef.current.offsetHeight;
+    const newX = Math.max(
+      8,
+      Math.min(window.innerWidth - width - 8, dragStartRef.current.elemX + dx),
+    );
+    const newY = Math.max(
+      8,
+      Math.min(
+        window.innerHeight - height - 8,
+        dragStartRef.current.elemY + dy,
+      ),
+    );
+    setCustomPosition({ x: Math.round(newX), y: Math.round(newY) });
+  }, []);
+
+  const onPointerUp = useCallback((e: React.PointerEvent) => {
+    if (isDraggingRef.current) {
+      isDraggingRef.current = false;
+      try {
+        (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+      } catch {
+        // ignore
+      }
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        const pos = { x: Math.round(rect.left), y: Math.round(rect.top) };
+        setCustomPosition(pos);
+        try {
+          localStorage.setItem("ks-assistant-pos", JSON.stringify(pos));
+        } catch {
+          // ignore
+        }
+      }
+    }
+  }, []);
+
+  const resetPosition = useCallback((e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    setCustomPosition(null);
+    try {
+      localStorage.removeItem("ks-assistant-pos");
+    } catch {
+      // ignore
+    }
+  }, []);
 
   const toggleCollapsed = useCallback((nextCollapsed: boolean) => {
     setCollapsed(nextCollapsed);
@@ -444,38 +549,6 @@ export default function KeystaticWorkflowAssistant() {
     return null;
   }
 
-  if (collapsed) {
-    return (
-      <div
-        style={{
-          position: "fixed",
-          left: 16,
-          bottom: 16,
-          zIndex: 9999,
-          fontFamily:
-            '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        }}
-      >
-        <button
-          onClick={() => toggleCollapsed(false)}
-          style={{
-            background: "#18181b",
-            color: "#fafafa",
-            border: "1px solid #3f3f46",
-            borderRadius: 999,
-            padding: "7px 14px",
-            fontSize: 12,
-            fontWeight: 600,
-            cursor: "pointer",
-            boxShadow: "0 4px 14px rgba(0, 0, 0, 0.2)",
-          }}
-        >
-          Quick Publish ▴
-        </button>
-      </div>
-    );
-  }
-
   const isMain = currentBranch === DEFAULT_BRANCH;
   const peopleButtonLabel =
     route.collection === "people" && route.itemSlug
@@ -483,13 +556,107 @@ export default function KeystaticWorkflowAssistant() {
       : "+ Edit People Info";
   const actionsHref = `https://github.com/${REPO_OWNER}/${REPO_NAME}/actions?query=${encodeURIComponent(`branch:${currentBranch}`)}`;
 
+  const rootStyle: React.CSSProperties = {
+    position: "fixed",
+    zIndex: 9999,
+    fontFamily:
+      '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+    ...(customPosition
+      ? { left: customPosition.x, top: customPosition.y }
+      : { top: 8, left: "50%", transform: "translateX(-50%)" }),
+  };
+
+  if (collapsed) {
+    return (
+      <div
+        ref={containerRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        style={{
+          ...rootStyle,
+          userSelect: "none",
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: 7,
+            background: "#18181b",
+            color: "#fafafa",
+            border: "1px solid #3f3f46",
+            borderRadius: 999,
+            padding: "4px 8px 4px 6px",
+            fontSize: 12,
+            boxShadow: "0 4px 14px rgba(0, 0, 0, 0.35)",
+            cursor: "grab",
+          }}
+        >
+          <span
+            title="Drag anywhere (double-click to center)"
+            onDoubleClick={resetPosition}
+            style={{
+              color: "#71717a",
+              cursor: "grab",
+              fontSize: 12,
+              padding: "0 2px",
+            }}
+          >
+            ⠿
+          </span>
+          <span
+            style={{
+              display: "inline-block",
+              width: 7,
+              height: 7,
+              borderRadius: "50%",
+              background: isMain ? "#f59e0b" : "#10b981",
+            }}
+          />
+          <strong style={{ fontSize: 11, color: "#f4f4f5" }}>
+            {isMain ? "main" : currentBranch}
+          </strong>
+          {status?.prNumber && (
+            <span
+              style={{
+                background: "#2563eb",
+                color: "#fff",
+                fontSize: 10,
+                fontWeight: 600,
+                padding: "1px 5px",
+                borderRadius: 4,
+              }}
+            >
+              PR #{status.prNumber}
+            </span>
+          )}
+          <button
+            onClick={() => toggleCollapsed(false)}
+            style={{
+              background: "#27272a",
+              color: "#e4e4e7",
+              border: "1px solid #52525b",
+              borderRadius: 999,
+              padding: "2px 7px",
+              fontSize: 11,
+              fontWeight: 600,
+              cursor: "pointer",
+            }}
+          >
+            Quick Publish ▾
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div
+      ref={containerRef}
       style={{
-        position: "fixed",
-        left: 16,
-        bottom: 16,
-        zIndex: 9999,
+        ...rootStyle,
+        width: "max-content",
         maxWidth: 440,
         background: "#18181b",
         color: "#f4f4f5",
@@ -498,21 +665,38 @@ export default function KeystaticWorkflowAssistant() {
         padding: "10px 12px",
         fontSize: 12,
         lineHeight: 1.4,
-        fontFamily:
-          '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
-        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.28)",
+        boxShadow: "0 8px 24px rgba(0, 0, 0, 0.35)",
       }}
     >
       <div
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
         style={{
           display: "flex",
           alignItems: "center",
           justifyContent: "space-between",
           gap: 8,
           marginBottom: 8,
+          cursor: "grab",
+          userSelect: "none",
+          paddingBottom: 4,
+          borderBottom: "1px solid #27272a",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+          <span
+            title="Drag anywhere (double-click to center)"
+            onDoubleClick={resetPosition}
+            style={{
+              color: "#71717a",
+              cursor: "grab",
+              fontSize: 12,
+              paddingRight: 2,
+            }}
+          >
+            ⠿
+          </span>
           <span
             style={{
               display: "inline-block",
@@ -527,6 +711,22 @@ export default function KeystaticWorkflowAssistant() {
           </strong>
         </div>
         <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+          {customPosition && (
+            <button
+              onClick={resetPosition}
+              title="Reset position to top center"
+              style={{
+                background: "transparent",
+                color: "#a1a1aa",
+                border: "none",
+                cursor: "pointer",
+                padding: "2px 5px",
+                fontSize: 11,
+              }}
+            >
+              Reset ↺
+            </button>
+          )}
           {isKeystaticBranch && (
             <button
               onClick={() => {
