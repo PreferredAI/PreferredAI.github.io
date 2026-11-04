@@ -16,6 +16,23 @@ export interface YearSection {
 
 export const PUBLICATIONS_DATA: YearSection[] = [
   {
+    year: "2027",
+    publications: [
+      {
+        title: "Personalized Evidence Extraction from Reviews",
+        authors: "Hanh Tran, Trung-Hoang Le, Hady W. Lauw",
+        venue:
+          "ACM International Conference on Web Search and Data Mining (WSDM'27), Feb 2027",
+      },
+      {
+        title: "Objective-Subjective Comparative Aspect-Based Ranking",
+        authors: "Uyen Nguyen, Trung-Hoang Le, Hady W. Lauw",
+        venue:
+          "ACM International Conference on Web Search and Data Mining (WSDM'27), Feb 2027",
+      },
+    ],
+  },
+  {
     year: "2026",
     publications: [
       {
