@@ -87,10 +87,18 @@ branches, and jump directly to the build or open pull request.
 5. Advancing `main` via `DEPLOY_KEY` natively triggers
    `.github/workflows/nextjs.yml` to deploy the static website to Cloudflare
    Pages without redeploying the admin Worker.
-6. `.github/workflows/scheduled-maintenance.yml` runs dependency maintenance
-   exclusively on `main` and automatically prunes abandoned `keystatic/*`
-   branches that have `0` commits ahead of `main`, no open pull request, and no
-   activity for over 7 days.
+6. `.github/workflows/scheduled-maintenance.yml` runs weekly (Sundays 06:00
+   UTC) dependency maintenance exclusively on `main` and automatically prunes
+   abandoned `keystatic/*` branches that have `0` commits ahead of `main`, no
+   open pull request, and no activity for over 7 days.
+7. `.github/workflows/update-publications-and-team.yml` runs daily (18:00 UTC /
+   02:00 SGT) to crawl publications and team photos from hadylauw.com. It commits
+   and pushes to `main` (triggering a deploy) only when the generated data
+   changed. hadylauw.com is a Google Sites site with no RSS/Atom feed or
+   webhook, so it must be polled. For an immediate sync after editing
+   hadylauw.com, use **Actions → Update Publications & Team Photos → Run workflow**.
+   Both workflows share the `main-bot-writes` concurrency group so their pushes
+   never race.
 
 Protect `main` with the repository ruleset (`id: 20780485`), requiring pull
 requests, linear history, and the `audit` + `build` status checks.

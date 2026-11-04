@@ -1,0 +1,98 @@
+# Daily sync of publications and team photos from hadylauw.com.
+# hadylauw.com is a Google Sites site with no RSS/Atom feed, sitemap, or webhook,
+# so we poll it. The crawlers' parsed output is deterministic, so a git diff on the
+# generated files is used as the change detector. Use "Run workflow" for an
+# immediate sync after editing hadylauw.com.
+name: Update Publications & Team Photos
+
+on:
+  # Run daily at 18:00 UTC (02:00 Singapore time)
+  schedule:
+    - cron: "0 18 * * *"
+
+  push:
+    branches: ["main"]
+    paths:
+      - ".github/workflows/update-publications-and-team.yml"
+      - "scripts/crawl-publications.ts"
+      - "scripts/crawl-team.ts"
+
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Shared with scheduled-maintenance.yml so bot pushes to main never race
+concurrency:
+  group: main-bot-writes
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # Push via deploy key so the push triggers the Cloudflare Pages deploy workflow
+          ssh-key: ${{ secrets.DEPLOY_KEY }}
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: "22"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Run external crawlers concurrently
+        run: |
+          pnpm crawl:publications &
+          PID_PUB=$!
+          pnpm crawl:team &
+          PID_TEAM=$!
+          wait $PID_PUB $PID_TEAM
+
+      - name: Format generated publication and team data
+        run: |
+          pnpm exec biome check --write src/data/publications.ts src/data/teamPhotos.ts || true
+
+      - name: Check for changes
+        id: check-changes
+        run: |
+          git add src/data/publications.ts src/data/teamPhotos.ts public/team
+          git diff --cached --quiet || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Validate application integrity
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          pnpm lint
+          pnpm typecheck:prepared
+
+      - name: Commit and push changes
+        if: steps.check-changes.outputs.changed == 'true'
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+
+          changes=()
+          ! git diff --cached --quiet src/data/publications.ts && changes+=("publications")
+          ! git diff --cached --quiet src/data/teamPhotos.ts public/team && changes+=("team photos")
+
+          msg="chore: update $(IFS=', '; echo "${changes[*]}") [automated]"
+          git commit -m "$msg"
+          git pull --rebase origin main
+          git push
+
+      - name: Report result
+        run: |
+          if [ "${{ steps.check-changes.outputs.changed }}" = "true" ]; then
+            echo "Changes pushed to main. Cloudflare Pages deployment will be triggered automatically."
+          else
+            echo "No changes on hadylauw.com. Nothing to commit."
+          fi
