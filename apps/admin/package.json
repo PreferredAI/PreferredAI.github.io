@@ -12,14 +12,14 @@
     "typecheck": "node ../../scripts/clean-next-types.mjs && SKIP_OPENNEXT_DEV_INIT=true next typegen && tsc --noEmit"
   },
   "dependencies": {
-    "@keystar/ui": "^0.10.0",
-    "@keystatic/core": "^0.6.9",
+    "@keystar/ui": "^0.10.1",
+    "@keystatic/core": "^0.6.10",
     "@keystatic/next": "^5.0.5",
     "next": "16.4.6",
     "react": "19.3.0",
-    "react-aria": "3.52.1",
+    "react-aria": "3.53.1",
     "react-dom": "19.3.0",
-    "react-stately": "3.50.0"
+    "react-stately": "3.51.0"
   },
   "devDependencies": {
     "@opennextjs/cloudflare": "^1.20.13",
